@@ -1,0 +1,236 @@
+package com.swiftedge.employeeservice.service;
+
+import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
+import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
+import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
+import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
+import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
+import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
+import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepository;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Getter
+@Setter
+public class EmployeeService {
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeAddressRepository employeeAddressRepository;
+
+    @Transactional
+    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        EmployeeAddressEntity addressEntity = new EmployeeAddressEntity();
+
+        employeeRepository.findByEmail(employeeRequestDTO.getEmail())
+                .ifPresent(e -> {
+                    throw new IllegalArgumentException("Email " + "'" + employeeRequestDTO.getEmail() + "'" + " already exists");
+                });
+
+        employeeEntity.setName(employeeRequestDTO.getName());
+        employeeEntity.setSurname(employeeRequestDTO.getSurname());
+        employeeEntity.setEmail(employeeRequestDTO.getEmail());
+        employeeEntity.setNumber(employeeRequestDTO.getNumber());
+        employeeEntity.setIdNumber(employeeRequestDTO.getIdNumber());
+        employeeEntity.setDob(employeeRequestDTO.getDob());
+        employeeEntity.setGender(employeeRequestDTO.getGender());
+        employeeEntity.setEthnicity(employeeRequestDTO.getEthnicity());
+        employeeEntity.setOccupation(employeeRequestDTO.getOccupation());
+        employeeEntity.setExperience(employeeRequestDTO.getExperience());
+        employeeEntity.setSummary(employeeRequestDTO.getSummary());
+
+        addressEntity.setCity(employeeRequestDTO.getAddress().getCity());
+        addressEntity.setSuburb(employeeRequestDTO.getAddress().getSuburb());
+        addressEntity.setStreetAddress(employeeRequestDTO.getAddress().getStreetAddress());
+        addressEntity.setZipCode(employeeRequestDTO.getAddress().getZipCode());
+
+        employeeEntity.setAddress(addressEntity);
+        addressEntity.setEmployee(employeeEntity);
+
+        System.out.println("Employee details: " + employeeEntity.getEmail());
+        employeeRepository.save(employeeEntity);
+    }
+
+    public List<EmployeeResponseDTO> getAllEmployees() {
+        List<EmployeeEntity> employees = employeeRepository.findAll();
+
+        // Map each Employee entity to EmployeeResponseDTO
+
+        return employees.stream()
+                .map(this::mapToEmployeeResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    private EmployeeResponseDTO mapToEmployeeResponseDTO(EmployeeEntity employeeEntity) {
+        EmployeeResponseDTO dto = new EmployeeResponseDTO();
+
+        dto.setName(employeeEntity.getName());
+        dto.setSurname(employeeEntity.getSurname());
+        dto.setEmail(employeeEntity.getEmail());
+        dto.setNumber(employeeEntity.getNumber());
+        dto.setIdNumber(employeeEntity.getIdNumber());
+        dto.setDob(employeeEntity.getDob());
+        dto.setOccupation(employeeEntity.getOccupation());
+
+        return dto;
+
+    }
+
+    public List<EmployeeEntity> searchEmployee(String name, String surname) {
+        return employeeRepository.findByNameAndSurname(name, surname);
+    }
+
+    public List<EmployeeAddressEntity> getEmployeeAddress(String name, String surname) {
+        return employeeRepository.findAddressByNameAndSurname(name, surname);
+    }
+
+    public boolean updateEmployee(Long id, EmployeeResponseDTO employeeResponseDTO, AddressRequestDTO addressRequestDTO) {
+
+        EmployeeEntity existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
+
+        boolean isUpdated = false;
+
+        if (!existingEmployee.getName().equals(employeeResponseDTO.getName())) {
+            validateName(employeeResponseDTO.getName());
+            existingEmployee.setName(employeeResponseDTO.getName());
+            isUpdated = true;
+        }
+
+        if (!existingEmployee.getSurname().equals(employeeResponseDTO.getSurname())) {
+            validateSurname(employeeResponseDTO.getSurname());
+            existingEmployee.setSurname(employeeResponseDTO.getSurname());
+            isUpdated = true;
+        }
+
+        if (!existingEmployee.getEmail().equals(employeeResponseDTO.getEmail())) {
+            validateEmail(employeeResponseDTO.getEmail());
+            existingEmployee.setEmail(employeeResponseDTO.getEmail());
+            isUpdated = true;
+        }
+
+        if (!existingEmployee.getNumber().equals(employeeResponseDTO.getNumber())) {
+            validatePhoneNumber(employeeResponseDTO.getNumber());
+            existingEmployee.setNumber(employeeResponseDTO.getNumber());
+            isUpdated = true;
+        }
+
+        if (!existingEmployee.getOccupation().equals(employeeResponseDTO.getOccupation())) {
+            validateOccupation(employeeResponseDTO.getOccupation());
+            existingEmployee.setOccupation(employeeResponseDTO.getOccupation());
+            isUpdated = true;
+        }
+
+        if (!existingEmployee.getExperience().equals(employeeResponseDTO.getExperience())) {
+            validateExperience(employeeResponseDTO.getExperience());
+            existingEmployee.setExperience(employeeResponseDTO.getExperience());
+            isUpdated = true;
+        }
+
+        if (!existingEmployee.getSummary().equals(employeeResponseDTO.getSummary())) {
+            validateSummary(employeeResponseDTO.getSummary());
+            existingEmployee.setSummary(employeeResponseDTO.getSummary());
+            isUpdated = true;
+        }
+
+        //Save employee Address
+        EmployeeAddressEntity addressEntity = existingEmployee.getAddress();
+        if (addressEntity != null) {
+            if (!addressEntity.getStreetAddress().equals(addressRequestDTO.getStreetAddress())) {
+                addressEntity.setStreetAddress(addressRequestDTO.getStreetAddress());
+                isUpdated = true;
+            }
+
+            if (!addressEntity.getCity().equals(addressRequestDTO.getCity())) {
+                addressEntity.setCity(addressRequestDTO.getCity());
+                isUpdated = true;
+            }
+
+            if (!addressEntity.getSuburb().equals(addressRequestDTO.getSuburb())) {
+                addressEntity.setSuburb(addressRequestDTO.getSuburb());
+                isUpdated = true;
+            }
+
+            if (!addressEntity.getZipCode().equals(addressRequestDTO.getZipCode())) {
+                addressEntity.setZipCode(addressRequestDTO.getZipCode());
+                isUpdated = true;
+            }
+            existingEmployee.setAddress(addressEntity);
+        }
+
+        if (isUpdated) {
+            employeeRepository.save(existingEmployee);
+        }
+
+        return isUpdated;
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty.");
+        }
+    }
+
+    private void validateSurname(String surname) {
+        if (surname == null || surname.trim().isEmpty()) {
+            throw new IllegalArgumentException("Surname cannot be null or empty.");
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new IllegalArgumentException("Invalid email format.");
+        }
+
+        if (employeeRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("Email is already in use.");
+        }
+    }
+
+    private void validatePhoneNumber(String number) {
+        if (number == null || !number.matches("^0[0-9]{9}$")) {
+            throw new IllegalArgumentException("Phone number must be 10 digits and start with 0.");
+        }
+    }
+
+    private void validateOccupation(String occupation) {
+        if (occupation == null || occupation.trim().isEmpty()) {
+            throw new IllegalArgumentException("Occupation cannot be null or empty.");
+        }
+    }
+
+    private void validateExperience(String experience) {
+        if (experience == null || experience.trim().isEmpty()) {
+            throw new IllegalArgumentException("Experience cannot be null or empty.");
+        }
+    }
+
+    private void validateSummary(String summary) {
+        if (summary == null || summary.trim().isEmpty()) {
+            throw new IllegalArgumentException("Summary cannot be null or empty.");
+        }
+    }
+
+    /**
+     * Deletes an employee and their associated address
+     *
+     * @param employeeId -> The id of the employee to be deleted
+     */
+    public void deleteEmployee(Long employeeId) {
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeId);
+
+        if (employeeOptional.isPresent()) {
+            employeeRepository.delete(employeeOptional.get());
+        } else {
+            System.out.println("Employee with ID " + employeeId + "does not exist.");
+        }
+    }
+}

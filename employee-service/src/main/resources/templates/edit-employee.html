@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Material Able bootstrap admin template by Codedthemes</title>
+    <!-- HTML5 Shim and Respond.js IE10 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 10]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="keywords" content="bootstrap, bootstrap admin template, admin theme, admin dashboard, dashboard template, admin template, responsive" />
+    <meta name="author" content="Codedthemes" />
+    <!-- Favicon icon -->
+    <link rel="icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <!-- Required Fremwork -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap/css/bootstrap.min.css}">
+    <!-- themify-icons line icon -->
+    <link rel="stylesheet" type="text/css" th:href="@{/icon/themify-icons/themify-icons.css}">
+    <!-- ico font -->
+    <link rel="stylesheet" type="text/css" th:href="@{/icon/icofont/css/icofont.css}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" type="text/css" th:href="@{/icon/font-awesome/css/font-awesome.min.css}">
+    <!-- waves.css -->
+    <link rel="stylesheet" th:href="@{/pages/waves/css/waves.min.css}" type="text/css" media="all">
+    <!-- Style.css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/jquery.mCustomScrollbar.css}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Pre-loader start -->
+    <div class="theme-loader">
+        <div class="loader-track">
+            <div class="preloader-wrapper">
+                <div class="spinner-layer spinner-blue">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+                <div class="spinner-layer spinner-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+
+                <div class="spinner-layer spinner-yellow">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+
+                <div class="spinner-layer spinner-green">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pre-loader end -->
+    <div id="pcoded" class="pcoded">
+        <div class="pcoded-overlay-box"></div>
+        <div class="pcoded-container navbar-wrapper">
+            <nav class="navbar header-navbar pcoded-header">
+                <div class="navbar-wrapper">
+                    <div class="navbar-logo">
+                        <a class="mobile-menu waves-effect waves-light" id="mobile-collapse" href="#!">
+                            <i class="ti-menu"></i>
+                        </a>
+                        <div class="mobile-search waves-effect waves-light">
+                            <div class="header-search">
+                                <div class="main-search morphsearch-search">
+                                    <div class="input-group">
+                                        <span class="input-group-prepend search-close"><i class="ti-close input-group-text"></i></span>
+                                        <input type="text" class="form-control" placeholder="Enter Keyword">
+                                        <span class="input-group-append search-btn"><i class="ti-search input-group-text"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="index.html">
+                            <img class="img-fluid" th:src="@{/images/logo.png}" alt="Theme-Logo" />
+                        </a>
+                        <a class="mobile-options waves-effect waves-light">
+                            <i class="ti-more"></i>
+                        </a>
+                    </div>
+
+                    <div class="navbar-container container-fluid">
+                        <ul class="nav-left">
+                            <li>
+                                <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a></div>
+                            </li>
+                            <li>
+                                <a href="#!" onclick="javascript:toggleFullScreen()" class="waves-effect waves-light">
+                                    <i class="ti-fullscreen"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav-right">
+                            <li class="header-notification">
+                                <a href="#!" class="waves-effect waves-light">
+                                    <i class="ti-bell"></i>
+                                    <span class="badge bg-c-red"></span>
+                                </a>
+                                <ul class="show-notification">
+                                    <li>
+                                        <h6>Notifications</h6>
+                                        <label class="label label-danger">New</label>
+                                    </li>
+                                    <li class="waves-effect waves-light">
+                                        <div class="media">
+                                            <img class="d-flex align-self-center img-radius" th:src="@{/images/avatar-2.jpg}" alt="Generic placeholder image">
+                                            <div class="media-body">
+                                                <h5 class="notification-user">John Doe</h5>
+                                                <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
+                                                <span class="notification-time">30 minutes ago</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="waves-effect waves-light">
+                                        <div class="media">
+                                            <img class="d-flex align-self-center img-radius" th:src="@{/images/avatar-4.jpg}" alt="Generic placeholder image">
+                                            <div class="media-body">
+                                                <h5 class="notification-user">Joseph William</h5>
+                                                <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
+                                                <span class="notification-time">30 minutes ago</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="waves-effect waves-light">
+                                        <div class="media">
+                                            <img class="d-flex align-self-center img-radius" th:src="@{/images/avatar-3.jpg}" alt="Generic placeholder image">
+                                            <div class="media-body">
+                                                <h5 class="notification-user">Sara Soudein</h5>
+                                                <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
+                                                <span class="notification-time">30 minutes ago</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="user-profile header-notification">
+                                <a href="#!" class="waves-effect waves-light">
+                                    <img th:src="@{/images/avatar-4.jpg}" class="img-radius" alt="User-Profile-Image">
+                                    <span>John Doe</span>
+                                    <i class="ti-angle-down"></i>
+                                </a>
+                                <ul class="show-notification profile-notification">
+                                    <li class="waves-effect waves-light">
+                                        <a href="#!">
+                                            <i class="ti-settings"></i> Settings
+                                        </a>
+                                    </li>
+                                    <li class="waves-effect waves-light">
+                                        <a href="user-profile.html">
+                                            <i class="ti-user"></i> Profile
+                                        </a>
+                                    </li>
+                                    <li class="waves-effect waves-light">
+                                        <a href="email-inbox.html">
+                                            <i class="ti-email"></i> My Messages
+                                        </a>
+                                    </li>
+                                    <li class="waves-effect waves-light">
+                                        <a href="auth-lock-screen.html">
+                                            <i class="ti-lock"></i> Lock Screen
+                                        </a>
+                                    </li>
+                                    <li class="waves-effect waves-light">
+                                        <a href="auth-normal-sign-in.html">
+                                            <i class="ti-layout-sidebar-left"></i> Logout
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="pcoded-main-container">
+                <div class="pcoded-wrapper">
+                    <nav class="pcoded-navbar">
+                        <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
+                        <div class="pcoded-inner-navbar main-menu">
+                            <div class="">
+                                <div class="main-menu-header">
+                                    <img class="img-80 img-radius" th:src="@{/images/avatar-4.jpg}" alt="User-Profile-Image">
+                                    <div class="user-details">
+                                        <span id="more-details">John Doe<i class="fa fa-caret-down"></i></span>
+                                    </div>
+                                </div>
+                                <div class="main-menu-content">
+                                    <ul>
+                                        <li class="more-details">
+                                            <a href="user-profile.html"><i class="ti-user"></i>View Profile</a>
+                                            <a href="#!"><i class="ti-settings"></i>Settings</a>
+                                            <a href="auth-normal-sign-in.html"><i class="ti-layout-sidebar-left"></i>Logout</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="p-15 p-b-0">
+                                <form class="form-material">
+                                    <div class="form-group form-primary">
+                                        <input type="text" name="footer-email" class="form-control">
+                                        <span class="form-bar"></span>
+                                        <label class="float-label"><i class="fa fa-search m-r-10"></i>Search Friend</label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="pcoded-navigation-label">Navigation</div>
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li class="">
+                                    <a th:href="@{/api/v2/employees/home}" class="waves-effect waves-dark">
+                                        <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+                                        <span class="pcoded-mtext">Dashboard</span>
+                                        <span class="pcoded-mcaret"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="pcoded-navigation-label">UI Element</div>
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li th:classappend="${activeMenu == 'basic'} ? 'pcoded-hasmenu active pcoded-trigger' : 'pcoded-hasmenu'">
+                                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                                        <span class="pcoded-micon"><i class="ti-layout-grid2-alt"></i><b>BC</b></span>
+                                        <span class="pcoded-mtext">Basic</span>
+                                        <span class="pcoded-mcaret"></span>
+                                    </a>
+                                    <ul class="pcoded-submenu">
+                                        <li th:classappend="${activePage == 'all-employees'} ? 'active' : ''">
+                                            <a th:href="@{/api/v2/employees/view-all}" class="waves-effect waves-dark">
+                                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                <span class="pcoded-mtext">All Employees</span>
+                                                <span class="pcoded-mcaret"></span>
+                                            </a>
+                                        </li>
+                                        <li th:classappend="${activePage == 'employees'} ? 'active' : ''">
+                                            <a th:href="@{/api/v2/employees/add}" class="waves-effect waves-dark">
+                                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                <span class="pcoded-mtext">Add Employee</span>
+                                                <span class="pcoded-mcaret"></span>
+                                            </a>
+                                        </li>
+                                        <li th:classappend="${activePage == 'edit-employee'} ? 'active' : ''">
+                                            <a th:href="@{/api/v2/employees/edit}" class="waves-effect waves-dark">
+                                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                <span class="pcoded-mtext">Edit Employees</span>
+                                                <span class="pcoded-mcaret"></span>
+                                            </a>
+                                        </li>
+                                        <li th:classappend="${activePage == 'accordion'} ? 'active' : ''">
+                                            <a th:href="@{/accordion}" class="waves-effect waves-dark">
+                                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                <span class="pcoded-mtext">Employee Profile</span>
+                                                <span class="pcoded-mcaret"></span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div class="pcoded-navigation-label">Forms</div>
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li class="">
+                                    <a href="form-elements-component.html" class="waves-effect waves-dark">
+                                        <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
+                                        <span class="pcoded-mtext">Form</span>
+                                        <span class="pcoded-mcaret"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="pcoded-navigation-label">Tables</div>
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li class="">
+                                    <a href="employees-view-all.html" class="waves-effect waves-dark">
+                                        <span class="pcoded-micon"><i class="ti-receipt"></i><b>B</b></span>
+                                        <span class="pcoded-mtext">Table</span>
+                                        <span class="pcoded-mcaret"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="pcoded-navigation-label">Chart And Maps</div>
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li class="">
+                                    <a href="chart-morris.html" class="waves-effect waves-dark">
+                                        <span class="pcoded-micon"><i class="ti-bar-chart-alt"></i><b>C</b></span>
+                                        <span class="pcoded-mtext">Charts</span>
+                                        <span class="pcoded-mcaret"></span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="map-google.html" class="waves-effect waves-dark">
+                                        <span class="pcoded-micon"><i class="ti-map-alt"></i><b>M</b></span>
+                                        <span class="pcoded-mtext">Maps</span>
+                                        <span class="pcoded-mcaret"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="pcoded-navigation-label">Pages</div>
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li class="pcoded-hasmenu ">
+                                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                                        <span class="pcoded-micon"><i class="ti-id-badge"></i><b>A</b></span>
+                                        <span class="pcoded-mtext">Pages</span>
+                                        <span class="pcoded-mcaret"></span>
+                                    </a>
+                                    <ul class="pcoded-submenu">
+                                        <li class="">
+                                            <a href="auth-normal-sign-in.html" class="waves-effect waves-dark">
+                                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                <span class="pcoded-mtext">Login</span>
+                                                <span class="pcoded-mcaret"></span>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a href="auth-sign-up.html" class="waves-effect waves-dark">
+                                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                <span class="pcoded-mtext">Registration</span>
+                                                <span class="pcoded-mcaret"></span>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a href="sample-page.html" class="waves-effect waves-dark">
+                                                <span class="pcoded-micon"><i class="ti-layout-sidebar-left"></i><b>S</b></span>
+                                                <span class="pcoded-mtext">Sample Page</span>
+                                                <span class="pcoded-mcaret"></span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <div class="pcoded-content">
+                        <!-- Page-header start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Accordion</h5>
+                                            <p class="m-b-0">Lorem Ipsum is simply dummy text of the printing</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item">
+                                                <a href="index.html"> <i class="fa fa-home"></i> </a>
+                                            </li>
+                                            <li class="breadcrumb-item"><a href="#!">Basic Components</a>
+                                            </li>
+                                            <li class="breadcrumb-item"><a href="#!">Accordion</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Page-header end -->
+                        <div class="pcoded-inner-content">
+                            <div class="main-body">
+                                <div class="page-wrapper">
+
+                                    <!-- Page body start -->
+                                    <div class="page-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <!-- Tab variant tab card start -->
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5>Profile</h5>
+                                                    </div>
+                                                    <div class="card-block tab-icon">
+                                                        <!-- Row start -->
+                                                        <div class="row">
+                                                            <div class="col-lg-4 col-xl-4 tab-with-img">
+                                                                <!-- Nav tabs -->
+                                                                <div class="card quater-card">
+                                                                    <div class="card-block">
+                                                                        <h4 class="sub-title">Search Employee</h4>
+                                                                        <form th:action="@{/api/v2/employees/search}" method="GET"
+                                                                              class="form-material">
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="mt-3 col-sm-12">
+                                                                                    <input type="text" class="form-control" name="name">
+                                                                                    <span class="form-bar"></span>
+                                                                                    <label class="float-label">&emsp;&ensp;Employee Name</label>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="mt-3 col-sm-12">
+                                                                                    <input type="text" class="form-control" name="surname">
+                                                                                    <span class="form-bar"></span>
+                                                                                    <label class="float-label">&emsp;&ensp;Employee Surname</label>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="col-md-12">
+                                                                                    <!-- Block level buttons with icon -->
+                                                                                    <div class="d-grid">
+                                                                                        <button class="btn btn-primary waves-effect w-100 d-flex align-items-center justify-content-center" type="submit">
+                                                                                            <span>Search Employee</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            <div class="col-xl-8 col-md-8">
+                                                                <div class="card table-card">
+                                                                    <div class="card-header">
+                                                                        <h5>Profile Overview</h5>
+                                                                        <div class="card-header-right">
+                                                                            <ul class="list-unstyled card-option">
+                                                                                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                                                                                <li><i class="fa fa-window-maximize full-card"></i></li>
+                                                                                <li><i class="fa fa-minus minimize-card"></i></li>
+                                                                                <li><i class="fa fa-refresh reload-card"></i></li>
+                                                                                <li><i class="fa fa-trash close-card"></i></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-lg-12 col-xl-12">
+                                                                        <!-- <h6 class="sub-title">Tab With Icon</h6> -->
+                                                                        <!-- Nav tabs -->
+                                                                        <ul class="nav nav-tabs md-tabs " role="tablist">
+                                                                            <li class="nav-item">
+                                                                                <a class="nav-link active" data-toggle="tab" href="#home7" role="tab"><i class="icofont icofont-user"></i>Overview</a>
+                                                                                <div class="slide"></div>
+                                                                            </li>
+                                                                            <li class="nav-item">
+                                                                                <a class="nav-link" data-toggle="tab" href="#profile7" role="tab"><i class="icofont icofont-paint-brush"></i>Edit Profile</a>
+                                                                                <div class="slide"></div>
+                                                                            </li>
+                                                                            <li class="nav-item">
+                                                                                <a class="nav-link" data-toggle="tab" href="#messages7" role="tab"><i class="icofont icofont-folder-open">
+                                                                                </i>Projects</a>
+                                                                                <div class="slide"></div>
+                                                                            </li>
+                                                                            <li class="nav-item">
+                                                                                <a class="nav-link" data-toggle="tab" href="#settings7" role="tab"><i class="icofont icofont-trash">
+                                                                                </i>Remove Profile</a>
+                                                                                <div class="slide"></div>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                    <!-- Tab panes -->
+                                                                    <div class="tab-content card-block">
+                                                                        <div class="tab-pane active" id="home7" role="tabpanel">
+                                                                            <h4 class="m-2 mt-3 sub-title">Employee Summary</h4>
+                                                                            <p class="m-4" th:name="summary" th:text="${summary}"></p>
+
+                                                                            <h4 class="m-2 mt-4 sub-title">Profile Details</h4>
+
+                                                                            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                                <i class="bi-exclamation-octagon-fill"></i>
+                                                                                <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                            </div>
+
+                                                                            <!-- Info Alert -->
+                                                                            <div th:if="${infoMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                                <i class="bi-info-circle-fill"></i>
+                                                                                <strong>Info!</strong> <span th:text="${infoMessage}"></span>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                            </div>
+
+                                                                            <!-- Success Alert -->
+                                                                            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                                <i class="bi-check-circle-fill"></i>
+                                                                                <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                            </div>
+
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <span class="form-bar"></span>
+                                                                                    <dt class="col-sm-3"></dt>
+                                                                                    <dd></dd>
+                                                                                </div>
+                                                                                <div class="col-lg-6 col-md-4">
+                                                                                    <span class="form-bar"></span>
+                                                                                    <dt class="col-sm-3"></dt>
+                                                                                    <dd></dd>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8">
+                                                                                        <b>Employee Name</b>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8" th:name="name" th:text="${name}"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8">
+                                                                                        <b>Employee Surname</b>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8" th:name="surname" th:text="${surname}"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8">
+                                                                                        <b>Occupation</b>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8" th:name="occupation" th:text="${occupation}"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8">
+                                                                                        <b>Years of Experience</b>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8" th:name="years_experience" th:text="${years_experience}"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8">
+                                                                                        <b>Ethnicity</b>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8" th:name="ethnicity" th:text="${ethnicity}"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8">
+                                                                                        <b>Address</b>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8" th:name="fullAddress" th:text="${address}"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8">
+                                                                                        <b>Phone Number</b>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-8" th:name="number" th:text="${number}"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group form-primary row">
+                                                                                <div class="m-1 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-6">
+                                                                                        <b>Email Address</b>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="m-2 col-lg-5 col-md-4">
+                                                                                    <div class="col-sm-10" th:name="email" th:text="${email}"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <h4 class="m-2 mt-4 sub-title"></h4>
+
+                                                                        </div>
+
+                                                                        <div class="tab-pane" id="profile7" role="tabpanel">
+                                                                            <h4 class="m-2 mt-4 sub-title">Modify Profile Details</h4>
+
+                                                                            <form th:action="@{/api/v2/employees/{id}/update(id=${Id})}" method="POST" class="form-material">
+                                                                                <!-- Employee Name and Surname -->
+                                                                                <div class="row mb-3">
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="text" class="form-control" id="name" placeholder="Employee Name" name="name" required th:value="${name}">
+                                                                                        <label for="name">Employee Name</label>
+                                                                                    </div>
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="text" class="form-control" id="surname" placeholder="Employee Surname" name="surname" required th:value="${surname}">
+                                                                                        <label for="surname">Employee Surname</label>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Email and Phone Number -->
+                                                                                <div class="row mb-3">
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="email" class="form-control" id="email" placeholder="Email" name="email" required th:value="${email}">
+                                                                                        <label for="email">Email</label>
+                                                                                    </div>
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="text" class="form-control" id="number" placeholder="Phone Number" name="number"
+                                                                                               maxlength="10" required
+                                                                                               oninput="this.value = this.value.slice(0, this.maxLength);"
+                                                                                               th:value="${number}">
+                                                                                        <label for="number">Phone Number</label>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Occupation and Years of Experience -->
+                                                                                <div class="row mb-3">
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="text" class="form-control" id="occupation" placeholder="Occupation" name="occupation" required th:value="${occupation}">
+                                                                                        <label for="occupation">Occupation</label>
+                                                                                    </div>
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="number" class="form-control" id="experience" placeholder="Years of Experience" name="experience" th:value="${years_experience}">
+                                                                                        <label for="experience">Years of Experience</label>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Summary -->
+                                                                                <div class="row mb-3">
+                                                                                    <div class="form-floating col-sm-10 m-3 mt-2">
+                                                                                        <textarea class="form-control" id="summary" placeholder="Employee Summary" name="summary" required th:text="${summary}"></textarea>
+                                                                                        <label for="summary">Employee Summary</label>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Address Fields -->
+                                                                                <div class="row mb-3">
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="text" class="form-control" id="address" placeholder="Street Address" name="streetAddress" required th:value="${address}">
+                                                                                        <label for="address">Street Address</label>
+                                                                                    </div>
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="text" class="form-control" id="suburb" placeholder="Suburb" name="suburb" required th:value="${suburb}">
+                                                                                        <label for="suburb">Suburb</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="text" class="form-control" id="city" placeholder="City" name="city" required th:value="${city}">
+                                                                                        <label for="city">City</label>
+                                                                                    </div>
+                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                        <input type="text" class="form-control" id="zipCode" placeholder="Zip Code" name="zipCode" required th:value="${zipCode}">
+                                                                                        <label for="zipCode">Zip Code</label>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Buttons -->
+                                                                                <div class="row">
+                                                                                    <div class="col-md-5 m-3">
+                                                                                        <button type="reset" class="btn btn-secondary w-100 d-flex align-items-center justify-content-center">
+                                                                                            <i class="bi bi-arrow-clockwise me-2"></i> Clear Form
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <div class="col-md-5 m-3">
+                                                                                        <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                                                                            <i class="bi bi-save me-2"></i> Update Employee
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+
+                                                                        </div>
+                                                                        <div class="tab-pane" id="messages7" role="tabpanel">
+                                                                            <h4 class="m-2 mt-4 sub-title">Employee Projects & Eligable Projects</h4>
+                                                                            <form th:action="@{/find-employees/{id}/update-employee-project(id=${Id})}"
+                                                                                  method="POST" class="form-material">
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-3 mt-2 col-sm-5">
+                                                                                        <select
+                                                                                                class="selectpicker form-control"
+                                                                                                data-style="btn-outline-primary"
+                                                                                                data-size="5"
+                                                                                                id="myProjects"
+                                                                                                name="myProjects">
+
+                                                                                            <option selected disabled value=""></option>
+                                                                                            <th:block th:each="project_name : ${myProjects_}">
+                                                                                                <option th:value="${project_name}"
+                                                                                                        th:text="${project_name}">
+                                                                                                </option>
+                                                                                            </th:block>
+                                                                                        </select>
+                                                                                        <span class="form-bar"></span>
+                                                                                        <label class="float-label">&emsp;&ensp;Projects Assigned to Employee</label>
+                                                                                    </div>
+                                                                                    <div class="m-3 mt-2 col-sm-5">
+                                                                                        <select
+                                                                                                class="selectpicker form-control"
+                                                                                                data-style="btn-outline-primary"
+                                                                                                data-size="5"
+                                                                                                id="projects"
+                                                                                                name="projects">
+
+                                                                                            <option selected value=""></option>
+                                                                                            <th:block th:each="projects : ${otherProjects}">
+                                                                                                <option th:value="${projects}"
+                                                                                                        th:text="${projects}">
+                                                                                                </option>
+                                                                                            </th:block>
+                                                                                        </select>
+                                                                                        <span class="form-bar"></span>
+                                                                                        <label class="float-label">&emsp;&ensp;Available Projects (Not Assigned to Employee)</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <h4 class="m-2 mt-4 sub-title"> </h4>
+                                                                                <div class="form-group form-primary form-static-label row">
+                                                                                    <div class="m-3 col-md-6">
+                                                                                        <!-- Block level buttons with icon -->
+                                                                                        <div class="form-group">
+                                                                                            <button id="assignProject" disabled class="btn waves-effect waves-light btn-primary btn-outline-primary btn-block"><i class="icofont icofont-save"></i><b>Assign to Project</b></button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group form-primary form-static-label row">
+                                                                                    <div class="m-3 mt-2 col-sm-5">
+                                                                                        <input type="text" class="form-control" disabled th:hidden="hidden"
+                                                                                               placeholder="John" th:value="${Id} ">
+                                                                                        <span class="form-bar"></span>
+                                                                                        <!--                                                                                        <label class="float-label">&emsp;&ensp;Employee ID</label>-->
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+
+                                                                        <div class="tab-pane" id="settings7" role="tabpanel">
+                                                                            <h4 class="m-2 mt-4 sub-title">Remove Employee Profile</h4>
+
+                                                                            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                                                <i class="bi-exclamation-octagon-fill"></i>
+                                                                                <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                            </div>
+
+                                                                            <!-- Success Alert -->
+                                                                            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                                <i class="bi-check-circle-fill"></i>
+                                                                                <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                            </div>
+
+                                                                            <form th:action="@{/api/v2/employees/{id}/delete(id=${Id})}" method="POST">
+
+                                                                                <div class="m-2 row mb-3">
+                                                                                    <div class="col-md-8 col-lg-9">
+                                                                                        <div class="form-check">
+                                                                                            <input class="form-check-input" name="yes_no"
+                                                                                                   type="checkbox" id="confirmDelete" required>
+                                                                                            <label class="form-check-label" for="confirmDelete">
+                                                                                                Confirm Delete
+                                                                                            </label>
+                                                                                        </div>
+
+                                                                                        <div class="form-check">
+                                                                                            <p style="color:orangered;"><b>CAUTION!</b> Delete action cannot be reversed.</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <h4 class="m-2 mt-4 sub-title"> </h4>
+                                                                                <div class="form-group form-primary form-static-label row">
+                                                                                    <div class="m-3 col-md-6">
+                                                                                        <!-- Button with icon and text -->
+                                                                                        <div class="form-group">
+                                                                                            <button th:disabled="${Id == null}"
+                                                                                                    class="btn btn-danger d-flex align-items-center justify-content-center w-100">
+                                                                                                <i class="bi bi-trash me-2"></i>
+                                                                                                <b>Delete Profile</b>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+
+
+
+                                                    </div>
+                                                    <!-- Row end -->
+                                                </div>
+                                            </div>
+                                            <!-- Tab variant tab card start -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div id="styleSelector">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Main-body end -->
+<!-- Warning Section Starts -->
+<!-- Older IE warning message -->
+    <!--[if lt IE 10]>
+    <div class="ie-warning">
+        <h1>Warning!!</h1>
+        <p>You are using an outdated version of Internet Explorer, please upgrade <br/>to any of the following web
+            browsers
+            to access this website.</p>
+        <div class="iew-container">
+            <ul class="iew-download">
+                <li>
+                    <a href="http://www.google.com/chrome/">
+                        <img th:src="@{/images/browser/chrome.png}" alt="Chrome">
+                        <div>Chrome</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.mozilla.org/en-US/firefox/new/">
+                        <img th:src="@{/images/browser/firefox.png}" alt="Firefox">
+                        <div>Firefox</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.opera.com">
+                        <img th:src="@{/images/browser/opera.png}" alt="Opera">
+                        <div>Opera</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.apple.com/safari/">
+                        <img th:src="@{/images/browser/safari.png}" alt="Safari">
+                        <div>Safari</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+                        <img th:src="@{/images/browser/ie.png}" alt="">
+                        <div>IE (9 & above)</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <p>Sorry for the inconvenience!</p>
+    </div>
+    <![endif]-->
+<!-- Warning Section Ends -->
+<!-- Warning Section Starts -->
+<!-- Older IE warning message -->
+    <!--[if lt IE 10]>
+    <div class="ie-warning">
+        <h1>Warning!!</h1>
+        <p>You are using an outdated version of Internet Explorer, please upgrade <br/>to any of the following web
+            browsers
+            to access this website.</p>
+        <div class="iew-container">
+            <ul class="iew-download">
+                <li>
+                    <a href="http://www.google.com/chrome/">
+                        <img th:src="@{/images/browser/chrome.png}" alt="Chrome">
+                        <div>Chrome</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.mozilla.org/en-US/firefox/new/">
+                        <img th:src="@{/images/browser/firefox.png}" alt="Firefox">
+                        <div>Firefox</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.opera.com">
+                        <img th:src="@{/images/browser/opera.png}" alt="Opera">
+                        <div>Opera</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.apple.com/safari/">
+                        <img th:src="@{/images/browser/safari.png}" alt="Safari">
+                        <div>Safari</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+                        <img th:src="@{/images/browser/ie.png}" alt="">
+                        <div>IE (9 & above)</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <p>Sorry for the inconvenience!</p>
+    </div>
+    <![endif]-->
+<!-- Warning Section Ends -->
+<!-- Required Jquery -->
+<script type="text/javascript" th:src="@{/js/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-ui/jquery-ui.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/popper.js/popper.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap/js/bootstrap.min.js}"></script>
+<!-- waves js -->
+<script th:src="@{/pages/waves/js/waves.min.js}"></script>
+<!-- jquery slimscroll js -->
+<script type="text/javascript" th:src="@{/js/jquery-slimscroll/jquery.slimscroll.js}"></script>
+
+<!-- Accordion js -->
+<script type="text/javascript" th:src="@{/pages/accordion/accordion.js}"></script>
+<!-- Custom js -->
+<script th:src="@{/js/pcoded.min.js}"></script>
+<script th:src="@{/js/vertical/vertical-layout.min.js}"></script>
+<script th:src="@{/js/jquery.mCustomScrollbar.concat.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">-->
+</body>
+
+</html>
