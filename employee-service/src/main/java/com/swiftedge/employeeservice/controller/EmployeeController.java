@@ -75,7 +75,6 @@ public class EmployeeController {
 
         List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
         model.addAttribute("employeeEntityList", employees);
-        //model.addAttribute("address", )
 
         return "employees-view-all";
     }
@@ -125,8 +124,6 @@ public class EmployeeController {
             model.addAttribute("address", streetAddress);
             model.addAttribute("zipCode", zipCode);
         }
-
-
         return "edit-employee";
     }
 
