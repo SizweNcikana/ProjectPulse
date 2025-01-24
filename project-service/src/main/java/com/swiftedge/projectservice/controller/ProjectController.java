@@ -50,4 +50,12 @@ public class ProjectController {
         return "redirect:/api/v2/projects/add";
     }
 
+    @GetMapping("/edit")
+    public String projectOverview(Model model) {
+        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activePage", "project-overview");
+
+        return "project-overview";
+    }
+
 }
