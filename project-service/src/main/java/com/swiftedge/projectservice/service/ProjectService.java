@@ -24,11 +24,16 @@ public class ProjectService {
 
     @Transactional
     public void saveProject(ProjectRequestDTO projectRequestDTO) {
-        projectRepository.findByProjectName(projectRequestDTO.getProjectName())
-                .ifPresent(project -> {
-                    throw new IllegalStateException("Project with name '" + projectRequestDTO.getProjectName() + "' already exists");
-                    //System.out.println("Saving project " + project.getProjectName());
-                });
+//        projectRepository.findByProjectName(projectRequestDTO.getProjectName())
+//                .ifPresent(project -> {
+//                    throw new IllegalStateException("Project with name '" + projectRequestDTO.getProjectName() + "' already exists");
+//                    //System.out.println("Saving project " + project.getProjectName());
+//                });
+        List<ProjectEntity> existingProjects = projectRepository.findByProjectName(projectRequestDTO.getProjectName());
+
+        if (!existingProjects.isEmpty()) {
+            throw new IllegalStateException("Project with name '" + projectRequestDTO.getProjectName() + "' already exists.");
+        }
 
         ProjectEntity projectEntity = new ProjectEntity();
 
@@ -54,5 +59,45 @@ public class ProjectService {
         projectResponseDTO.setDuration(projectEntity.getDuration());
         projectResponseDTO.setDescription(projectEntity.getDescription());
         return projectResponseDTO;
+    }
+
+    public List<ProjectEntity> searchProjectByName(ProjectRequestDTO projectRequestDTO) {
+        if (projectRequestDTO == null || projectRequestDTO.getProjectName().isEmpty()) {
+            throw new IllegalArgumentException("Project name cannot be empty");
+        }
+
+        return projectRepository.findByProjectName(projectRequestDTO.getProjectName());
+    }
+
+    public boolean updateProject(Long id, ProjectRequestDTO projectRequestDTO) {
+        ProjectEntity existingProject = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found"));
+
+//        project.setProjectName(projectRequestDTO.getProjectName());
+//        project.setStartDate(projectRequestDTO.getStartDate());
+//        project.setDuration(projectRequestDTO.getDuration());
+//        project.setDescription(projectRequestDTO.getDescription());
+
+        boolean updated = false;
+        if (!existingProject.getProjectName().equals(projectRequestDTO.getProjectName())) {
+            validateProjectName(projectRequestDTO.getProjectName());
+            existingProject.setProjectName(projectRequestDTO.getProjectName());
+            updated = true;
+        }
+
+        if (updated) {
+            projectRepository.save(existingProject);
+            System.out.println("Updating project with id '" + id + "'");
+        }
+
+        //Return Response DTO
+        return updated;
+        //using "return updatedProject != null" gives a warning saying that updatedProject is always true
+    }
+
+    private void validateProjectName(String projectName) {
+        if (projectName == null || projectName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Project name cannot be empty");
+        }
     }
 }

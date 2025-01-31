@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectRequestDTO {
+
+    private Long projectId;
     private String projectName;
     private LocalDate startDate;
     private Integer duration;
