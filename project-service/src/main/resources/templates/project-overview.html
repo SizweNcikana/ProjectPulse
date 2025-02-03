@@ -543,9 +543,9 @@
                                                                         <!-- Tab panes -->
                                                                         <div class="tab-content card-block">
                                                                             <div class="tab-pane active" id="home7" role="tabpanel">
-                                                                                <h4 class="m-2 mt-3 sub-title">About Project</h4>
+                                                                                <h4 class="m-2 mt-3 sub-title"><b>About Project</b></h4>
                                                                                 <p class="m-2" th:name="description" th:text="${description}"></p>
-                                                                                <h4 class="m-2 mt-4 sub-title">Project Details</h4>
+                                                                                <h4 class="m-2 mt-4 sub-title"><b>Project Details</b></h4>
                                                                                 <div class="form-group form-primary row">
                                                                                     <div class="m-2 col-lg-5 col-md-4">
                                                                                         <div class="col-sm-8">
@@ -615,11 +615,17 @@
                                                                                             </select>
                                                                                         </div>
                                                                                     </div>
+                                                                                    <div class="form-group form-primary form-static-label row">
+                                                                                        <div class="m-3 mt-2 col-md-10">
+                                                                                            <textarea class="form-control" name="description" th:text="${description}" rows="4"></textarea>
+                                                                                            <span class="form-bar"></span>
+                                                                                            <label class="float-label">&emsp;&ensp;Project Description</label>
+                                                                                        </div>
+                                                                                    </div>
                                                                                     <h4 class="m-2 mt-4 sub-title"></h4>
                                                                                     <div class="form-primary form-static-label row">
                                                                                         <div class="m-3 col-md-5">
                                                                                             <div class="form-group">
-                                                                                                <!-- Block level buttons with icon -->
                                                                                                 <button type="reset" class="btn waves-effect waves-light btn-primary btn-block"><i class="icofont icofont-rotation"></i>Clear form</button>
                                                                                             </div>
                                                                                         </div>

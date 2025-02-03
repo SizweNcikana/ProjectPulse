@@ -75,11 +75,11 @@ public class ProjectService {
                 .orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
         boolean updated = false;
-//        if (!existingProject.getDescription().equals(projectRequestDTO.getDescription())) {
-//            validateDescription(projectRequestDTO.getDescription());
-//            existingProject.setDescription(projectRequestDTO.getDescription());
-//            updated = true;
-//        }
+        if (!existingProject.getDescription().equals(projectRequestDTO.getDescription())) {
+            validateDescription(projectRequestDTO.getDescription());
+            existingProject.setDescription(projectRequestDTO.getDescription());
+            updated = true;
+        }
 
         if (!existingProject.getProjectName().equals(projectRequestDTO.getProjectName())) {
             validateProjectName(projectRequestDTO.getProjectName());
@@ -105,11 +105,11 @@ public class ProjectService {
         return updated;
     }
 
-//    private void validateDescription(String description) {
-//        if (description == null || description.isEmpty()) {
-//            throw new IllegalArgumentException("Description cannot be empty");
-//        }
-//    }
+    private void validateDescription(String description) {
+        if (description == null || description.isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be empty");
+        }
+    }
 
     private void validateProjectName(String projectName) {
         if (projectName == null || projectName.trim().isEmpty()) {
