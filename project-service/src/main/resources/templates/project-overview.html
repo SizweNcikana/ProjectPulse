@@ -33,7 +33,15 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/jquery.mCustomScrollbar.css}">
 
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">
+<!--    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">-->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <!--    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>-->
+
 
 </head>
 <body>
@@ -440,7 +448,31 @@
                                                         <div class="card-header">
                                                             <h5>Projects</h5>
                                                         </div>
-                                                        <div class="card-block tab-icon">
+                                                        <!-- Bootstrap 5 Modal -->
+                                                        <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div th:if="${errorMessage}" class="alert alert-danger">
+                                                                            <i class="bi-exclamation-octagon-fill"></i> <strong>Error!</strong>
+                                                                            <span th:text="${errorMessage}"></span>
+                                                                        </div>
+
+                                                                        <div th:if="${successMessage}" class="alert alert-success">
+                                                                            <i class="bi-check-circle-fill"></i> <strong>Success!</strong>
+                                                                            <span th:text="${successMessage}"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                             <!-- Row start -->
                                                             <div class="row">
                                                                 <div class="col-lg-4 col-xl-4 tab-with-img">
@@ -448,30 +480,31 @@
                                                                     <div class="card quater-card">
                                                                         <div class="card-block">
                                                                             <h4 class="sub-title">Search Project</h4>
-                                                                            <form class="form-material">
+                                                                            <form th:action="@{/api/v2/projects/search}" method="GET"
+                                                                                  class="form-material" th:object="${projectRequestDTO}">
                                                                                 <div class="form-group form-primary form-static-label row">
                                                                                     <div class="mt-3 col-sm-12">
                                                                                         <input type="text" class="form-control"
-                                                                                               placeholder="RESTApi for iTech">
+                                                                                               placeholder="RESTApi project" name="projectName" required>
                                                                                         <span class="form-bar"></span>
                                                                                         <label class="float-label">&emsp;&ensp;Project Name</label>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="form-group form-primary form-static-label row">
+                                                                                <div class="row mb-3">
                                                                                     <div class="col-md-12">
-                                                                                        <!-- Block level buttons with icon -->
-                                                                                        <div class="form-group">
-                                                                                            <button class="btn waves-effect waves-light btn-primary btn-outline-primary btn-block"><b>Search</b></button>
-                                                                                        </div>
+                                                                                        <!-- Block level button with icon -->
+                                                                                        <button class="btn btn-primary btn-block w-100">
+                                                                                            <b>Search</b>
+                                                                                        </button>
                                                                                     </div>
                                                                                 </div>
+
                                                                             </form>
 
                                                                         </div>
                                                                     </div>
 
                                                                 </div>
-
 
                                                                 <div class="col-xl-8 col-md-8">
                                                                     <div class="card table-card">
@@ -510,36 +543,37 @@
                                                                         <!-- Tab panes -->
                                                                         <div class="tab-content card-block">
                                                                             <div class="tab-pane active" id="home7" role="tabpanel">
-                                                                                <h4 class="m-2 mt-3 sub-title">About Project</h4>
-                                                                                <p class="m-2">1.asdas This is Photoshop's version of Lorem IpThis is Photoshop's version of Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean mas Cum sociis natoque penatibus et magnis dis.....</p>
-
-                                                                                <h4 class="m-2 mt-4 sub-title">Project Details</h4>
-                                                                                <div class="form-group form-primary form-static-label row">
-                                                                                    <div class="m-2 mt-3 col-sm-12">
-                                                                                        <span class="form-bar"></span>
-                                                                                        <dt class="col-sm-3">Project Name</dt>
-                                                                                        <dd></dd>
+                                                                                <h4 class="m-2 mt-3 sub-title"><b>About Project</b></h4>
+                                                                                <p class="m-2" th:name="description" th:text="${description}"></p>
+                                                                                <h4 class="m-2 mt-4 sub-title"><b>Project Details</b></h4>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Project Name</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="projectName" th:text="${projectName}"></div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="form-group form-primary form-static-label row">
-                                                                                    <div class="m-2 mt-3 col-sm-12">
-                                                                                        <span class="form-bar"></span>
-                                                                                        <dt class="col-sm-3">Start Date</dt>
-                                                                                        <dd></dd>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Start Date</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="startDate" th:text="${startDate}"></div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="form-group form-primary form-static-label row">
-                                                                                    <div class="m-2 mt-3 col-sm-12">
-                                                                                        <span class="form-bar"></span>
-                                                                                        <dt class="col-sm-3">Planned Duration</dt>
-                                                                                        <dd></dd>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-12">
+                                                                                            <b>Planned duration (months)</b>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="form-group form-primary form-static-label row">
-                                                                                    <div class="m-2 mt-3 col-sm-12">
-                                                                                        <span class="form-bar"></span>
-                                                                                        <dt class="col-sm-3">No. of Team members</dt>
-                                                                                        <dd></dd>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-4" th:name="duration" th:text="${duration}"></div>
                                                                                     </div>
                                                                                 </div>
 
@@ -550,16 +584,15 @@
                                                                             <div class="tab-pane" id="profile7" role="tabpanel">
                                                                                 <h4 class="m-2 mt-4 sub-title">Modify Project Details</h4>
 
-                                                                                <form class="form-material">
+                                                                                <form class="form-material" th:action="@{/api/v2/projects/update/{id}(id=${projectId})}" method="POST">
                                                                                     <div class="form-group form-primary form-static-label row">
                                                                                         <div class="m-3 mt-2 col-sm-5">
-                                                                                            <input type="text" class="form-control"
-                                                                                                   placeholder="iTech RESTApi project">
+                                                                                            <input type="text" class="form-control" name="projectName" th:value="${projectName}">
                                                                                             <span class="form-bar"></span>
                                                                                             <label class="float-label">&emsp;&ensp;Project Name</label>
                                                                                         </div>
                                                                                         <div class="m-3 mt-2 col-sm-5">
-                                                                                            <input type="date" name="footer-email" class="form-control" required="">
+                                                                                            <input type="date" name="startDate" th:value="${startDate}" class="form-control">
                                                                                             <span class="form-bar"></span>
                                                                                             <label class="float-label">&emsp;&ensp;Commencement Date</label>
                                                                                         </div>
@@ -571,40 +604,35 @@
                                                                                                     class="selectpicker form-control"
                                                                                                     data-style="btn-outline-primary"
                                                                                                     data-size="5"
-                                                                                                    name="ethnicity" required>
+                                                                                                    name="duration" th:value="${duration}" required>
 
                                                                                                 <option selected disabled>Project Duration in Months</option>
-                                                                                                <option>1</option>
-                                                                                                <option>3</option>
-                                                                                                <option>6</option>
-                                                                                                <option>9</option>
-                                                                                                <option>12</option>
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <div class="m-3 mt-2 col-sm-5">
-                                                                                            <p style="color: #3380FF;">Team Members</p>
-                                                                                            <select
-                                                                                                    class="selectpicker form-control"
-                                                                                                    data-style="btn-outline-primary"
-                                                                                                    data-size="5"
-                                                                                                    name="team">
-
-                                                                                                <option></option>
+                                                                                                <option th:each="months : ${#numbers.sequence(0, 12, 3)}"
+                                                                                                        th:value="${months}"
+                                                                                                        th:selected="${months == duration}">
+                                                                                                    <span th:text="${months}"></span>
+                                                                                                </option>
                                                                                             </select>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <h4 class="m-2 mt-4 sub-title"></h4>
                                                                                     <div class="form-group form-primary form-static-label row">
+                                                                                        <div class="m-3 mt-2 col-md-10">
+                                                                                            <textarea class="form-control" name="description" th:text="${description}" rows="4"></textarea>
+                                                                                            <span class="form-bar"></span>
+                                                                                            <label class="float-label">&emsp;&ensp;Project Description</label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <h4 class="m-2 mt-4 sub-title"></h4>
+                                                                                    <div class="form-primary form-static-label row">
                                                                                         <div class="m-3 col-md-5">
                                                                                             <div class="form-group">
-                                                                                                <!-- Block level buttons with icon -->
-                                                                                                <button class="btn waves-effect waves-light btn-primary btn-outline-primary btn-block"><i class="icofont icofont-rotation"></i>Clear form</button>
+                                                                                                <button type="reset" class="btn waves-effect waves-light btn-primary btn-block"><i class="icofont icofont-rotation"></i>Clear form</button>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="m-3 col-md-5">
                                                                                             <!-- Block level buttons with icon -->
                                                                                             <div class="form-group">
-                                                                                                <button class="btn waves-effect waves-light btn-primary btn-outline-primary btn-block"><i class="icofont icofont-save"></i><b>Update Project</b></button>
+                                                                                                <button type="submit" class="btn waves-effect waves-light btn-primary btn-block"><i class="icofont icofont-save"></i><b>Update Project</b></button>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -788,9 +816,46 @@
 <script th:src="@{/js/vertical/vertical-layout.min.js}"></script>
 <script th:src="@{/js/jquery.mCustomScrollbar.concat.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>-->
 <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">-->
-</div>>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let errorMessage = document.querySelector(".alert-danger");
+        let successMessage = document.querySelector(".alert-success");
+
+        if (errorMessage || successMessage) {
+            let messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+            messageModal.show();
+        }
+    });
+</script>
+<script>
+    // Function to hide the alert after 3 seconds
+    function showAlert() {
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        if (successMessage && successMessage.textContent.trim() !== '') {
+            successMessage.classList.remove('is-hidden');
+            setTimeout(() => {
+                successMessage.classList.add('is-hidden');
+            }, 5000);
+        }
+
+        if (errorMessage && errorMessage.textContent.trim() !== '') {
+            errorMessage.classList.remove('is-hidden');
+            setTimeout(() => {
+                errorMessage.classList.add('is-hidden');
+            }, 5000);
+        }
+    }
+
+    // Call showAlert on page load if there's any message
+    window.onload = showAlert;
+</script>
 </body>
 
 </html>
