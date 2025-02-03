@@ -88,19 +88,6 @@ public class ProjectController {
         return "project-overview";
     }
 
-//    @PostMapping("/update")
-//    public String updateProject(@ModelAttribute("projectUpdate") ProjectRequestDTO projectRequestDTO, Model model) {
-//
-//        ProjectResponseDTO updatedProject = projectService.updateProject(projectRequestDTO);
-//        try {
-//            model.addAttribute("successMessage", "Project updated successfully.");
-//            model.addAttribute("project", updatedProject);
-//        } catch (IllegalArgumentException e){
-//            model.addAttribute("errorMessage", "Error while updating project." + e.getMessage());
-//        }
-//        return "redirect:/api/v2/projects/edit";
-//    }
-
     @PostMapping("/update/{id}")
     public String updateProject(
             @PathVariable("id") Long id,
@@ -109,9 +96,7 @@ public class ProjectController {
             RedirectAttributes redirectAttributes,
             Model model) {
 
-        log.info("Updating project with id {} and name {}", id, projectRequestDTO.getProjectName());
-
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors() || projectRequestDTO.getProjectName() == null) {
             redirectAttributes.addFlashAttribute("errorMessage",
                     "Validation errors occurred. Please resolve and try again.");
             return "redirect:/api/v2/projects/edit";
@@ -120,7 +105,6 @@ public class ProjectController {
             boolean isUpdated = projectService.updateProject(id, projectRequestDTO);
 
             if (isUpdated) {
-                System.out.println("Project name: " + projectRequestDTO.getProjectName());
                 redirectAttributes.addFlashAttribute("successMessage",
                         "Project updated successfully.");
             } else {
@@ -129,7 +113,7 @@ public class ProjectController {
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", "Error updating project: " + e.getMessage());
         }
-        return "redirect:/api/v2/projects/edit"; // Return to the view
+        return "redirect:/api/v2/projects/edit";
     }
 
 }

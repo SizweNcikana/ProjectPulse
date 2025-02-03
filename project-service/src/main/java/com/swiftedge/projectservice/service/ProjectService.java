@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,31 +74,58 @@ public class ProjectService {
         ProjectEntity existingProject = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
-//        project.setProjectName(projectRequestDTO.getProjectName());
-//        project.setStartDate(projectRequestDTO.getStartDate());
-//        project.setDuration(projectRequestDTO.getDuration());
-//        project.setDescription(projectRequestDTO.getDescription());
-
         boolean updated = false;
+//        if (!existingProject.getDescription().equals(projectRequestDTO.getDescription())) {
+//            validateDescription(projectRequestDTO.getDescription());
+//            existingProject.setDescription(projectRequestDTO.getDescription());
+//            updated = true;
+//        }
+
         if (!existingProject.getProjectName().equals(projectRequestDTO.getProjectName())) {
             validateProjectName(projectRequestDTO.getProjectName());
             existingProject.setProjectName(projectRequestDTO.getProjectName());
             updated = true;
         }
+        if (!existingProject.getStartDate().equals(projectRequestDTO.getStartDate())) {
+            validateStartDate(projectRequestDTO.getStartDate());
+            existingProject.setStartDate(projectRequestDTO.getStartDate());
+            updated = true;
+        }
+        if (!existingProject.getDuration().equals(projectRequestDTO.getDuration())) {
+            validateDuration(projectRequestDTO.getDuration());
+            existingProject.setDuration(projectRequestDTO.getDuration());
+            updated = true;
+        }
 
         if (updated) {
             projectRepository.save(existingProject);
-            System.out.println("Updating project with id '" + id + "'");
+            System.out.println("Updating project with id '" + id + "'" + " with project name '" + projectRequestDTO.getProjectName() + "'");
         }
 
-        //Return Response DTO
         return updated;
-        //using "return updatedProject != null" gives a warning saying that updatedProject is always true
     }
+
+//    private void validateDescription(String description) {
+//        if (description == null || description.isEmpty()) {
+//            throw new IllegalArgumentException("Description cannot be empty");
+//        }
+//    }
 
     private void validateProjectName(String projectName) {
         if (projectName == null || projectName.trim().isEmpty()) {
             throw new IllegalArgumentException("Project name cannot be empty");
+        }
+    }
+
+    private void validateDuration(Integer duration) {
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Duration cannot be negative");
+        }
+    }
+
+    private void validateStartDate(LocalDate startDate) {
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Start date cannot be before current date");
         }
     }
 }
