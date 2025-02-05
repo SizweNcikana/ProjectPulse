@@ -26,7 +26,7 @@ public class ProjectController {
 
     @GetMapping("/add")
     public String addProject(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "projects");
 
         ProjectRequestDTO project = new ProjectRequestDTO();
@@ -54,9 +54,20 @@ public class ProjectController {
         return "redirect:/api/v2/projects/add";
     }
 
+    @GetMapping("/view-all")
+    public String viewAllEmployees(Model model) {
+        model.addAttribute("activeMenu", "projects");
+        model.addAttribute("activePage", "all-projects");
+
+        List<ProjectResponseDTO> projects = projectService.getAllProjects();
+        model.addAttribute("projectsEntityList", projects);
+
+        return "projects-view-all";
+    }
+
     @GetMapping("/edit")
     public String projectOverview(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "project-overview");
 
         return "project-overview";
@@ -68,7 +79,7 @@ public class ProjectController {
         log.info("Searching projects for project named {}", projectRequestDTO.getProjectName());
         List<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
 
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "project-overview");
 
         if (!projectEntity.isEmpty()) {

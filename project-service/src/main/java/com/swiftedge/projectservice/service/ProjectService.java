@@ -48,6 +48,8 @@ public class ProjectService {
     }
 
     public List<ProjectResponseDTO> getAllProjects() {
+
+        // Map each Project entity to ProjectResponseDTO
         return projectRepository.findAll().stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());

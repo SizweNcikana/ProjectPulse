@@ -29,7 +29,7 @@ public class EmployeeController {
 
     @GetMapping("/add")
     public String getEmployeeForm(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "employees");
 
         EmployeeRequestDTO employee = new EmployeeRequestDTO();
@@ -70,7 +70,7 @@ public class EmployeeController {
 
     @GetMapping("/view-all")
     public String viewAllEmployees(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "all-employees");
 
         List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
@@ -81,7 +81,7 @@ public class EmployeeController {
 
     @GetMapping("/edit")
     public String editEmployee(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "edit-employee");
 
         return "edit-employee";
