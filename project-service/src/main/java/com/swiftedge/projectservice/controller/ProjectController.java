@@ -116,4 +116,14 @@ public class ProjectController {
         return "redirect:/api/v2/projects/edit";
     }
 
+    @PostMapping("/delete/{id}")
+    public String deleteProject(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            projectService.deleteProject(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Project deleted successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error while deleting project.");
+        }
+        return "redirect:/api/v2/projects/edit";
+    }
 }

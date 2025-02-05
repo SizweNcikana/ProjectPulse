@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -127,5 +128,16 @@ public class ProjectService {
         if (startDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Start date cannot be before current date");
         }
+    }
+
+    public void deleteProject(Long id) {
+        Optional<ProjectEntity> existingProject = projectRepository.findById(id);
+
+        if (existingProject.isPresent()) {
+            projectRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("Project not found");
+        }
+
     }
 }
