@@ -26,7 +26,7 @@ public class ProjectController {
 
     @GetMapping("/add")
     public String addProject(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "projects");
 
         ProjectRequestDTO project = new ProjectRequestDTO();
@@ -56,7 +56,7 @@ public class ProjectController {
 
     @GetMapping("/edit")
     public String projectOverview(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "project-overview");
 
         return "project-overview";
@@ -68,7 +68,7 @@ public class ProjectController {
         log.info("Searching projects for project named {}", projectRequestDTO.getProjectName());
         List<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
 
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "project-overview");
 
         if (!projectEntity.isEmpty()) {
