@@ -54,6 +54,17 @@ public class ProjectController {
         return "redirect:/api/v2/projects/add";
     }
 
+    @GetMapping("/view-all")
+    public String viewAllEmployees(Model model) {
+        model.addAttribute("activeMenu", "projects");
+        model.addAttribute("activePage", "all-projects");
+
+        List<ProjectResponseDTO> projects = projectService.getAllProjects();
+        model.addAttribute("projectsEntityList", projects);
+
+        return "projects-view-all";
+    }
+
     @GetMapping("/edit")
     public String projectOverview(Model model) {
         model.addAttribute("activeMenu", "projects");
