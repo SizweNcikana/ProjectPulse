@@ -3,6 +3,7 @@ package com.swiftedge.employeeservice.controller;
 import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
+import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.service.EmployeeService;
@@ -32,12 +33,15 @@ public class EmployeeController {
         model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "employees");
 
+        List<ProjectDTO> projectList = employeeService.getAllProjectsFromProjectService();
         EmployeeRequestDTO employee = new EmployeeRequestDTO();
         AddressRequestDTO address = new AddressRequestDTO();
 
         employee.setAddress(address); // Link the address to the employee DTO
+        System.out.println("Projects: " + projectList);
 
         model.addAttribute("employee", employee);
+        model.addAttribute("projects", projectList);
 
         return "add-employee";
     }
@@ -174,4 +178,5 @@ public class EmployeeController {
         }
         return "redirect:/api/v2/employees/edit";
     }
+
 }

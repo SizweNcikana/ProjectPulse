@@ -3,6 +3,7 @@ package com.swiftedge.employeeservice.service;
 import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
+import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeAddressRepository employeeAddressRepository;
+    private final WebClient.Builder webClientBuilder;
 
     @Transactional
     public void saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
@@ -233,4 +236,15 @@ public class EmployeeService {
             System.out.println("Employee with ID " + employeeId + "does not exist.");
         }
     }
+
+    public List<ProjectDTO> getAllProjectsFromProjectService() {
+        return webClientBuilder.build()
+                .get()
+                .uri("http://project-service/api/v2/projects/list")  // Call ProjectService
+                .retrieve()
+                .bodyToFlux(ProjectDTO.class)
+                .collectList()
+                .block();
+    }
+
 }

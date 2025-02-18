@@ -142,4 +142,22 @@ public class ProjectService {
         }
 
     }
+
+    public List<ProjectRequestDTO> getProjects() {
+        List<ProjectEntity> projects = projectRepository.findAll();
+        return projects.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ProjectRequestDTO convertToDTO(ProjectEntity project) {
+        return new ProjectRequestDTO(
+                project.getProjectId(),
+                project.getProjectName(),
+                project.getStartDate(),
+                project.getDuration(),
+                project.getDescription()
+        );
+    }
+
 }
