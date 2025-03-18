@@ -77,24 +77,24 @@ public class ProjectController {
     public String searchProjects(@ModelAttribute("projectRequestDTO")ProjectRequestDTO projectRequestDTO, Model model) {
 
         log.info("Searching projects for project named {}", projectRequestDTO.getProjectName());
-        List<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
+        Optional<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
 
         model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "project-overview");
 
-        if (!projectEntity.isEmpty()) {
+        if (projectEntity.isPresent()) {
             model.addAttribute("successMessage", "Project found.");
-        } else {
+        }  else {
             model.addAttribute("errorMessage", "Project not found.");
         }
 
-        for (ProjectEntity project : projectEntity) {
+        projectEntity.ifPresent(project -> {
             model.addAttribute("projectId", project.getProjectId());
             model.addAttribute("projectName", project.getProjectName());
             model.addAttribute("startDate", project.getStartDate());
             model.addAttribute("duration", project.getDuration());
             model.addAttribute("description", project.getDescription());
-        }
+        });
 
         return "project-overview";
     }

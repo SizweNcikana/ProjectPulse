@@ -29,9 +29,10 @@ public class EmployeeService {
     private final WebClient.Builder webClientBuilder;
 
     @Transactional
-    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
+    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId) {
         EmployeeEntity employeeEntity = new EmployeeEntity();
         EmployeeAddressEntity addressEntity = new EmployeeAddressEntity();
+
 
         employeeRepository.findByEmail(employeeRequestDTO.getEmail())
                 .ifPresent(e -> {
@@ -50,6 +51,8 @@ public class EmployeeService {
         employeeEntity.setExperience(employeeRequestDTO.getExperience());
         employeeEntity.setSummary(employeeRequestDTO.getSummary());
 
+        employeeEntity.setProjectId(projectId);
+
         addressEntity.setCity(employeeRequestDTO.getAddress().getCity());
         addressEntity.setSuburb(employeeRequestDTO.getAddress().getSuburb());
         addressEntity.setStreetAddress(employeeRequestDTO.getAddress().getStreetAddress());
@@ -57,6 +60,14 @@ public class EmployeeService {
 
         employeeEntity.setAddress(addressEntity);
         addressEntity.setEmployee(employeeEntity);
+
+//        if (employeeRequestDTO.getProjectId() != null) {
+//            boolean projectExists = validateProject(employeeRequestDTO.getProjectId());
+//            if (!projectExists) {
+//                throw new IllegalArgumentException("Project id " + employeeRequestDTO.getProjectId() + " does not exist");
+//            }
+//            employeeRequestDTO.setProjectId(employeeRequestDTO.getProjectId());
+//        }
 
         System.out.println("Employee details: " + employeeEntity.getEmail());
         employeeRepository.save(employeeEntity);

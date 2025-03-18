@@ -47,8 +47,11 @@ public class EmployeeController {
     }
 
     @PostMapping("/save")
-    public String saveEmployee(@Valid @ModelAttribute("employee") EmployeeRequestDTO employeeRequestDTO,
-                               BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String saveEmployee(@Valid
+                               @ModelAttribute("employee")
+                               EmployeeRequestDTO employeeRequestDTO,
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Validation errors occurred. Please correct them and try again.");
@@ -56,7 +59,10 @@ public class EmployeeController {
         }
 
         try {
-            employeeService.saveEmployee(employeeRequestDTO);
+            // Fetch the project ID from the dropdown (selected project ID)
+            Long selectedProjectId= employeeRequestDTO.getProject();
+
+            employeeService.saveEmployee(employeeRequestDTO, selectedProjectId);
             redirectAttributes.addFlashAttribute("successMessage", "Employee data saved successfully.");
 
         } catch (IllegalArgumentException iex) {

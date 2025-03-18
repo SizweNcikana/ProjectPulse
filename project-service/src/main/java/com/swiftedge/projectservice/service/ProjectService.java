@@ -31,7 +31,7 @@ public class ProjectService {
 //                    throw new IllegalStateException("Project with name '" + projectRequestDTO.getProjectName() + "' already exists");
 //                    //System.out.println("Saving project " + project.getProjectName());
 //                });
-        List<ProjectEntity> existingProjects = projectRepository.findByProjectName(projectRequestDTO.getProjectName());
+        Optional<ProjectEntity> existingProjects = projectRepository.findByProjectName(projectRequestDTO.getProjectName());
 
         if (!existingProjects.isEmpty()) {
             throw new IllegalStateException("Project with name '" + projectRequestDTO.getProjectName() + "' already exists.");
@@ -65,7 +65,7 @@ public class ProjectService {
         return projectResponseDTO;
     }
 
-    public List<ProjectEntity> searchProjectByName(ProjectRequestDTO projectRequestDTO) {
+    public Optional<ProjectEntity> searchProjectByName(ProjectRequestDTO projectRequestDTO) {
         if (projectRequestDTO == null || projectRequestDTO.getProjectName().isEmpty()) {
             throw new IllegalArgumentException("Project name cannot be empty");
         }
@@ -159,5 +159,10 @@ public class ProjectService {
                 project.getDescription()
         );
     }
+
+    public Optional<Long> getProjectByName(String projectName) {
+        return projectRepository.findProjectIdByProjectName(projectName);
+    }
+
 
 }
