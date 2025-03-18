@@ -101,6 +101,13 @@ public class EmployeeController {
     public String findEmployee(@RequestParam("name") String name, @RequestParam("surname") String surname,
                                Model model)
     {
+        model.addAttribute("activeMenu", "employees");
+        model.addAttribute("activePage", "edit-employee");
+
+        if (name.isEmpty() || name == null || surname.isEmpty()) {
+            model.addAttribute("errorMessage", "Name or Surname cannot be empty.");
+        }
+
         List<EmployeeEntity> employees = employeeService.searchEmployee(name, surname);
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
 
