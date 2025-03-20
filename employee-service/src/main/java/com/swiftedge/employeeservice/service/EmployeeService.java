@@ -61,15 +61,6 @@ public class EmployeeService {
         employeeEntity.setAddress(addressEntity);
         addressEntity.setEmployee(employeeEntity);
 
-//        if (employeeRequestDTO.getProjectId() != null) {
-//            boolean projectExists = validateProject(employeeRequestDTO.getProjectId());
-//            if (!projectExists) {
-//                throw new IllegalArgumentException("Project id " + employeeRequestDTO.getProjectId() + " does not exist");
-//            }
-//            employeeRequestDTO.setProjectId(employeeRequestDTO.getProjectId());
-//        }
-
-        System.out.println("Employee details: " + employeeEntity.getEmail());
         employeeRepository.save(employeeEntity);
     }
 
@@ -77,7 +68,6 @@ public class EmployeeService {
         List<EmployeeEntity> employees = employeeRepository.findAll();
 
         // Map each Employee entity to EmployeeResponseDTO
-
         return employees.stream()
                 .map(this::mapToEmployeeResponseDTO)
                 .collect(Collectors.toList());

@@ -26,11 +26,6 @@ public class ProjectService {
 
     @Transactional
     public void saveProject(ProjectRequestDTO projectRequestDTO) {
-//        projectRepository.findByProjectName(projectRequestDTO.getProjectName())
-//                .ifPresent(project -> {
-//                    throw new IllegalStateException("Project with name '" + projectRequestDTO.getProjectName() + "' already exists");
-//                    //System.out.println("Saving project " + project.getProjectName());
-//                });
         Optional<ProjectEntity> existingProjects = projectRepository.findByProjectName(projectRequestDTO.getProjectName());
 
         if (!existingProjects.isEmpty()) {
@@ -163,6 +158,5 @@ public class ProjectService {
     public Optional<Long> getProjectByName(String projectName) {
         return projectRepository.findProjectIdByProjectName(projectName);
     }
-
 
 }
