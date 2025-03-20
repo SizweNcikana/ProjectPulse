@@ -104,7 +104,7 @@ public class EmployeeController {
         model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "edit-employee");
 
-        if (name.isEmpty() || name == null || surname.isEmpty()) {
+        if (name.isEmpty() || surname.isEmpty()) {
             model.addAttribute("errorMessage", "Name or Surname cannot be empty.");
         }
 
