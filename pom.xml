@@ -17,6 +17,7 @@
     <modules>
         <module>employee-service</module>
         <module>project-service</module>
+        <module>discovery-server</module>
     </modules>
     <url/>
     <licenses>

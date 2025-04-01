@@ -37,4 +37,11 @@ public class EmployeeEntity {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private EmployeeAddressEntity address;
 
+    /*
+    Cannot create '@OneToMany' relationship here
+    as this causes the microservices to be dependent
+    on each other. This is referred to as 'Cyclic dependency'
+    hence we just created the below column.
+     */
+    private Long projectId;
 }

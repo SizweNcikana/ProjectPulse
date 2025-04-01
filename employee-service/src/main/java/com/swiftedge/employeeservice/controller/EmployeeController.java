@@ -3,6 +3,7 @@ package com.swiftedge.employeeservice.controller;
 import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
+import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.service.EmployeeService;
@@ -29,22 +30,28 @@ public class EmployeeController {
 
     @GetMapping("/add")
     public String getEmployeeForm(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "employees");
 
+        List<ProjectDTO> projectList = employeeService.getAllProjectsFromProjectService();
         EmployeeRequestDTO employee = new EmployeeRequestDTO();
         AddressRequestDTO address = new AddressRequestDTO();
 
         employee.setAddress(address); // Link the address to the employee DTO
+        System.out.println("Projects: " + projectList);
 
         model.addAttribute("employee", employee);
+        model.addAttribute("projects", projectList);
 
         return "add-employee";
     }
 
     @PostMapping("/save")
-    public String saveEmployee(@Valid @ModelAttribute("employee") EmployeeRequestDTO employeeRequestDTO,
-                               BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String saveEmployee(@Valid
+                               @ModelAttribute("employee")
+                               EmployeeRequestDTO employeeRequestDTO,
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Validation errors occurred. Please correct them and try again.");
@@ -52,7 +59,10 @@ public class EmployeeController {
         }
 
         try {
-            employeeService.saveEmployee(employeeRequestDTO);
+            // Fetch the project ID from the dropdown (selected project ID)
+            Long selectedProjectId= employeeRequestDTO.getProject();
+
+            employeeService.saveEmployee(employeeRequestDTO, selectedProjectId);
             redirectAttributes.addFlashAttribute("successMessage", "Employee data saved successfully.");
 
         } catch (IllegalArgumentException iex) {
@@ -70,7 +80,7 @@ public class EmployeeController {
 
     @GetMapping("/view-all")
     public String viewAllEmployees(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "all-employees");
 
         List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
@@ -81,7 +91,7 @@ public class EmployeeController {
 
     @GetMapping("/edit")
     public String editEmployee(Model model) {
-        model.addAttribute("activeMenu", "basic");
+        model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "edit-employee");
 
         return "edit-employee";
@@ -91,6 +101,13 @@ public class EmployeeController {
     public String findEmployee(@RequestParam("name") String name, @RequestParam("surname") String surname,
                                Model model)
     {
+        model.addAttribute("activeMenu", "employees");
+        model.addAttribute("activePage", "edit-employee");
+
+        if (name.isEmpty() || surname.isEmpty()) {
+            model.addAttribute("errorMessage", "Name or Surname cannot be empty.");
+        }
+
         List<EmployeeEntity> employees = employeeService.searchEmployee(name, surname);
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
 
@@ -174,4 +191,5 @@ public class EmployeeController {
         }
         return "redirect:/api/v2/employees/edit";
     }
+
 }

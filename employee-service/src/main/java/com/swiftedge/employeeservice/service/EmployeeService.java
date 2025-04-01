@@ -3,6 +3,7 @@ package com.swiftedge.employeeservice.service;
 import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
+import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,11 +26,13 @@ import java.util.stream.Collectors;
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeAddressRepository employeeAddressRepository;
+    private final WebClient.Builder webClientBuilder;
 
     @Transactional
-    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
+    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId) {
         EmployeeEntity employeeEntity = new EmployeeEntity();
         EmployeeAddressEntity addressEntity = new EmployeeAddressEntity();
+
 
         employeeRepository.findByEmail(employeeRequestDTO.getEmail())
                 .ifPresent(e -> {
@@ -47,6 +51,8 @@ public class EmployeeService {
         employeeEntity.setExperience(employeeRequestDTO.getExperience());
         employeeEntity.setSummary(employeeRequestDTO.getSummary());
 
+        employeeEntity.setProjectId(projectId);
+
         addressEntity.setCity(employeeRequestDTO.getAddress().getCity());
         addressEntity.setSuburb(employeeRequestDTO.getAddress().getSuburb());
         addressEntity.setStreetAddress(employeeRequestDTO.getAddress().getStreetAddress());
@@ -55,7 +61,6 @@ public class EmployeeService {
         employeeEntity.setAddress(addressEntity);
         addressEntity.setEmployee(employeeEntity);
 
-        System.out.println("Employee details: " + employeeEntity.getEmail());
         employeeRepository.save(employeeEntity);
     }
 
@@ -63,7 +68,6 @@ public class EmployeeService {
         List<EmployeeEntity> employees = employeeRepository.findAll();
 
         // Map each Employee entity to EmployeeResponseDTO
-
         return employees.stream()
                 .map(this::mapToEmployeeResponseDTO)
                 .collect(Collectors.toList());
@@ -233,4 +237,15 @@ public class EmployeeService {
             System.out.println("Employee with ID " + employeeId + "does not exist.");
         }
     }
+
+    public List<ProjectDTO> getAllProjectsFromProjectService() {
+        return webClientBuilder.build()
+                .get()
+                .uri("http://project-service/api/v2/projects/list")  // Call ProjectService
+                .retrieve()
+                .bodyToFlux(ProjectDTO.class)
+                .collectList()
+                .block();
+    }
+
 }

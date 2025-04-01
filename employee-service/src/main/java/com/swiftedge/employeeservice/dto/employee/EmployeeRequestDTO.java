@@ -56,4 +56,6 @@ public class EmployeeRequestDTO {
     private String summary;
 
     private AddressRequestDTO address; //Nested employee address
+
+    private Long project;
 }
