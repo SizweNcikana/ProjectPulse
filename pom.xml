@@ -18,6 +18,7 @@
         <module>employee-service</module>
         <module>project-service</module>
         <module>discovery-server</module>
+        <module>api-gateway</module>
     </modules>
     <url/>
     <licenses>
