@@ -9,14 +9,17 @@ import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.MessageFormat;
 import java.util.List;
 
+@Slf4j
 @RequestMapping("/api/v2/employees")
 @Controller
 @RequiredArgsConstructor
@@ -104,43 +107,45 @@ public class EmployeeController {
         model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "edit-employee");
 
-        if (name.isEmpty() || surname.isEmpty()) {
-            model.addAttribute("errorMessage", "Name or Surname cannot be empty.");
-        }
-
         List<EmployeeEntity> employees = employeeService.searchEmployee(name, surname);
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
 
-        String streetAddress = addresses.get(0).getStreetAddress();
-        String suburb = addresses.get(0).getSuburb();
-        String city = addresses.get(0).getCity();
-        String zipCode = addresses.get(0).getZipCode();
+        if (addresses.isEmpty() && employees.isEmpty()) {
+            model.addAttribute("searchErrorMessage",
+                    MessageFormat.format("Employee with name {0} {1} does not exist.", name, surname));
+        } else {
+            String streetAddress = addresses.get(0).getStreetAddress();
+            String suburb = addresses.get(0).getSuburb();
+            String city = addresses.get(0).getCity();
+            String zipCode = addresses.get(0).getZipCode();
 
-        EmployeeAddressEntity employeeAddressEntity = new EmployeeAddressEntity();
+            EmployeeAddressEntity employeeAddressEntity = new EmployeeAddressEntity();
 
-        employeeAddressEntity.setStreetAddress(streetAddress);
-        employeeAddressEntity.setSuburb(suburb);
-        employeeAddressEntity.setCity(city);
-        employeeAddressEntity.setZipCode(zipCode);
+            employeeAddressEntity.setStreetAddress(streetAddress);
+            employeeAddressEntity.setSuburb(suburb);
+            employeeAddressEntity.setCity(city);
+            employeeAddressEntity.setZipCode(zipCode);
 
-        for (EmployeeEntity employee : employees) {
-            model.addAttribute("Id", employee.getEmployeeId());
-            model.addAttribute("name", employee.getName());
-            model.addAttribute("surname", employee.getSurname());
-            model.addAttribute("email", employee.getEmail());
-            model.addAttribute("number", employee.getNumber());
-            model.addAttribute("idNumber", employee.getIdNumber());
-            model.addAttribute("dob", employee.getDob());
-            model.addAttribute("occupation", employee.getOccupation());
-            model.addAttribute("ethnicity", employee.getEthnicity());
-            model.addAttribute("years_experience", employee.getExperience());
-            model.addAttribute("summary", employee.getSummary());
+            for (EmployeeEntity employee : employees) {
+                model.addAttribute("Id", employee.getEmployeeId());
+                model.addAttribute("name", employee.getName());
+                model.addAttribute("surname", employee.getSurname());
+                model.addAttribute("email", employee.getEmail());
+                model.addAttribute("number", employee.getNumber());
+                model.addAttribute("idNumber", employee.getIdNumber());
+                model.addAttribute("dob", employee.getDob());
+                model.addAttribute("occupation", employee.getOccupation());
+                model.addAttribute("ethnicity", employee.getEthnicity());
+                model.addAttribute("years_experience", employee.getExperience());
+                model.addAttribute("summary", employee.getSummary());
 
-            model.addAttribute("city", city);
-            model.addAttribute("suburb", suburb);
-            model.addAttribute("address", streetAddress);
-            model.addAttribute("zipCode", zipCode);
+                model.addAttribute("city", city);
+                model.addAttribute("suburb", suburb);
+                model.addAttribute("address", streetAddress);
+                model.addAttribute("zipCode", zipCode);
+            }
         }
+
         return "edit-employee";
     }
 
