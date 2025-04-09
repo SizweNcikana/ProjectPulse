@@ -25,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
+    List<ProjectDTO> projectList;
 
     @GetMapping("/home")
     public String home(Model model) {
@@ -36,7 +37,7 @@ public class EmployeeController {
         model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "employees");
 
-        List<ProjectDTO> projectList = employeeService.getAllProjectsFromProjectService();
+        projectList = employeeService.getAllProjectsFromProjectService();
         EmployeeRequestDTO employee = new EmployeeRequestDTO();
         AddressRequestDTO address = new AddressRequestDTO();
 
@@ -63,7 +64,7 @@ public class EmployeeController {
 
         try {
             // Fetch the project ID from the dropdown (selected project ID)
-            Long selectedProjectId= employeeRequestDTO.getProject();
+            Long selectedProjectId = employeeRequestDTO.getProject();
 
             employeeService.saveEmployee(employeeRequestDTO, selectedProjectId);
             redirectAttributes.addFlashAttribute("successMessage", "Employee data saved successfully.");
@@ -101,7 +102,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/search")
-    public String findEmployee(@RequestParam("name") String name, @RequestParam("surname") String surname,
+    public String findEmployee(@RequestParam("name") String name,
+                               @RequestParam("surname") String surname,
+                               EmployeeRequestDTO employeeRequestDTO,
                                Model model)
     {
         model.addAttribute("activeMenu", "employees");
@@ -109,6 +112,7 @@ public class EmployeeController {
 
         List<EmployeeEntity> employees = employeeService.searchEmployee(name, surname);
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
+        projectList = employeeService.getAllProjectsFromProjectService();
 
         if (addresses.isEmpty() && employees.isEmpty()) {
             model.addAttribute("searchErrorMessage",
@@ -143,6 +147,21 @@ public class EmployeeController {
                 model.addAttribute("suburb", suburb);
                 model.addAttribute("address", streetAddress);
                 model.addAttribute("zipCode", zipCode);
+
+                model.addAttribute("projects", projectList);
+
+                Long projectId = employee.getProjectId();
+                if (projectId != null) {
+                    ProjectDTO projectDTO = employeeService.getProjectById(projectId);
+
+                    if (projectDTO != null) {
+                        String projectName = projectDTO.getProjectName();
+                        log.info("Project id: {} project name: {}", projectId, projectName);
+                        model.addAttribute("assignedProject", projectName);
+                    } else {
+                        log.warn("Project id: {} not found", projectId);
+                    }
+                }
             }
         }
 

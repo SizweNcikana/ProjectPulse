@@ -27,11 +27,10 @@ public class ProjectsListController {
         return projectService.getProjects();
     }
 
-    @GetMapping("/{projectName}")
-    public Optional<Long> getProjectByName(@PathVariable("projectName") String projectName) {
-        System.out.println("ProjectName: " + projectName);
-        return projectService.getProjectByName(projectName); //only extract the Project ID
-
+    @GetMapping("/{projectId}")
+    public Optional<ProjectResponseDTO> getProjectById(@PathVariable("projectId") Long projectId) {
+        log.info("Project Id: " + projectId);
+        return projectService.getProjectById(projectId);
     }
 
 }

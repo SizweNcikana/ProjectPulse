@@ -7,6 +7,7 @@ import com.swiftedge.projectservice.repository.ProjectRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Getter
@@ -159,4 +161,13 @@ public class ProjectService {
         return projectRepository.findProjectIdByProjectName(projectName);
     }
 
+    public Optional<ProjectResponseDTO> getProjectById(Long projectId) {
+
+        Optional<ProjectEntity> existingProject = projectRepository.findById(projectId);
+
+        existingProject.ifPresent(project ->
+            log.info("Project ID '{}' is named '{}'", projectId, project.getProjectName())
+        );
+        return existingProject.map(this::mapToResponseDTO);
+    }
 }

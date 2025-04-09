@@ -11,9 +11,11 @@ import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepositor
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -238,13 +240,24 @@ public class EmployeeService {
         }
     }
 
+    String baseUrl = "http://project-service/api/v2/projects";
+
     public List<ProjectDTO> getAllProjectsFromProjectService() {
         return webClientBuilder.build()
                 .get()
-                .uri("http://project-service/api/v2/projects/list")  // Call ProjectService
+                .uri(baseUrl + "/list")  // Call ProjectService
                 .retrieve()
                 .bodyToFlux(ProjectDTO.class)
                 .collectList()
+                .block();
+    }
+
+    public ProjectDTO getProjectById(Long projectId) {
+        return webClientBuilder.build()
+                .get()
+                .uri(baseUrl + "/" + projectId)
+                .retrieve()
+                .bodyToMono(ProjectDTO.class)
                 .block();
     }
 
