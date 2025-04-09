@@ -83,18 +83,16 @@ public class ProjectController {
         model.addAttribute("activePage", "project-overview");
 
         if (projectEntity.isPresent()) {
-            model.addAttribute("successMessage", "Project found.");
-        }  else {
+            projectEntity.ifPresent(project -> {
+                model.addAttribute("projectId", project.getProjectId());
+                model.addAttribute("projectName", project.getProjectName());
+                model.addAttribute("startDate", project.getStartDate());
+                model.addAttribute("duration", project.getDuration());
+                model.addAttribute("description", project.getDescription());
+            });
+        } else {
             model.addAttribute("errorMessage", "Project not found.");
         }
-
-        projectEntity.ifPresent(project -> {
-            model.addAttribute("projectId", project.getProjectId());
-            model.addAttribute("projectName", project.getProjectName());
-            model.addAttribute("startDate", project.getStartDate());
-            model.addAttribute("duration", project.getDuration());
-            model.addAttribute("description", project.getDescription());
-        });
 
         return "project-overview";
     }
