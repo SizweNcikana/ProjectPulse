@@ -656,8 +656,7 @@
                                                                                 <div class="form-group form-primary row">
                                                                                     <div class="form-floating m-4 mt-3 col-md-5">
                                                                                         <select name="myProject" class="form-select" id="myProject">
-                                                                                            <option value=""></option>
-                                                                                            <option th:each="project : ${projects}"
+                                                                                            <option th:each="project : ${assignedProject}"
                                                                                                     th:value="${project.projectId}"
                                                                                                     th:text="${project.projectName}">
                                                                                             </option>
@@ -666,7 +665,6 @@
                                                                                     </div>
                                                                                     <div class="form-floating m-2 mt-3 col-md-5">
                                                                                         <select name="project" class="form-select" id="project">
-                                                                                            <option value=""></option>
                                                                                             <option th:each="project : ${projects}"
                                                                                                     th:value="${project.projectId}"
                                                                                                     th:text="${project.projectName}">

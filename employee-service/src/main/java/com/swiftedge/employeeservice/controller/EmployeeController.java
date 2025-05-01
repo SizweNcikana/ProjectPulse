@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.MessageFormat;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequestMapping("/api/v2/employees")
@@ -114,6 +116,7 @@ public class EmployeeController {
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
         projectList = employeeService.getAllProjectsFromProjectService();
 
+
         if (addresses.isEmpty() && employees.isEmpty()) {
             model.addAttribute("searchErrorMessage",
                     MessageFormat.format("Employee with name {0} {1} does not exist.", name, surname));
@@ -148,16 +151,18 @@ public class EmployeeController {
                 model.addAttribute("address", streetAddress);
                 model.addAttribute("zipCode", zipCode);
 
-                model.addAttribute("projects", projectList);
+                //Get the list of Projects and sorts it in Alphabetical order
+                model.addAttribute("projects", projectList.stream()
+                        .sorted(Comparator.comparing(ProjectDTO::getProjectName))
+                        .collect(Collectors.toList()));
 
                 Long projectId = employee.getProjectId();
                 if (projectId != null) {
                     ProjectDTO projectDTO = employeeService.getProjectById(projectId);
 
                     if (projectDTO != null) {
-                        String projectName = projectDTO.getProjectName();
-                        log.info("Project id: {} project name: {}", projectId, projectName);
-                        model.addAttribute("assignedProject", projectName);
+                        log.info("Project id: {} project name: {}", projectId, projectDTO.getProjectName());
+                        model.addAttribute("assignedProject", projectDTO);
                     } else {
                         log.warn("Project id: {} not found", projectId);
                     }
