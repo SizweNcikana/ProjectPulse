@@ -28,6 +28,10 @@ import java.util.stream.Collectors;
 public class EmployeeController {
     private final EmployeeService employeeService;
     List<ProjectDTO> projectList;
+    boolean isUpdated;
+    Long projectId;
+    Long selectedProjectId;
+
 
     @GetMapping("/home")
     public String home(Model model) {
@@ -66,7 +70,7 @@ public class EmployeeController {
 
         try {
             // Fetch the project ID from the dropdown (selected project ID)
-            Long selectedProjectId = employeeRequestDTO.getProject();
+            selectedProjectId = employeeRequestDTO.getProject();
 
             employeeService.saveEmployee(employeeRequestDTO, selectedProjectId);
             redirectAttributes.addFlashAttribute("successMessage", "Employee data saved successfully.");
@@ -106,7 +110,6 @@ public class EmployeeController {
     @GetMapping("/search")
     public String findEmployee(@RequestParam("name") String name,
                                @RequestParam("surname") String surname,
-                               EmployeeRequestDTO employeeRequestDTO,
                                Model model)
     {
         model.addAttribute("activeMenu", "employees");
@@ -156,7 +159,7 @@ public class EmployeeController {
                         .sorted(Comparator.comparing(ProjectDTO::getProjectName))
                         .collect(Collectors.toList()));
 
-                Long projectId = employee.getProjectId();
+                projectId = employee.getProjectId();
                 if (projectId != null) {
                     ProjectDTO projectDTO = employeeService.getProjectById(projectId);
 
@@ -189,12 +192,9 @@ public class EmployeeController {
         }
 
         try {
-            boolean isUpdated = employeeService.updateEmployee(id, employeeResponseDTO, addressRequestDTO);
+            isUpdated = employeeService.updateEmployee(id, employeeResponseDTO, addressRequestDTO);
 
             if (isUpdated) {
-                System.out.println("Phone number: " + employeeResponseDTO.getNumber());
-                System.out.println("Name: " + employeeResponseDTO.getName());
-                System.out.println("Email: " + employeeResponseDTO.getEmail());
 
                 redirectAttributes.addFlashAttribute("successMessage",
                         "Employee updated successfully.");
@@ -209,6 +209,39 @@ public class EmployeeController {
         }
         return "redirect:/api/v2/employees/edit";
     }
+
+    @PostMapping("/{id}/assign-project")
+    public String assignEmployeeToNewProject(
+            @PathVariable("id") Long id,
+            @ModelAttribute ProjectDTO projectDTO,
+            EmployeeRequestDTO employeeRequestDTO,
+            RedirectAttributes redirectAttributes
+    )
+    {
+         try {
+             // Fetch the project ID from the dropdown (selected project ID)
+             selectedProjectId = employeeRequestDTO.getProject();
+             log.info("Selected project id: {}", selectedProjectId);
+
+             if (selectedProjectId != null && !selectedProjectId.equals(projectId)) {
+                 employeeService.updateAssignedEmployeeProject(id, selectedProjectId);
+
+                 redirectAttributes.addFlashAttribute("successMessage",
+                         "Project updated successfully for the employee.");
+
+             } else {
+                 redirectAttributes.addFlashAttribute("infoMessage",
+                         "No changes were made as the provided data matches the current data.");
+             }
+         } catch (IllegalArgumentException ex) {
+             log.error("Error: {}", ex.getMessage());
+         }
+
+        return "redirect:/api/v2/employees/edit";
+
+    }
+
+
 
     @PostMapping("/{id}/delete")
     public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
