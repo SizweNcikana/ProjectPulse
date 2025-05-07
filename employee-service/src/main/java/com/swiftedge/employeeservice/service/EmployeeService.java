@@ -11,11 +11,9 @@ import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepositor
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +27,8 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeAddressRepository employeeAddressRepository;
     private final WebClient.Builder webClientBuilder;
+
+    EmployeeEntity existingEmployee;
 
     @Transactional
     public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId) {
@@ -100,7 +100,7 @@ public class EmployeeService {
 
     public boolean updateEmployee(Long id, EmployeeResponseDTO employeeResponseDTO, AddressRequestDTO addressRequestDTO) {
 
-        EmployeeEntity existingEmployee = employeeRepository.findById(id)
+        existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
 
         boolean isUpdated = false;
@@ -223,6 +223,14 @@ public class EmployeeService {
         if (summary == null || summary.trim().isEmpty()) {
             throw new IllegalArgumentException("Summary cannot be null or empty.");
         }
+    }
+
+    public void updateAssignedEmployeeProject(Long id, long projectId) {
+        existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
+
+        existingEmployee.setProjectId(projectId);
+        employeeRepository.save(existingEmployee);
     }
 
     /**

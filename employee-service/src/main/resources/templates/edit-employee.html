@@ -441,7 +441,7 @@
                                                                             </div>
 
                                                                             <!-- Info Alert -->
-                                                                            <div th:if="${infoMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                                                            <div th:if="${infoMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
                                                                                 <i class="bi-info-circle-fill"></i>
                                                                                 <strong>Info!</strong> <span th:text="${infoMessage}"></span>
                                                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -650,8 +650,10 @@
 
                                                                         </div>
                                                                         <div class="tab-pane" id="messages7" role="tabpanel">
+
                                                                             <h4 class="m-3 mt-4 sub-title">Employee Projects & Eligible Projects</h4>
-                                                                            <form th:action="@{/find-employees/{id}/update-employee-project(id=${Id})}"
+
+                                                                            <form th:action="@{/api/v2/employees/{id}/assign-project(id=${Id})}"
                                                                                   method="POST" class="form-material">
                                                                                 <div class="form-group form-primary row">
                                                                                     <div class="form-floating m-4 mt-3 col-md-5">
@@ -665,6 +667,7 @@
                                                                                     </div>
                                                                                     <div class="form-floating m-2 mt-3 col-md-5">
                                                                                         <select name="project" class="form-select" id="project">
+                                                                                            <option value="">-- Select an option --</option>
                                                                                             <option th:each="project : ${projects}"
                                                                                                     th:value="${project.projectId}"
                                                                                                     th:text="${project.projectName}">
@@ -678,7 +681,10 @@
                                                                                     <div class="m-4 col-md-5">
                                                                                         <!-- Block level buttons with icon -->
                                                                                         <div class="form-group">
-                                                                                            <button id="assignProject" disabled class="btn waves-effect waves-light btn-primary btn-outline-primary btn-block"><i class="icofont icofont-save"></i><b>Assign to Project</b></button>
+                                                                                            <button id="assignProject" class="btn btn-primary btn-block">
+                                                                                                <i class="icofont icofont-save"></i>
+                                                                                                <b>Assign to Project</b>
+                                                                                            </button>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
