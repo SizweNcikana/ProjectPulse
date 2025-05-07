@@ -35,6 +35,7 @@ public class EmployeeController {
 
     @GetMapping("/home")
     public String home(Model model) {
+        model.addAttribute("activePage", "index");
         return "index";
     }
 
