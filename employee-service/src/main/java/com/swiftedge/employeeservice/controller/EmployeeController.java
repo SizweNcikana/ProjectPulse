@@ -36,6 +36,15 @@ public class EmployeeController {
     @GetMapping("/home")
     public String home(Model model) {
         model.addAttribute("activePage", "index");
+        projectList = employeeService.getAllProjectsFromProjectService();
+        List<EmployeeResponseDTO> employeeList = employeeService.getAllEmployees();
+
+        int numberOfProjects = projectList.size();
+        int numberOfEmployees = employeeList.size();
+        System.out.println("Employee List: " + numberOfEmployees);
+        model.addAttribute("totalProjects", numberOfProjects);
+        model.addAttribute("allEmployees", numberOfEmployees);
+
         return "index";
     }
 
