@@ -23,4 +23,5 @@ public class EmployeeResponseDTO {
     private String occupation;
     private String summary;
     private String experience;
+    private Long statusId;
 }

@@ -6,8 +6,10 @@ import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
 import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
+import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
 import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
 import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepository;
+import com.swiftedge.employeeservice.service.status.StatusService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeAddressRepository employeeAddressRepository;
+    private final StatusService statusService;
     private final WebClient.Builder webClientBuilder;
 
     EmployeeEntity existingEmployee;
@@ -98,7 +102,7 @@ public class EmployeeService {
         return employeeRepository.findAddressByNameAndSurname(name, surname);
     }
 
-    public boolean updateEmployee(Long id, EmployeeResponseDTO employeeResponseDTO, AddressRequestDTO addressRequestDTO) {
+    public boolean updateEmployee(Long id, EmployeeResponseDTO employeeResponseDTO, AddressRequestDTO addressRequestDTO, Long statusId) {
 
         existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
@@ -146,6 +150,35 @@ public class EmployeeService {
             existingEmployee.setSummary(employeeResponseDTO.getSummary());
             isUpdated = true;
         }
+
+//        if (!Objects.equals(Optional.ofNullable(existingEmployee.getStatus())
+//                .map(EmployeeStatus::getId)
+//                .orElse(null), statusId)) {
+//
+//            existingEmployee.setStatus(new EmployeeStatus());
+//            System.out.println("Status Id: " + statusId + " Updated");
+//        }
+        EmployeeStatus newStatus = statusService.getStatusById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
+
+        EmployeeStatus currentStatus = existingEmployee.getStatus();
+
+        if (currentStatus == null || !Objects.equals(currentStatus.getId(), newStatus.getId())) {
+            existingEmployee.setStatus(newStatus);
+            System.out.println("Status Id: " + statusId + " Updated. New Status Id: " + newStatus.getId());
+            isUpdated = true;
+        }
+
+
+//        EmployeeStatus employeeStatus = existingEmployee.getStatus();
+//        if (employeeStatus != null) {
+//            if (!employeeStatus.getId().equals(statusId)) {
+//                validateStatus(employeeStatus.getId());
+//                employeeStatus.setId(statusId);
+//                isUpdated = true;
+//            }
+//            existingEmployee.setStatus(employeeStatus);
+//        }
 
         //Save employee Address
         EmployeeAddressEntity addressEntity = existingEmployee.getAddress();
@@ -222,6 +255,12 @@ public class EmployeeService {
     private void validateSummary(String summary) {
         if (summary == null || summary.trim().isEmpty()) {
             throw new IllegalArgumentException("Summary cannot be null or empty.");
+        }
+    }
+
+    public void validateStatus(Long statusId) {
+        if (statusId == null || statusId <= 0) {
+            throw new IllegalArgumentException("Status id cannot be null or empty.");
         }
     }
 

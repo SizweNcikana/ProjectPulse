@@ -593,13 +593,23 @@
 
                                                                                 <!-- Occupation and Years of Experience -->
                                                                                 <div class="row mb-3">
-                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                    <div class="form-floating col-sm-4 m-3 mt-2">
                                                                                         <input type="text" class="form-control" id="occupation" placeholder="Occupation" name="occupation" required th:value="${occupation}">
                                                                                         <label for="occupation">Occupation</label>
                                                                                     </div>
-                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                    <div class="form-floating col-sm-3 m-3 mt-2">
                                                                                         <input type="number" class="form-control" id="experience" placeholder="Years of Experience" name="experience" th:value="${years_experience}">
                                                                                         <label for="experience">Years of Experience</label>
+                                                                                    </div>
+                                                                                    <div class="form-floating col-sm-3 m-2 mt-2">
+                                                                                        <select name="status" class="form-select" id="status">
+                                                                                            <option value="">-- Select status --</option>
+                                                                                            <option th:each="status : ${statuses}"
+                                                                                                    th:value="${status.statusId}"
+                                                                                                    th:text="${status.statusName}">
+                                                                                            </option>
+                                                                                        </select>
+                                                                                        <label for="status">Status</label>
                                                                                     </div>
                                                                                 </div>
 

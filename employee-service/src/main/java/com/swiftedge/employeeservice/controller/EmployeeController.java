@@ -4,9 +4,12 @@ import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
 import com.swiftedge.employeeservice.dto.project.ProjectDTO;
+import com.swiftedge.employeeservice.dto.status.StatusDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
+import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
 import com.swiftedge.employeeservice.service.EmployeeService;
+import com.swiftedge.employeeservice.service.status.StatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,7 +31,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
+    private final StatusService statusService;
     List<ProjectDTO> projectList;
+    List<StatusDTO> statuses;
     boolean isUpdated;
     Long projectId;
     Long selectedProjectId;
@@ -114,6 +120,12 @@ public class EmployeeController {
         model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "edit-employee");
 
+        projectList = employeeService.getAllProjectsFromProjectService();
+        statuses = statusService.getAllStatuses();
+
+        model.addAttribute("projects", projectList);
+        model.addAttribute("statuses", statuses);
+
         return "edit-employee";
     }
 
@@ -127,6 +139,7 @@ public class EmployeeController {
 
         List<EmployeeEntity> employees = employeeService.searchEmployee(name, surname);
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
+        statuses = statusService.getAllStatuses();
         projectList = employeeService.getAllProjectsFromProjectService();
 
 
@@ -155,6 +168,7 @@ public class EmployeeController {
                 model.addAttribute("idNumber", employee.getIdNumber());
                 model.addAttribute("dob", employee.getDob());
                 model.addAttribute("occupation", employee.getOccupation());
+                model.addAttribute("statuses", statuses);
                 model.addAttribute("ethnicity", employee.getEthnicity());
                 model.addAttribute("years_experience", employee.getExperience());
                 model.addAttribute("summary", employee.getSummary());
@@ -189,6 +203,7 @@ public class EmployeeController {
     @PostMapping("/{id}/update")
     public String updateEmployee(
             @PathVariable("id") Long id,
+            @RequestParam("status") Long selectedStatus,
             @ModelAttribute("employee") EmployeeResponseDTO employeeResponseDTO,
             @ModelAttribute("address") AddressRequestDTO addressRequestDTO,
             BindingResult bindingResult,
@@ -202,7 +217,15 @@ public class EmployeeController {
         }
 
         try {
-            isUpdated = employeeService.updateEmployee(id, employeeResponseDTO, addressRequestDTO);
+            Long statValue = employeeResponseDTO.getStatusId();
+            if (selectedStatus == null) {
+                log.info("Selected status is null");
+            }
+
+            System.out.println("Status id: " + selectedStatus);
+            System.out.println("Status name: " + statValue);
+
+            isUpdated = employeeService.updateEmployee(id, employeeResponseDTO, addressRequestDTO, selectedStatus);
 
             if (isUpdated) {
 
