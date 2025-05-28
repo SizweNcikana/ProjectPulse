@@ -6,8 +6,11 @@ import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
 import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
+import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
+import com.swiftedge.employeeservice.exceptions.StatusNotFoundException;
 import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
 import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepository;
+import com.swiftedge.employeeservice.service.status.StatusService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,14 +30,18 @@ import java.util.stream.Collectors;
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeAddressRepository employeeAddressRepository;
+    private final StatusService statusService;
     private final WebClient.Builder webClientBuilder;
 
     EmployeeEntity existingEmployee;
 
     @Transactional
-    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId) {
+    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId, Long statusId) {
         EmployeeEntity employeeEntity = new EmployeeEntity();
         EmployeeAddressEntity addressEntity = new EmployeeAddressEntity();
+
+        EmployeeStatus status = statusService.getStatusById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
 
 
         employeeRepository.findByEmail(employeeRequestDTO.getEmail())
@@ -52,6 +60,7 @@ public class EmployeeService {
         employeeEntity.setOccupation(employeeRequestDTO.getOccupation());
         employeeEntity.setExperience(employeeRequestDTO.getExperience());
         employeeEntity.setSummary(employeeRequestDTO.getSummary());
+        employeeEntity.setStatus(status);
 
         employeeEntity.setProjectId(projectId);
 
@@ -85,6 +94,7 @@ public class EmployeeService {
         dto.setIdNumber(employeeEntity.getIdNumber());
         dto.setDob(employeeEntity.getDob());
         dto.setOccupation(employeeEntity.getOccupation());
+        dto.setStatus(employeeEntity.getStatus());
 
         return dto;
 
@@ -98,7 +108,7 @@ public class EmployeeService {
         return employeeRepository.findAddressByNameAndSurname(name, surname);
     }
 
-    public boolean updateEmployee(Long id, EmployeeResponseDTO employeeResponseDTO, AddressRequestDTO addressRequestDTO) {
+    public boolean updateEmployee(Long id, EmployeeResponseDTO employeeResponseDTO, AddressRequestDTO addressRequestDTO, Long statusId) {
 
         existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
@@ -144,6 +154,23 @@ public class EmployeeService {
         if (!existingEmployee.getSummary().equals(employeeResponseDTO.getSummary())) {
             validateSummary(employeeResponseDTO.getSummary());
             existingEmployee.setSummary(employeeResponseDTO.getSummary());
+            isUpdated = true;
+        }
+
+        EmployeeStatus newStatus = statusService.getStatusById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
+
+        EmployeeStatus currentStatus = existingEmployee.getStatus();
+
+        System.out.println("New status ID: " + newStatus.getId());
+
+
+        if (currentStatus == null) {
+            throw new StatusNotFoundException("Employee status not found");
+        } else if (currentStatus.getId().equals(newStatus.getId())) {
+            System.out.println("Status is the same");
+        } else {
+            existingEmployee.setStatus(newStatus);
             isUpdated = true;
         }
 
@@ -222,6 +249,12 @@ public class EmployeeService {
     private void validateSummary(String summary) {
         if (summary == null || summary.trim().isEmpty()) {
             throw new IllegalArgumentException("Summary cannot be null or empty.");
+        }
+    }
+
+    public void validateStatus(Long statusId) {
+        if (statusId == null || statusId <= 0) {
+            throw new IllegalArgumentException("Status id cannot be null or empty.");
         }
     }
 

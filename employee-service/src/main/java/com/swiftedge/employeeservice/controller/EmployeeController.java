@@ -4,9 +4,11 @@ import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
 import com.swiftedge.employeeservice.dto.project.ProjectDTO;
+import com.swiftedge.employeeservice.dto.status.StatusDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.service.EmployeeService;
+import com.swiftedge.employeeservice.service.status.StatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +29,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
+    private final StatusService statusService;
     List<ProjectDTO> projectList;
+    List<StatusDTO> statuses;
     boolean isUpdated;
     Long projectId;
     Long selectedProjectId;
@@ -36,6 +40,15 @@ public class EmployeeController {
     @GetMapping("/home")
     public String home(Model model) {
         model.addAttribute("activePage", "index");
+        projectList = employeeService.getAllProjectsFromProjectService();
+        List<EmployeeResponseDTO> employeeList = employeeService.getAllEmployees();
+
+        int numberOfProjects = projectList.size();
+        int numberOfEmployees = employeeList.size();
+        System.out.println("Employee List: " + numberOfEmployees);
+        model.addAttribute("totalProjects", numberOfProjects);
+        model.addAttribute("allEmployees", numberOfEmployees);
+
         return "index";
     }
 
@@ -49,7 +62,7 @@ public class EmployeeController {
         AddressRequestDTO address = new AddressRequestDTO();
 
         employee.setAddress(address); // Link the address to the employee DTO
-        System.out.println("Projects: " + projectList);
+        log.info("Projects: {}", projectList);
 
         model.addAttribute("employee", employee);
         model.addAttribute("projects", projectList);
@@ -73,7 +86,28 @@ public class EmployeeController {
             // Fetch the project ID from the dropdown (selected project ID)
             selectedProjectId = employeeRequestDTO.getProject();
 
-            employeeService.saveEmployee(employeeRequestDTO, selectedProjectId);
+            statuses = statusService.getAllStatuses();
+
+            String statusName = "NEW";
+
+            /*
+            Search for the ID for of status 'NEW', if found, save it as the default for a new employee
+            being added to the System.
+             */
+            statuses.stream()
+                    .filter(s -> s.getStatusName().equalsIgnoreCase(statusName))
+                    .findFirst()
+                    .flatMap(status -> {
+                        Long statusId = status.getStatusId();
+                        return statusService.getStatusById(statusId);
+                    })
+                    .ifPresentOrElse(employeeStatus -> {
+                        log.info("Employee Status: {}", employeeStatus.getId());
+                        employeeService.saveEmployee(employeeRequestDTO, selectedProjectId, employeeStatus.getId());
+                    }, () -> {
+                        log.error("No matching status found or status ID is invalid.");
+                    });
+
             redirectAttributes.addFlashAttribute("successMessage", "Employee data saved successfully.");
 
         } catch (IllegalArgumentException iex) {
@@ -105,6 +139,12 @@ public class EmployeeController {
         model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "edit-employee");
 
+        projectList = employeeService.getAllProjectsFromProjectService();
+        statuses = statusService.getAllStatuses();
+
+        model.addAttribute("projects", projectList);
+        model.addAttribute("statuses", statuses);
+
         return "edit-employee";
     }
 
@@ -118,6 +158,7 @@ public class EmployeeController {
 
         List<EmployeeEntity> employees = employeeService.searchEmployee(name, surname);
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
+        statuses = statusService.getAllStatuses();
         projectList = employeeService.getAllProjectsFromProjectService();
 
 
@@ -146,8 +187,10 @@ public class EmployeeController {
                 model.addAttribute("idNumber", employee.getIdNumber());
                 model.addAttribute("dob", employee.getDob());
                 model.addAttribute("occupation", employee.getOccupation());
+                model.addAttribute("statuses", statuses);
                 model.addAttribute("ethnicity", employee.getEthnicity());
                 model.addAttribute("years_experience", employee.getExperience());
+                model.addAttribute("status", employee.getStatus().getStatus());
                 model.addAttribute("summary", employee.getSummary());
 
                 model.addAttribute("city", city);
@@ -180,6 +223,7 @@ public class EmployeeController {
     @PostMapping("/{id}/update")
     public String updateEmployee(
             @PathVariable("id") Long id,
+            @RequestParam("status") Long selectedStatus,
             @ModelAttribute("employee") EmployeeResponseDTO employeeResponseDTO,
             @ModelAttribute("address") AddressRequestDTO addressRequestDTO,
             BindingResult bindingResult,
@@ -193,7 +237,12 @@ public class EmployeeController {
         }
 
         try {
-            isUpdated = employeeService.updateEmployee(id, employeeResponseDTO, addressRequestDTO);
+            Long statValue = employeeResponseDTO.getStatusId();
+            if (selectedStatus == null) {
+                log.info("Selected status is null");
+            }
+
+            isUpdated = employeeService.updateEmployee(id, employeeResponseDTO, addressRequestDTO, selectedStatus);
 
             if (isUpdated) {
 
@@ -241,8 +290,6 @@ public class EmployeeController {
         return "redirect:/api/v2/employees/edit";
 
     }
-
-
 
     @PostMapping("/{id}/delete")
     public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
