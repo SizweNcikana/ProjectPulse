@@ -16,7 +16,8 @@ import java.time.LocalDate;
 @Builder
 public class EmployeeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_seq")
+    @SequenceGenerator(name = "employee_seq", sequenceName = "employee_sequence", allocationSize = 1)
 
     //@Column(name = "employee_id")
     private Long employeeId;
@@ -38,8 +39,12 @@ public class EmployeeEntity {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private EmployeeAddressEntity address;
 
-    // One-to-one relationship with Status
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    /*
+    Many-to-one relationship with Status. Many employees can have the same status.
+    Cannot implement a one-to-one relationship here as it enforces a status to only be associated with
+    one employee
+     */
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id")
     private EmployeeStatus status;
 

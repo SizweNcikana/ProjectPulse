@@ -7,7 +7,7 @@ import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.dto.status.StatusDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
-import com.swiftedge.employeeservice.service.EmployeeService;
+import com.swiftedge.employeeservice.service.employee.EmployeeService;
 import com.swiftedge.employeeservice.service.status.StatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
