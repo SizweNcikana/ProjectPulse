@@ -1,6 +1,7 @@
 package com.swiftedge.employeeservice.entity.employee;
 
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
+import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,11 @@ public class EmployeeEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private EmployeeAddressEntity address;
+
+    // One-to-one relationship with Status
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "status_id")
+    private EmployeeStatus status;
 
     /*
     Cannot create '@OneToMany' relationship here
