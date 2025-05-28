@@ -4,6 +4,8 @@ import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "statuses")
 @Getter
@@ -18,6 +20,10 @@ public class EmployeeStatus {
     private Long id;
     private String status;
 
-    @OneToOne(mappedBy = "status")
-    private EmployeeEntity employee;
+    /*
+    Can be used to view all employees that have a specific status
+     */
+    @OneToMany(mappedBy = "status")
+    private List<EmployeeEntity> employee;
+
 }
