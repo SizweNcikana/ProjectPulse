@@ -7,6 +7,7 @@ import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
+import com.swiftedge.employeeservice.exceptions.StatusNotFoundException;
 import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
 import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepository;
 import com.swiftedge.employeeservice.service.status.StatusService;
@@ -35,9 +36,12 @@ public class EmployeeService {
     EmployeeEntity existingEmployee;
 
     @Transactional
-    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId) {
+    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId, Long statusId) {
         EmployeeEntity employeeEntity = new EmployeeEntity();
         EmployeeAddressEntity addressEntity = new EmployeeAddressEntity();
+
+        EmployeeStatus status = statusService.getStatusById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
 
 
         employeeRepository.findByEmail(employeeRequestDTO.getEmail())
@@ -56,6 +60,7 @@ public class EmployeeService {
         employeeEntity.setOccupation(employeeRequestDTO.getOccupation());
         employeeEntity.setExperience(employeeRequestDTO.getExperience());
         employeeEntity.setSummary(employeeRequestDTO.getSummary());
+        employeeEntity.setStatus(status);
 
         employeeEntity.setProjectId(projectId);
 
@@ -89,6 +94,7 @@ public class EmployeeService {
         dto.setIdNumber(employeeEntity.getIdNumber());
         dto.setDob(employeeEntity.getDob());
         dto.setOccupation(employeeEntity.getOccupation());
+        dto.setStatus(employeeEntity.getStatus());
 
         return dto;
 
@@ -151,34 +157,22 @@ public class EmployeeService {
             isUpdated = true;
         }
 
-//        if (!Objects.equals(Optional.ofNullable(existingEmployee.getStatus())
-//                .map(EmployeeStatus::getId)
-//                .orElse(null), statusId)) {
-//
-//            existingEmployee.setStatus(new EmployeeStatus());
-//            System.out.println("Status Id: " + statusId + " Updated");
-//        }
         EmployeeStatus newStatus = statusService.getStatusById(statusId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
 
         EmployeeStatus currentStatus = existingEmployee.getStatus();
 
-        if (currentStatus == null || !Objects.equals(currentStatus.getId(), newStatus.getId())) {
+        System.out.println("New status ID: " + newStatus.getId());
+
+
+        if (currentStatus == null) {
+            throw new StatusNotFoundException("Employee status not found");
+        } else if (currentStatus.getId().equals(newStatus.getId())) {
+            System.out.println("Status is the same");
+        } else {
             existingEmployee.setStatus(newStatus);
-            System.out.println("Status Id: " + statusId + " Updated. New Status Id: " + newStatus.getId());
             isUpdated = true;
         }
-
-
-//        EmployeeStatus employeeStatus = existingEmployee.getStatus();
-//        if (employeeStatus != null) {
-//            if (!employeeStatus.getId().equals(statusId)) {
-//                validateStatus(employeeStatus.getId());
-//                employeeStatus.setId(statusId);
-//                isUpdated = true;
-//            }
-//            existingEmployee.setStatus(employeeStatus);
-//        }
 
         //Save employee Address
         EmployeeAddressEntity addressEntity = existingEmployee.getAddress();

@@ -7,7 +7,6 @@ import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.dto.status.StatusDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
-import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
 import com.swiftedge.employeeservice.service.EmployeeService;
 import com.swiftedge.employeeservice.service.status.StatusService;
 import jakarta.validation.Valid;
@@ -22,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -64,7 +62,7 @@ public class EmployeeController {
         AddressRequestDTO address = new AddressRequestDTO();
 
         employee.setAddress(address); // Link the address to the employee DTO
-        System.out.println("Projects: " + projectList);
+        log.info("Projects: {}", projectList);
 
         model.addAttribute("employee", employee);
         model.addAttribute("projects", projectList);
@@ -88,7 +86,28 @@ public class EmployeeController {
             // Fetch the project ID from the dropdown (selected project ID)
             selectedProjectId = employeeRequestDTO.getProject();
 
-            employeeService.saveEmployee(employeeRequestDTO, selectedProjectId);
+            statuses = statusService.getAllStatuses();
+
+            String statusName = "NEW";
+
+            /*
+            Search for the ID for of status 'NEW', if found, save it as the default for a new employee
+            being added to the System.
+             */
+            statuses.stream()
+                    .filter(s -> s.getStatusName().equalsIgnoreCase(statusName))
+                    .findFirst()
+                    .flatMap(status -> {
+                        Long statusId = status.getStatusId();
+                        return statusService.getStatusById(statusId);
+                    })
+                    .ifPresentOrElse(employeeStatus -> {
+                        log.info("Employee Status: {}", employeeStatus.getId());
+                        employeeService.saveEmployee(employeeRequestDTO, selectedProjectId, employeeStatus.getId());
+                    }, () -> {
+                        log.error("No matching status found or status ID is invalid.");
+                    });
+
             redirectAttributes.addFlashAttribute("successMessage", "Employee data saved successfully.");
 
         } catch (IllegalArgumentException iex) {
@@ -171,6 +190,7 @@ public class EmployeeController {
                 model.addAttribute("statuses", statuses);
                 model.addAttribute("ethnicity", employee.getEthnicity());
                 model.addAttribute("years_experience", employee.getExperience());
+                model.addAttribute("status", employee.getStatus().getStatus());
                 model.addAttribute("summary", employee.getSummary());
 
                 model.addAttribute("city", city);
@@ -222,9 +242,6 @@ public class EmployeeController {
                 log.info("Selected status is null");
             }
 
-            System.out.println("Status id: " + selectedStatus);
-            System.out.println("Status name: " + statValue);
-
             isUpdated = employeeService.updateEmployee(id, employeeResponseDTO, addressRequestDTO, selectedStatus);
 
             if (isUpdated) {
@@ -273,8 +290,6 @@ public class EmployeeController {
         return "redirect:/api/v2/employees/edit";
 
     }
-
-
 
     @PostMapping("/{id}/delete")
     public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {

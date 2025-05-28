@@ -1,5 +1,6 @@
 package com.swiftedge.employeeservice.dto.employee;
 
+import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,5 @@ public class EmployeeResponseDTO {
     private String summary;
     private String experience;
     private Long statusId;
+    private EmployeeStatus status;
 }

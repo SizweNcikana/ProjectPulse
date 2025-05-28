@@ -376,7 +376,11 @@
                                                             <td th:text="${ employees.number }"></td>
                                                             <td th:text="${ employees.dob }"></td>
                                                             <td th:text="${ employees.idNumber }"></td>
-                                                            <td th:text="${ employees.statusId }"></td>
+
+                                                            <!-- Show status if present, else display 'N/A'.
+                                                            This prevents NullPointerException during rendering if the status is not yet assigned -->
+
+                                                            <td th:text="${ employees.status != null ? employees.status.status : 'N/A' }"></td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
