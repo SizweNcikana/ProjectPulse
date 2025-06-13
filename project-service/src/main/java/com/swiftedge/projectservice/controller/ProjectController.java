@@ -2,8 +2,11 @@ package com.swiftedge.projectservice.controller;
 
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
 import com.swiftedge.projectservice.dto.ProjectResponseDTO;
+import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
+import com.swiftedge.projectservice.entity.ProjectStatus;
 import com.swiftedge.projectservice.service.ProjectService;
+import com.swiftedge.projectservice.service.ProjectStatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,8 @@ import java.util.Optional;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final ProjectStatusService projectStatusService;
+    List<ProjectStatusDTO> projectStatues;
 
     @GetMapping("/add")
     public String addProject(Model model) {
@@ -45,8 +50,27 @@ public class ProjectController {
         }
 
         try {
-            projectService.saveProject(projectRequestDTO);
-            redirectAttributes.addFlashAttribute("successMessage", "Project saved successfully.");
+
+            projectStatues = projectStatusService.getAllProjectStatus();
+            String statusName = "Not Started";
+
+            projectStatues.stream()
+                            .filter(projectStatus -> projectStatus.getStatusName().equals(statusName))
+                                    .findFirst()
+                                            .flatMap(status -> {
+                                                Long statusId = status.getStatusId();
+                                                return projectStatusService.getStatusById(statusId);
+                                            })
+                                                    .ifPresentOrElse(projectStatus -> {
+                                                        log.info("Project status: {}", projectStatus.getId());
+                                                        projectService.saveProject(projectRequestDTO, projectStatus.getId());
+                                                        redirectAttributes.addFlashAttribute("successMessage", "Project saved successfully.");
+                                                    }, () -> {
+                                                        log.info("No matching project status found or status ID is invalid.");
+                                                    });
+
+//            projectService.saveProject(projectRequestDTO);
+//            redirectAttributes.addFlashAttribute("successMessage", "Project saved successfully.");
         }
         catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error while saving project." + e.getMessage());
@@ -79,6 +103,9 @@ public class ProjectController {
         log.info("Searching projects for project named {}", projectRequestDTO.getProjectName());
         Optional<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
 
+        projectStatues = projectStatusService.getAllProjectStatus();
+        log.info("Searching projects with status {}", projectStatues);
+
         model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "project-overview");
 
@@ -89,6 +116,7 @@ public class ProjectController {
                 model.addAttribute("startDate", project.getStartDate());
                 model.addAttribute("duration", project.getDuration());
                 model.addAttribute("description", project.getDescription());
+                model.addAttribute("status", projectStatues);
             });
         } else {
             model.addAttribute("errorMessage", "Project not found.");
@@ -100,18 +128,22 @@ public class ProjectController {
     @PostMapping("/update/{id}")
     public String updateProject(
             @PathVariable("id") Long id,
+            @RequestParam("statusId") Long statusId,
             @ModelAttribute("projectRequestDTO") ProjectRequestDTO projectRequestDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Model model) {
+
+        System.out.println("Status Id --> " + statusId);
 
         if (bindingResult.hasErrors() || projectRequestDTO.getProjectName() == null) {
             redirectAttributes.addFlashAttribute("errorMessage",
                     "Validation errors occurred. Please resolve and try again.");
             return "redirect:/api/v2/projects/edit";
         }
+
         try {
-            boolean isUpdated = projectService.updateProject(id, projectRequestDTO);
+            boolean isUpdated = projectService.updateProject(id, projectRequestDTO, statusId);
 
             if (isUpdated) {
                 redirectAttributes.addFlashAttribute("successMessage",
