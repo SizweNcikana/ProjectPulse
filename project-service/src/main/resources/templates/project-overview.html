@@ -506,6 +506,25 @@
                                                                                                 </option>
                                                                                             </select>
                                                                                         </div>
+                                                                                        <div class="m-3 mt-2 col-sm-5">
+                                                                                            <p style="color: #3380FF;">Project Status</p>
+                                                                                            <select class="selectpicker form-control"
+                                                                                                    data-style="btn-outline-primary"
+                                                                                                    name="statusId"
+                                                                                                    required>
+                                                                                                <option disabled
+                                                                                                        th:selected="${statusId == null}">
+                                                                                                    Select Status
+                                                                                                </option>
+
+                                                                                                <option th:each="status : ${status}"
+                                                                                                        th:value="${status.statusId}"
+                                                                                                        th:text="${status.statusName}"
+                                                                                                        th:selected="${status.statusId == statusId}">
+                                                                                                </option>
+                                                                                            </select>
+                                                                                        </div>
+
                                                                                     </div>
                                                                                     <div class="form-group form-primary form-static-label row">
                                                                                         <div class="m-3 mt-2 col-md-10">
