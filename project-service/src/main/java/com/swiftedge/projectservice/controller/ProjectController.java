@@ -118,11 +118,11 @@ public class ProjectController {
                 model.addAttribute("duration", project.getDuration());
                 model.addAttribute("description", project.getDescription());
 
-                Long testingStatus = project.getStatus().getId();
+                Long currentStatus = project.getStatus().getId();
                 String statusName = project.getStatus().getStatus();
-                log.info("\nStatus Id: {} \nStatus: {}", testingStatus, statusName);
+                log.info("\nStatus Id: {} \nStatus: {}", currentStatus, statusName);
 
-                model.addAttribute("selectedStatus", testingStatus);
+                model.addAttribute("selectedStatus", currentStatus);
                 model.addAttribute("projectStatus", statusName);
 
             });

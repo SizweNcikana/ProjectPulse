@@ -160,6 +160,8 @@ public class EmployeeController {
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
         statuses = statusService.getAllStatuses();
         projectList = employeeService.getAllProjectsFromProjectService();
+        model.addAttribute("statusList", statuses);
+        log.info("Status: {}", statuses.listIterator().next().getStatusName());
 
 
         if (addresses.isEmpty() && employees.isEmpty()) {
@@ -191,6 +193,11 @@ public class EmployeeController {
                 model.addAttribute("ethnicity", employee.getEthnicity());
                 model.addAttribute("years_experience", employee.getExperience());
                 model.addAttribute("status", employee.getStatus().getStatus());
+
+
+                Long currentStatus = employee.getStatus().getId();
+                model.addAttribute("selectedStatus", currentStatus);
+
                 model.addAttribute("summary", employee.getSummary());
 
                 model.addAttribute("city", city);
@@ -211,7 +218,7 @@ public class EmployeeController {
                         log.info("Project id: {} project name: {}", projectId, projectDTO.getProjectName());
                         model.addAttribute("assignedProject", projectDTO);
                     } else {
-                        log.warn("Project id: {} not found", projectId);
+                        log.warn("Project id: not found");
                     }
                 }
             }

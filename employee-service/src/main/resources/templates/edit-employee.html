@@ -513,7 +513,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="sstatus" th:text="${status}"></div>
+                                                                                    <div class="col-sm-8" th:name="status" th:text="${status}"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -612,11 +612,12 @@
                                                                                         <label for="experience">Years of Experience</label>
                                                                                     </div>
                                                                                     <div class="form-floating col-sm-3 m-2 mt-2">
-                                                                                        <select name="status" class="form-select" id="status">
+                                                                                        <select name="status" class="form-select" id="status" th:value="${selectedStatus}">
                                                                                             <option value="">-- Select status --</option>
-                                                                                            <option th:each="status : ${statuses}"
+                                                                                            <option th:each="status : ${statusList}"
                                                                                                     th:value="${status.statusId}"
-                                                                                                    th:text="${status.statusName}">
+                                                                                                    th:text="${status.statusName}"
+                                                                                                    th:selected="${status.statusId == selectedStatus}"></option>>
                                                                                             </option>
                                                                                         </select>
                                                                                         <label for="status">Status</label>
