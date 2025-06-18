@@ -213,10 +213,13 @@ public class EmployeeController {
                 projectId = employee.getProjectId();
                 if (projectId != null) {
                     ProjectDTO projectDTO = employeeService.getProjectById(projectId);
+                    String projectName = projectDTO.getProjectName();
+                    log.info("Project Name: {}", projectName);
 
                     if (projectDTO != null) {
                         log.info("Project id: {} project name: {}", projectId, projectDTO.getProjectName());
                         model.addAttribute("assignedProject", projectDTO);
+                        model.addAttribute("projectName", projectDTO.getProjectName());
                     } else {
                         log.warn("Project id: not found");
                     }
