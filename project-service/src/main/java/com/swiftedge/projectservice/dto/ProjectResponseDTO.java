@@ -1,5 +1,6 @@
 package com.swiftedge.projectservice.dto;
 
+import com.swiftedge.projectservice.entity.ProjectStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,5 @@ public class ProjectResponseDTO {
     private LocalDate startDate;
     private Integer duration;
     private String description;
+    private String statusName;
 }

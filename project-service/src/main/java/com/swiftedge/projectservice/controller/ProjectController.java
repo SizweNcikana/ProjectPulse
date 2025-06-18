@@ -27,7 +27,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final ProjectStatusService projectStatusService;
-    List<ProjectStatusDTO> projectStatues;
+    List<ProjectStatusDTO> projectStatus;
 
     @GetMapping("/add")
     public String addProject(Model model) {
@@ -51,10 +51,10 @@ public class ProjectController {
 
         try {
 
-            projectStatues = projectStatusService.getAllProjectStatus();
+            projectStatus = projectStatusService.getAllProjectStatus();
             String statusName = "Not Started";
 
-            projectStatues.stream()
+            projectStatus.stream()
                             .filter(projectStatus -> projectStatus.getStatusName().equals(statusName))
                                     .findFirst()
                                             .flatMap(status -> {
@@ -69,8 +69,6 @@ public class ProjectController {
                                                         log.info("No matching project status found or status ID is invalid.");
                                                     });
 
-//            projectService.saveProject(projectRequestDTO);
-//            redirectAttributes.addFlashAttribute("successMessage", "Project saved successfully.");
         }
         catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error while saving project." + e.getMessage());
@@ -103,8 +101,11 @@ public class ProjectController {
         log.info("Searching projects for project named {}", projectRequestDTO.getProjectName());
         Optional<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
 
-        projectStatues = projectStatusService.getAllProjectStatus();
-        log.info("Searching projects with status {}", projectStatues);
+
+        projectStatus = projectStatusService.getAllProjectStatus();
+        log.info("Searching projects with status {}", projectStatus.listIterator().next().getStatusName());
+        model.addAttribute("statusList", projectStatus);
+
 
         model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "project-overview");
@@ -116,7 +117,14 @@ public class ProjectController {
                 model.addAttribute("startDate", project.getStartDate());
                 model.addAttribute("duration", project.getDuration());
                 model.addAttribute("description", project.getDescription());
-                model.addAttribute("status", projectStatues);
+
+                Long testingStatus = project.getStatus().getId();
+                String statusName = project.getStatus().getStatus();
+                log.info("\nStatus Id: {} \nStatus: {}", testingStatus, statusName);
+
+                model.addAttribute("selectedStatus", testingStatus);
+                model.addAttribute("projectStatus", statusName);
+
             });
         } else {
             model.addAttribute("errorMessage", "Project not found.");
@@ -128,7 +136,7 @@ public class ProjectController {
     @PostMapping("/update/{id}")
     public String updateProject(
             @PathVariable("id") Long id,
-            @RequestParam("statusId") Long statusId,
+            @RequestParam("projectStatus") Long statusId,
             @ModelAttribute("projectRequestDTO") ProjectRequestDTO projectRequestDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,

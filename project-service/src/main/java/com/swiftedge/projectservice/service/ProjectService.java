@@ -65,6 +65,7 @@ public class ProjectService {
         projectResponseDTO.setStartDate(projectEntity.getStartDate());
         projectResponseDTO.setDuration(projectEntity.getDuration());
         projectResponseDTO.setDescription(projectEntity.getDescription());
+        projectResponseDTO.setStatusName(projectEntity.getStatus().getStatus());
         return projectResponseDTO;
     }
 
