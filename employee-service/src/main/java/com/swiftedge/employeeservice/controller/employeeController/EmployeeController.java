@@ -1,4 +1,4 @@
-package com.swiftedge.employeeservice.controller;
+package com.swiftedge.employeeservice.controller.employeeController;
 
 import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
@@ -35,22 +35,6 @@ public class EmployeeController {
     boolean isUpdated;
     Long projectId;
     Long selectedProjectId;
-
-//
-//    @GetMapping("/home")
-//    public String home(Model model) {
-//        model.addAttribute("activePage", "index");
-//        projectList = employeeService.getAllProjectsFromProjectService();
-//        List<EmployeeResponseDTO> employeeList = employeeService.getAllEmployees();
-//
-//        int numberOfProjects = projectList.size();
-//        int numberOfEmployees = employeeList.size();
-//        System.out.println("Employee List: " + numberOfEmployees);
-//        model.addAttribute("totalProjects", numberOfProjects);
-//        model.addAttribute("allEmployees", numberOfEmployees);
-//
-//        return "index";
-//    }
 
     @GetMapping("/add")
     public String getEmployeeForm(Model model) {
