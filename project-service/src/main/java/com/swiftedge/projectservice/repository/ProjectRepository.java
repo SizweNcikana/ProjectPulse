@@ -1,5 +1,6 @@
 package com.swiftedge.projectservice.repository;
 
+import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,8 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
 
     @Query("SELECT p.projectId FROM ProjectEntity p WHERE p.projectName = :projectName")
     Optional<Long> findProjectIdByProjectName(@Param("projectName") String projectName);
+
+    @Query("SELECT new com.swiftedge.projectservice.dto.ProjectStatusDTO(s.id, s.status, COUNT(p)) " +
+            "FROM ProjectEntity p JOIN p.status s GROUP BY s.id, s.status")
+    List<ProjectStatusDTO> countProjectsGroupedByStatus();
 }

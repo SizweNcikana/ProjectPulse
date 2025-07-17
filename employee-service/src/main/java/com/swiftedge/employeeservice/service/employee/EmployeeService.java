@@ -4,6 +4,7 @@ import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
 import com.swiftedge.employeeservice.dto.project.ProjectDTO;
+import com.swiftedge.employeeservice.dto.status.StatusDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
@@ -14,10 +15,12 @@ import com.swiftedge.employeeservice.service.status.StatusService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Getter
 @Setter
+@Slf4j
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeAddressRepository employeeAddressRepository;
@@ -299,6 +303,21 @@ public class EmployeeService {
                 .retrieve()
                 .bodyToMono(ProjectDTO.class)
                 .block();
+    }
+
+    public List<StatusDTO> fetchProjectStatusCounts () {
+        try {
+            return webClientBuilder.build()
+                    .get()
+                    .uri(baseUrl + "/status/counts")
+                    .retrieve()
+                    .bodyToFlux(StatusDTO.class)
+                    .collectList()
+                    .block();
+        }  catch (Exception e) {
+            log.error("Error while fetching status counts. \n {}", e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
 }

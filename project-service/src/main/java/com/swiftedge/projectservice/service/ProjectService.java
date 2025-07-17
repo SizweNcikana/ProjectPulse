@@ -2,6 +2,7 @@ package com.swiftedge.projectservice.service;
 
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
 import com.swiftedge.projectservice.dto.ProjectResponseDTO;
+import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
 import com.swiftedge.projectservice.entity.ProjectStatus;
 import com.swiftedge.projectservice.repository.ProjectRepository;
@@ -182,6 +183,11 @@ public class ProjectService {
 
     public Optional<Long> getProjectByName(String projectName) {
         return projectRepository.findProjectIdByProjectName(projectName);
+    }
+
+    public List<ProjectStatusDTO> getProjectsStatusCount() {
+        System.out.println("Project status count" + projectRepository.countProjectsGroupedByStatus());
+        return projectRepository.countProjectsGroupedByStatus();
     }
 
     public Optional<ProjectResponseDTO> getProjectById(Long projectId) {
