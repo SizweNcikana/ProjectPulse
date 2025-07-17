@@ -320,4 +320,8 @@ public class EmployeeService {
         }
     }
 
+    public List<StatusDTO> fetchEmployeeStatusCount () {
+        return employeeRepository.countEmployeesGroupedByStatus();
+    }
+
 }
