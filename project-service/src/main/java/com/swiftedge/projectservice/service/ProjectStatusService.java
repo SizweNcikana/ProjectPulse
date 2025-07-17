@@ -23,7 +23,7 @@ public class ProjectStatusService {
     public List<ProjectStatusDTO> getAllProjectStatus() {
         return projectStatusRepository.findAll().stream()
                 .map(status -> new ProjectStatusDTO(status.getId(),
-                        status.getStatus()))
+                        status.getStatus(), 0L))
                 .collect(Collectors.toList());
     }
 

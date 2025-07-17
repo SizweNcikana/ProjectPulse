@@ -13,4 +13,5 @@ public class ProjectStatusDTO {
 
     private Long statusId;
     private String statusName;
+    private long count;
 }

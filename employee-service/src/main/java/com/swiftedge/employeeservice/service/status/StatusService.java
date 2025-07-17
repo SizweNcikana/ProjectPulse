@@ -23,7 +23,7 @@ public class StatusService {
     public List<StatusDTO> getAllStatuses() {
         return statusRepository.findAll().stream()
                 .map(status -> new StatusDTO(status.getId(),
-                        status.getStatus()))
+                        status.getStatus(), 0L))
                 .collect(Collectors.toList());
     }
 

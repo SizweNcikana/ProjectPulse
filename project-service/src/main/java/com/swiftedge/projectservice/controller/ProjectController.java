@@ -10,6 +10,7 @@ import com.swiftedge.projectservice.service.ProjectStatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -174,6 +175,11 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("errorMessage", "Error while deleting project.");
         }
         return "redirect:/api/v2/projects/edit";
+    }
+
+    @GetMapping("/status/counts")
+    public ResponseEntity<List<ProjectStatusDTO>> getProjectStatusCounts() {
+        return ResponseEntity.ok(projectService.getProjectsStatusCount());
     }
 
 }
