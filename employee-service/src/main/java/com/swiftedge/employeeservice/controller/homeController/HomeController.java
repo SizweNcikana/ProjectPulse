@@ -22,21 +22,32 @@ public class HomeController {
     private final EmployeeService employeeService;
     List<ProjectDTO> projectList;
     List<EmployeeResponseDTO> employeeList;
-    List<StatusDTO> statusList;
+    List<StatusDTO> projectStatus;
+    List<StatusDTO> employeeStatus;
 
     @GetMapping("/home")
     public String home(Model model) {
         model.addAttribute("activePage", "index");
         projectList = employeeService.getAllProjectsFromProjectService();
-        statusList = employeeService.fetchProjectStatusCounts();
+        projectStatus = employeeService.fetchProjectStatusCounts();
+        employeeStatus = employeeService.fetchEmployeeStatusCount();
 
-        for (StatusDTO statusDTO : statusList) {
+        for (StatusDTO statusDTO : projectStatus) {
             log.info("Status id: {} Status: {} Status count: {}", statusDTO.getStatusId(), statusDTO.getStatusName(),
                     statusDTO.getCount());
 
             String attributeName = statusDTO.getStatusName().replaceAll("\\s+", "")
                     .toLowerCase() + "Count";
             model.addAttribute(attributeName, statusDTO.getCount());
+        }
+
+        for (StatusDTO statusDTO : employeeStatus) {
+            log.info("Employee Status id: {} Status: {} Status count: {}", statusDTO.getStatusId(), statusDTO.getStatusName(),
+                    statusDTO.getCount());
+
+            String statusValue = statusDTO.getStatusName().replaceAll("\\s+", "")
+                    .toLowerCase() + "Count";
+            model.addAttribute(statusValue, statusDTO.getCount());
         }
 
         List<EmployeeResponseDTO> employeeList = employeeService.getAllEmployees();
