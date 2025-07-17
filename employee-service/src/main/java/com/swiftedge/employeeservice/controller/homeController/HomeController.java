@@ -21,7 +21,6 @@ public class HomeController {
 
     private final EmployeeService employeeService;
     List<ProjectDTO> projectList;
-    List<EmployeeResponseDTO> employeeList;
     List<StatusDTO> projectStatus;
     List<StatusDTO> employeeStatus;
 
@@ -33,18 +32,12 @@ public class HomeController {
         employeeStatus = employeeService.fetchEmployeeStatusCount();
 
         for (StatusDTO statusDTO : projectStatus) {
-            log.info("Status id: {} Status: {} Status count: {}", statusDTO.getStatusId(), statusDTO.getStatusName(),
-                    statusDTO.getCount());
-
             String attributeName = statusDTO.getStatusName().replaceAll("\\s+", "")
                     .toLowerCase() + "Count";
             model.addAttribute(attributeName, statusDTO.getCount());
         }
 
         for (StatusDTO statusDTO : employeeStatus) {
-            log.info("Employee Status id: {} Status: {} Status count: {}", statusDTO.getStatusId(), statusDTO.getStatusName(),
-                    statusDTO.getCount());
-
             String statusValue = statusDTO.getStatusName().replaceAll("\\s+", "")
                     .toLowerCase() + "Count";
             model.addAttribute(statusValue, statusDTO.getCount());
@@ -54,9 +47,6 @@ public class HomeController {
 
         int numberOfProjects = projectList.size();
         int numberOfEmployees = employeeList.size();
-
-        log.info("Number of Employees: {}", numberOfEmployees);
-        log.info("Number of Project: {}", numberOfProjects);
 
         model.addAttribute("totalProjects", numberOfProjects);
         model.addAttribute("allEmployees", numberOfEmployees);
