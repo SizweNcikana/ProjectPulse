@@ -1,4 +1,4 @@
-package com.swiftedge.employeeservice.controller;
+package com.swiftedge.employeeservice.controller.employeeController;
 
 import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
@@ -35,22 +35,6 @@ public class EmployeeController {
     boolean isUpdated;
     Long projectId;
     Long selectedProjectId;
-
-
-    @GetMapping("/home")
-    public String home(Model model) {
-        model.addAttribute("activePage", "index");
-        projectList = employeeService.getAllProjectsFromProjectService();
-        List<EmployeeResponseDTO> employeeList = employeeService.getAllEmployees();
-
-        int numberOfProjects = projectList.size();
-        int numberOfEmployees = employeeList.size();
-        System.out.println("Employee List: " + numberOfEmployees);
-        model.addAttribute("totalProjects", numberOfProjects);
-        model.addAttribute("allEmployees", numberOfEmployees);
-
-        return "index";
-    }
 
     @GetMapping("/add")
     public String getEmployeeForm(Model model) {
@@ -160,6 +144,8 @@ public class EmployeeController {
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
         statuses = statusService.getAllStatuses();
         projectList = employeeService.getAllProjectsFromProjectService();
+        model.addAttribute("statusList", statuses);
+        log.info("Status: {}", statuses.listIterator().next().getStatusName());
 
 
         if (addresses.isEmpty() && employees.isEmpty()) {
@@ -191,6 +177,11 @@ public class EmployeeController {
                 model.addAttribute("ethnicity", employee.getEthnicity());
                 model.addAttribute("years_experience", employee.getExperience());
                 model.addAttribute("status", employee.getStatus().getStatus());
+
+
+                Long currentStatus = employee.getStatus().getId();
+                model.addAttribute("selectedStatus", currentStatus);
+
                 model.addAttribute("summary", employee.getSummary());
 
                 model.addAttribute("city", city);
@@ -206,12 +197,15 @@ public class EmployeeController {
                 projectId = employee.getProjectId();
                 if (projectId != null) {
                     ProjectDTO projectDTO = employeeService.getProjectById(projectId);
+                    String projectName = projectDTO.getProjectName();
+                    log.info("Project Name: {}", projectName);
 
                     if (projectDTO != null) {
                         log.info("Project id: {} project name: {}", projectId, projectDTO.getProjectName());
                         model.addAttribute("assignedProject", projectDTO);
+                        model.addAttribute("projectName", projectDTO.getProjectName());
                     } else {
-                        log.warn("Project id: {} not found", projectId);
+                        log.warn("Project id: not found");
                     }
                 }
             }

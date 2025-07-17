@@ -2,7 +2,9 @@ package com.swiftedge.projectservice.service;
 
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
 import com.swiftedge.projectservice.dto.ProjectResponseDTO;
+import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
+import com.swiftedge.projectservice.entity.ProjectStatus;
 import com.swiftedge.projectservice.repository.ProjectRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +27,14 @@ import java.util.stream.Collectors;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectStatusService projectStatusService;
 
     @Transactional
-    public void saveProject(ProjectRequestDTO projectRequestDTO) {
+    public void saveProject(ProjectRequestDTO projectRequestDTO, Long statusId) {
         Optional<ProjectEntity> existingProjects = projectRepository.findByProjectName(projectRequestDTO.getProjectName());
+
+        Optional<ProjectStatus> status = Optional.ofNullable(projectStatusService.getStatusById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID")));
 
         if (!existingProjects.isEmpty()) {
             throw new IllegalStateException("Project with name '" + projectRequestDTO.getProjectName() + "' already exists.");
@@ -40,6 +46,7 @@ public class ProjectService {
         projectEntity.setStartDate(projectRequestDTO.getStartDate());
         projectEntity.setDuration(projectRequestDTO.getDuration());
         projectEntity.setDescription(projectRequestDTO.getDescription());
+        projectEntity.setStatus(status.orElseThrow(() -> new IllegalArgumentException("Invalid status ID")));
 
         projectRepository.save(projectEntity);
     }
@@ -59,6 +66,7 @@ public class ProjectService {
         projectResponseDTO.setStartDate(projectEntity.getStartDate());
         projectResponseDTO.setDuration(projectEntity.getDuration());
         projectResponseDTO.setDescription(projectEntity.getDescription());
+        projectResponseDTO.setStatusName(projectEntity.getStatus().getStatus());
         return projectResponseDTO;
     }
 
@@ -70,7 +78,7 @@ public class ProjectService {
         return projectRepository.findByProjectName(projectRequestDTO.getProjectName());
     }
 
-    public boolean updateProject(Long id, ProjectRequestDTO projectRequestDTO) {
+    public boolean updateProject(Long id, ProjectRequestDTO projectRequestDTO, Long statusId) {
         ProjectEntity existingProject = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
@@ -94,6 +102,22 @@ public class ProjectService {
         if (!existingProject.getDuration().equals(projectRequestDTO.getDuration())) {
             validateDuration(projectRequestDTO.getDuration());
             existingProject.setDuration(projectRequestDTO.getDuration());
+            updated = true;
+        }
+
+        ProjectStatus newStatus = projectStatusService.getStatusById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Status not found"));
+
+        ProjectStatus currentStatus = existingProject.getStatus();
+
+        System.out.println("Current status is " + newStatus.getId());
+
+        if (currentStatus == null) {
+            throw new IllegalArgumentException("Project Status not found");
+        } else if (currentStatus.getId().equals(newStatus.getId())) {
+            log.info("Status is the same. Nothing to update");
+        } else {
+            existingProject.setStatus(newStatus);
             updated = true;
         }
 
@@ -159,6 +183,11 @@ public class ProjectService {
 
     public Optional<Long> getProjectByName(String projectName) {
         return projectRepository.findProjectIdByProjectName(projectName);
+    }
+
+    public List<ProjectStatusDTO> getProjectsStatusCount() {
+        System.out.println("Project status count" + projectRepository.countProjectsGroupedByStatus());
+        return projectRepository.countProjectsGroupedByStatus();
     }
 
     public Optional<ProjectResponseDTO> getProjectById(Long projectId) {

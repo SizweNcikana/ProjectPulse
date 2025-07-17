@@ -10,4 +10,5 @@ public class StatusDTO {
 
     private Long statusId;
     private String statusName;
+    private Long count;
 }

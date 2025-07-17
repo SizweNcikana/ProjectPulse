@@ -29,4 +29,8 @@ public class ProjectEntity {
 
     @Column(length = 500)
     private String description;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "status_id")
+    private ProjectStatus status;
 }

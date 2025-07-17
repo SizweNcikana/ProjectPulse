@@ -375,32 +375,42 @@
                                                             <div class="col-xl-3 col-md-6">
                                                                 <h6>All Projects</h6>
 
-                                                                <h5 class="m-b-30 f-w-700">
-                                                                    <span th:text="${totalProjects}">10</span>
-                                                                    <span class="text-c-blue m-l-10">+1.00%</span>
-                                                                </h5>
+                                                                <div class="d-flex align-items-baseline m-b-30 f-w-700" style="gap: 1rem;">
+                                                                    <h5 class="fs-2 m-0" th:text="${totalProjects} ?: 0">0</h5>
+                                                                    <span class="fs-5 text-primary">
+                                                                        New: <span th:text="${notstartedCount} ?: 0">0</span>
+                                                                    </span>
+                                                                </div>
 
                                                                 <div class="progress">
-                                                                    <div class="progress-bar bg-c-blue" style="width:100%"></div>
+                                                                    <div class="progress-bar bg-c-blue" style="
+                                                                    width:100%"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xl-3 col-md-6">
-                                                                <h6>Ongoing Projects</h6>
-                                                                <h5 class="m-b-30 f-w-700">4,569<span class="text-c-yellow m-l-10">-0.5%</span></h5>
+                                                                <h6>In progress</h6>
+                                                                <h5 class="m-b-30 f-w-700">
+                                                                    <span th:text="${inprogressCount} ?: 0">0</span>
+                                                                    <span class="text-c-yellow m-l-10">-0.5%</span>
+                                                                </h5>
                                                                 <div class="progress">
                                                                     <div class="progress-bar bg-c-yellow" style="width:65%"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xl-3 col-md-6">
-                                                                <h6>Completed Projects</h6>
-                                                                <h5 class="m-b-30 f-w-700">89%<span class="text-c-green m-l-10">+0.99%</span></h5>
+                                                                <h6>Completed</h6>
+                                                                <h5 class="m-b-30 f-w-700">
+                                                                    <span th:text="${completedCount} ?: 0">0</span>
+                                                                    <span class="text-c-green m-l-10">+0.99%</span></h5>
                                                                 <div class="progress">
                                                                     <div class="progress-bar bg-c-green" style="width:35%"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xl-3 col-md-6">
                                                                 <h6>Blocked/On hold</h6>
-                                                                <h5 class="m-b-30 f-w-700">365<span class="text-c-red m-l-10">+0.35%</span></h5>
+                                                                <h5 class="m-b-30 f-w-700">
+                                                                    <span th:text="${onholdCount} ?: 0">0</span>
+                                                                    <span class="text-c-red m-l-10">+0.35%</span></h5>
                                                                 <div class="progress">
                                                                     <div class="progress-bar bg-c-red" style="width:5%"></div>
                                                                 </div>
@@ -418,31 +428,51 @@
                                                         <div class="row">
                                                             <div class="col-xl-3 col-md-6">
                                                                 <h6>All Employees</h6>
-                                                                <h5 class="m-b-30 f-w-700">
-                                                                    <span th:text="${allEmployees}">4,569</span>
-                                                                    <span class="text-c-blue m-l-10">-0.5%</span>
-                                                                </h5>
+
+                                                                <div class="d-flex align-items-baseline m-b-30 f-w-700" style="gap: 1rem;">
+                                                                    <h5 class="fs-2 m-0" th:text="${allEmployees} ?: 0">0</h5>
+                                                                    <span class="fs-5 text-primary">
+                                                                        New Starters: <span th:text="${newCount} ?: 0">0</span>
+                                                                    </span>
+                                                                </div>
+
                                                                 <div class="progress">
                                                                     <div class="progress-bar bg-dark" style="width:72%"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xl-3 col-md-6">
-                                                                <h6>Unassigned Employees</h6>
-                                                                <h5 class="m-b-30 f-w-700">50%<span class="text-info m-l-10">+0.60%</span></h5>
+                                                                <h6>Assigned Employees</h6>
+
+                                                                <div class="d-flex align-items-baseline m-b-30 f-w-700" style="gap: 1rem;">
+                                                                    <h5 class="fs-2 m-0" th:text="${assignedCount} ?: 0">0</h5>
+                                                                    <span class="fs-5 text-primary">
+                                                                        Unassigned: <span th:text="${unassignedCount} ?: 0">0</span>
+                                                                    </span>
+                                                                </div>
+
                                                                 <div class="progress">
                                                                     <div class="progress-bar" style="width:50%; background-color: #17a2b8;"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xl-3 col-md-6">
-                                                                <h6>Assigned Employees</h6>
-                                                                <h5 class="m-b-30 f-w-700">95%<span class="text-purple m-l-10">+1.75%</span></h5>
+                                                                <h6>On Probation</h6>
+                                                                <h5 class="m-b-30 f-w-700">
+                                                                    <span th:text="${probationCount} ?: 0">0</span>
+                                                                    <span class="text-purple m-l-10">+1.75%</span></h5>
                                                                 <div class="progress">
                                                                     <div class="progress-bar" style="width:95%; background-color: #6f42c1;"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xl-3 col-md-6">
-                                                                <h6>UnKnown Status</h6>
-                                                                <h5 class="m-b-30 f-w-700">89%<span class="text-muted m-l-10">+0.99%</span></h5>
+                                                                <h6>Resigned Employees</h6>
+
+                                                                <div class="d-flex align-items-baseline m-b-30 f-w-700" style="gap: 1rem;">
+                                                                    <h5 class="fs-2 m-0" th:text="${resignedCount} ?: 0">0</h5>
+                                                                    <span class="fs-5 text-primary">
+                                                                        Terminated: <span th:text="${terminatedCount} ?: 0">0</span>
+                                                                    </span>
+                                                                </div>
+
                                                                 <div class="progress">
                                                                     <div class="progress-bar bg-secondary" style="width:35%"></div>
                                                                 </div>

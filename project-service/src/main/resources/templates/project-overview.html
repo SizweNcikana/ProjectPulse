@@ -469,6 +469,17 @@
                                                                                     </div>
                                                                                 </div>
 
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-12">
+                                                                                            <b>Progress Status</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-4" th:name="projectStatus" th:text="${projectStatus}"></div>
+                                                                                    </div>
+                                                                                </div>
+
                                                                                 <h4 class="m-2 mt-4 sub-title"></h4>
 
                                                                             </div>
@@ -506,6 +517,23 @@
                                                                                                 </option>
                                                                                             </select>
                                                                                         </div>
+                                                                                        <div class="m-3 mt-2 col-sm-5">
+                                                                                            <p style="color: #3380FF;">Project Status</p>
+                                                                                            <select class="selectpicker form-control"
+                                                                                                    data-style="btn-outline-primary"
+                                                                                                    name="projectStatus"
+                                                                                                    th:value="${selectedStatus}"
+                                                                                                    required>
+                                                                                                <option disabled selected>Select Status</option>
+
+                                                                                                <option th:each="status : ${statusList}"
+                                                                                                        th:value="${status.statusId}"
+                                                                                                        th:text="${status.statusName}"
+                                                                                                        th:selected="${status.statusId == selectedStatus}">
+                                                                                                </option>
+                                                                                            </select>
+                                                                                        </div>
+
                                                                                     </div>
                                                                                     <div class="form-group form-primary form-static-label row">
                                                                                         <div class="m-3 mt-2 col-md-10">

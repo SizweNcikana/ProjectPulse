@@ -23,8 +23,8 @@ public class EmployeeStatusSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        List<String> defaultStatuses = List.of("NEW", "ACTIVE", "INACTIVE", "ONBOARDING",
-                "PROBATION", "TERMINATED", "RETIRED", "RESIGNED", "TRANSFERRED");
+        List<String> defaultStatuses = List.of("NEW", "ASSIGNED", "UNASSIGNED",
+                "PROBATION", "TERMINATED", "RESIGNED");
 
         for (String statusName : defaultStatuses) {
             boolean exists = statusRepository.existsByStatus(statusName);
