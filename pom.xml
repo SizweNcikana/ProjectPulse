@@ -19,6 +19,7 @@
         <module>project-service</module>
         <module>discovery-server</module>
         <module>api-gateway</module>
+        <module>ui-frontend-service</module>
     </modules>
     <url/>
     <licenses>
