@@ -1,10 +1,10 @@
-package com.swiftedge.uifrontendservice;
+package com.swiftedge.frontendservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UiFrontendServiceApplicationTests {
+class FrontendServiceApplicationTests {
 
     @Test
     void contextLoads() {

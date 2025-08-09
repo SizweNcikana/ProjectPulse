@@ -1,4 +1,4 @@
-package com.swiftedge.uifrontendservice;
+package com.swiftedge.frontendservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class UiFrontendServiceApplication {
+public class FrontendServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UiFrontendServiceApplication.class, args);
+        SpringApplication.run(FrontendServiceApplication.class, args);
     }
 
 }
