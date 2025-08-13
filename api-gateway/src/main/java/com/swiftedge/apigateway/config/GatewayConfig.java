@@ -1,7 +1,6 @@
 package com.swiftedge.apigateway.config;
 
 import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.RouteRefreshListener;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,31 +14,19 @@ public class GatewayConfig {
 
                 // Route for Employee Service API
                 .route("employee-service", r -> r.path("/api/v2/employees/**")
-                        .uri("lb://EMPLOYEE-SERVICE"))
+                        .uri("lb://employee-service"))
 
                 // Route for Project Service API
                 .route("project-service", r -> r.path("/api/v2/projects/**")
-                        .uri("lb://PROJECT-SERVICE"))
+                        .uri("lb://project-service"))
 
-                // Route for Employee Service Static Files (CSS, JS, Images)
-                .route("employee-static", r -> r.path("/static/**", "/js/**", "/css/**", "/images/**", "/icon/**", "/pages/**")
-                        .filters(f -> f.rewritePath("/(?<path>.*)", "/${path}"))
-                        .uri("lb://EMPLOYEE-SERVICE"))
+                // Route for UI FRONTEND Static files
+                .route("ui-frontend-static", r -> r.path("/static/**", "/js/**", "/css/**", "/images/**")
+                        .uri("lb://ui-frontend"))
 
-                // Route for Project Service Static Files (CSS, JS, Images)
-                .route("project-static", r -> r.path("/static/**", "/js/**", "/css/**", "/images/**", "/icon/**", "/pages/**")
-                        .filters(f -> f.rewritePath("/(?<path>.*)", "/${path}"))
-                        .uri("lb://PROJECT-SERVICE"))
-
-                // Route for Employee Service Thymeleaf Templates
-                .route("employee-templates", r -> r.path("/templates/**")
-                        .filters(f -> f.rewritePath("/templates/(?<path>.*)", "/${path}"))
-                        .uri("lb://EMPLOYEE-SERVICE"))
-
-                // Route for Project Service Thymeleaf Templates
-                .route("project-templates", r -> r.path("/templates/**")
-                        .filters(f -> f.rewritePath("/templates/(?<path>.*)", "/${path}"))
-                        .uri("lb://EMPLOYEE-SERVICE"))
+                // Route for UI FRONTEND UI pages
+                .route("ui-frontend", r -> r.path("/home", "/employees", "/**")  // catch-all your UI URLs
+                        .uri("lb://ui-frontend"))
 
                 // Route for Discovery Server UI
                 .route("discovery-server", r -> r.path("/eureka/web")

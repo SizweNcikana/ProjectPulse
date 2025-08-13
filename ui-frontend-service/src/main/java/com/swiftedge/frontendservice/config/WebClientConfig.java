@@ -9,12 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-    @Value("${api.gateway.url}")
-    private String gatewayUrl;
-
     @Bean
     @LoadBalanced
-    public WebClient.Builder loadBalancedWebClient() {
+    public WebClient.Builder loadBalancedWebClientBuilder() {
         return WebClient.builder();
     }
 }

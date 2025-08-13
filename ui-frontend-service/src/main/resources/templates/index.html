@@ -378,7 +378,7 @@
                                                                 <div class="d-flex align-items-baseline m-b-30 f-w-700" style="gap: 1rem;">
                                                                     <h5 class="fs-2 m-0" th:text="${totalProjects} ?: 0">0</h5>
                                                                     <span class="fs-5 text-primary">
-                                                                        New: <span th:text="${notstartedCount} ?: 0">0</span>
+                                                                        New: <span th:text="${notStartedCount} ?: 0">0</span>
                                                                     </span>
                                                                 </div>
 
@@ -390,7 +390,7 @@
                                                             <div class="col-xl-3 col-md-6">
                                                                 <h6>In progress</h6>
                                                                 <h5 class="m-b-30 f-w-700">
-                                                                    <span th:text="${inprogressCount} ?: 0">0</span>
+                                                                    <span th:text="${inProgressCount} ?: 0">0</span>
                                                                     <span class="text-c-yellow m-l-10">-0.5%</span>
                                                                 </h5>
                                                                 <div class="progress">
@@ -409,7 +409,7 @@
                                                             <div class="col-xl-3 col-md-6">
                                                                 <h6>Blocked/On hold</h6>
                                                                 <h5 class="m-b-30 f-w-700">
-                                                                    <span th:text="${onholdCount} ?: 0">0</span>
+                                                                    <span th:text="${onHoldCount} ?: 0">0</span>
                                                                     <span class="text-c-red m-l-10">+0.35%</span></h5>
                                                                 <div class="progress">
                                                                     <div class="progress-bar bg-c-red" style="width:5%"></div>

@@ -1,11 +1,13 @@
 package com.swiftedge.employeeservice.entity.employee;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "employees")
@@ -35,6 +37,7 @@ public class EmployeeEntity {
     private String summary;
 
     // One-to-One relationship with Address
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private EmployeeAddressEntity address;
@@ -44,6 +47,7 @@ public class EmployeeEntity {
     Cannot implement a one-to-one relationship here as it enforces a status to only be associated with
     one employee
      */
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id")
     private EmployeeStatus status;
@@ -54,5 +58,6 @@ public class EmployeeEntity {
     on each other. This is referred to as 'Cyclic dependency'
     hence we just created the below column.
      */
+    @JsonIgnore
     private Long projectId;
 }
