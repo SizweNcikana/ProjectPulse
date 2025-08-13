@@ -1,4 +1,4 @@
-package com.swiftedge.employeeservice.controller.employeeController;
+package com.swiftedge.employeeservice.controller.employeeServiceController;
 
 import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
@@ -12,6 +12,7 @@ import com.swiftedge.employeeservice.service.status.StatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,14 +21,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.MessageFormat;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RequestMapping("/api/v2/employees")
 @Controller
 @RequiredArgsConstructor
-public class EmployeeController {
+public class EmployeeServiceController {
     private final EmployeeService employeeService;
     private final StatusService statusService;
     List<ProjectDTO> projectList;
@@ -36,22 +39,24 @@ public class EmployeeController {
     Long projectId;
     Long selectedProjectId;
 
-    @GetMapping("/add")
-    public String getEmployeeForm(Model model) {
-        model.addAttribute("activeMenu", "employees");
-        model.addAttribute("activePage", "employees");
+    @GetMapping("/add-employee")
+    public ResponseEntity<Map<String, Object>> addEmployeeForm() {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("activeMenu", "employees");
+        response.put("activePage", "employees");
 
         projectList = employeeService.getAllProjectsFromProjectService();
-        EmployeeRequestDTO employee = new EmployeeRequestDTO();
-        AddressRequestDTO address = new AddressRequestDTO();
+        response.put("projects", projectList);
 
-        employee.setAddress(address); // Link the address to the employee DTO
+        EmployeeRequestDTO employee = new EmployeeRequestDTO();
+        employee.setAddress(new AddressRequestDTO());
+        response.put("employee", employee);
+
         log.info("Projects: {}", projectList);
 
-        model.addAttribute("employee", employee);
-        model.addAttribute("projects", projectList);
+        return ResponseEntity.ok(response);
 
-        return "add-employee";
     }
 
     @PostMapping("/save")

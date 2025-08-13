@@ -252,7 +252,7 @@
                             <div class="pcoded-navigation-label">Dashboard</div>
                             <ul class="pcoded-item pcoded-left-item">
                                 <li class="">
-                                    <a th:href="@{/api/v2/employees/home}" class="waves-effect waves-dark">
+                                    <a th:href="@{/home}" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
                                         <span class="pcoded-mtext">Dashboard</span>
                                         <span class="pcoded-mcaret"></span>
@@ -269,21 +269,21 @@
                                     </a>
                                     <ul class="pcoded-submenu">
                                         <li th:classappend="${activePage == 'all-employees'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/employees/view-all}" class="waves-effect waves-dark">
+                                            <a th:href="@{/employees/view-all}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">All Employees</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'employees'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/employees/add}" class="waves-effect waves-dark">
+                                            <a th:href="@{/employees/add-employee}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Add Employee</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'edit-employee'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/employees/edit}" class="waves-effect waves-dark">
+                                            <a th:href="@{/employees/edit}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Edit Employees</span>
                                                 <span class="pcoded-mcaret"></span>
@@ -309,21 +309,21 @@
                                     </a>
                                     <ul class="pcoded-submenu">
                                         <li th:classappend="${activePage == 'all-projects'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/projects/view-all}" class="waves-effect waves-dark">
+                                            <a th:href="@{/projects/view-all}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">All Projects</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'projects'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/projects/add}" class="waves-effect waves-dark">
+                                            <a th:href="@{/projects/add}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Add Project</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'edit-project'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/projects/edit}" class="waves-effect waves-dark">
+                                            <a th:href="@{/projects/edit}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Edit Project</span>
                                                 <span class="pcoded-mcaret"></span>
