@@ -1,8 +1,8 @@
 package com.swiftedge.frontendservice.controller;
 
-import com.swiftedge.frontendservice.dto.DashboardDataDTO;
-import com.swiftedge.frontendservice.dto.EmployeeDTO;
-import com.swiftedge.frontendservice.dto.ProjectDTO;
+import com.swiftedge.frontendservice.dto.dashboard.DashboardDataDTO;
+import com.swiftedge.frontendservice.dto.employee.EmployeeStatusDTO;
+import com.swiftedge.frontendservice.dto.project.ProjectStatusDTO;
 import com.swiftedge.frontendservice.service.DashboardClient;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,8 +20,11 @@ public class DashboardController {
 
         DashboardDataDTO data = dashboardClient.getDashboardData();
 
-        EmployeeDTO employees = data.getEmployees();
-        ProjectDTO projects = data.getProjects();
+        EmployeeStatusDTO employees = data.getEmployees();
+        ProjectStatusDTO projects = data.getProjects();
+
+        model.addAttribute("activeMenu", data.getActiveMenu());
+        model.addAttribute("activePage", data.getActivePage());
 
         if (employees != null) {
             model.addAttribute("newCount", employees.getNewCount());

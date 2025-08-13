@@ -1,9 +1,6 @@
-package com.swiftedge.frontendservice.dto;
+package com.swiftedge.frontendservice.dto.employee;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.util.List;
 
 @Data
 @Getter
@@ -11,7 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class EmployeeDTO {
+public class EmployeeStatusDTO {
 
     private int newCount;
     private int assignedCount;

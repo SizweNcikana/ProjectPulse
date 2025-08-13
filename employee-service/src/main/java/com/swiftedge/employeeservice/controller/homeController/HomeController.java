@@ -43,6 +43,9 @@ public class HomeController {
         projectData.put("totalProjects", projectList.size());
         projectData.put("projectsList", projectList);
 
+        response.put("activeMenu", "index");
+        response.put("activePage", "index");
+
         Map<String, Object> employeeData = new HashMap<>();
         employeeStatus.forEach(status ->
                 employeeData.put(

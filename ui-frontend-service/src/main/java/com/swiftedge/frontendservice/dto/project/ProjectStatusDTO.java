@@ -1,6 +1,5 @@
-package com.swiftedge.frontendservice.dto;
+package com.swiftedge.frontendservice.dto.project;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -8,7 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectDTO {
+public class ProjectStatusDTO {
 
     private int onholdCount;
     private int notstartedCount;
