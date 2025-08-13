@@ -10,9 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 public class ProjectDTO {
 
-    @NotNull
-    private Long projectId;
-
-    @NotNull
-    private String projectName;
+    private int onholdCount;
+    private int notstartedCount;
+    private int totalProjects;
+    private int cancelledCount;
+    private int completedCount;
+    private int inprogressCount;
 }

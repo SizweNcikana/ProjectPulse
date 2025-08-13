@@ -6,12 +6,14 @@ import com.swiftedge.employeeservice.dto.status.StatusDTO;
 import com.swiftedge.employeeservice.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequestMapping("/api/v2/employees")
@@ -20,37 +22,45 @@ import java.util.List;
 public class HomeController {
 
     private final EmployeeService employeeService;
-    List<ProjectDTO> projectList;
-    List<StatusDTO> projectStatus;
-    List<StatusDTO> employeeStatus;
 
     @GetMapping("/home")
-    public String home(Model model) {
-        model.addAttribute("activePage", "index");
-        projectList = employeeService.getAllProjectsFromProjectService();
-        projectStatus = employeeService.fetchProjectStatusCounts();
-        employeeStatus = employeeService.fetchEmployeeStatusCount();
+    public ResponseEntity<Map<String, Object>> dashboardData() {
+        Map<String, Object> response = new HashMap<>();
 
-        for (StatusDTO statusDTO : projectStatus) {
-            String attributeName = statusDTO.getStatusName().replaceAll("\\s+", "")
-                    .toLowerCase() + "Count";
-            model.addAttribute(attributeName, statusDTO.getCount());
-        }
-
-        for (StatusDTO statusDTO : employeeStatus) {
-            String statusValue = statusDTO.getStatusName().replaceAll("\\s+", "")
-                    .toLowerCase() + "Count";
-            model.addAttribute(statusValue, statusDTO.getCount());
-        }
-
+        // Fetch data from services
+        List<ProjectDTO> projectList = employeeService.getAllProjectsFromProjectService();
+        List<StatusDTO> projectStatus = employeeService.fetchProjectStatusCounts();
+        List<StatusDTO> employeeStatus = employeeService.fetchEmployeeStatusCount();
         List<EmployeeResponseDTO> employeeList = employeeService.getAllEmployees();
 
-        int numberOfProjects = projectList.size();
-        int numberOfEmployees = employeeList.size();
+        Map<String, Object> projectData = new HashMap<>();
+        projectStatus.forEach(status ->
+                projectData.put(
+                        formatStatusKey(status.getStatusName()),
+                        status.getCount()
+                )
+        );
+        projectData.put("totalProjects", projectList.size());
+        projectData.put("projectsList", projectList);
 
-        model.addAttribute("totalProjects", numberOfProjects);
-        model.addAttribute("allEmployees", numberOfEmployees);
+        Map<String, Object> employeeData = new HashMap<>();
+        employeeStatus.forEach(status ->
+                employeeData.put(
+                        formatStatusKey(status.getStatusName()),
+                        status.getCount()
+                )
+        );
+        employeeData.put("totalEmployees", employeeList.size());
+        employeeData.put("employeesList", employeeList);
 
-        return "index";
+        response.put("projects", projectData);
+        response.put("employees", employeeData);
+
+        return ResponseEntity.ok(response);
     }
+
+    private String formatStatusKey(String statusName) {
+        return statusName.replaceAll("\\s+", "").toLowerCase() + "Count";
+    }
+
 }
