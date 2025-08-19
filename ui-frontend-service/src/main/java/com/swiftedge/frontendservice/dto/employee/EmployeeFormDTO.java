@@ -6,9 +6,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class EmployeeFormResponseDTO {
+public class EmployeeFormDTO {
     private String activeMenu;
     private String activePage;
     private List<ProjectDTO> projects;
-    private EmployeeDTO employee;
+    private EmployeeRequestDTO employee;
 }

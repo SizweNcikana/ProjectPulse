@@ -16,6 +16,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -40,43 +42,64 @@ public class EmployeeService {
     EmployeeEntity existingEmployee;
 
     @Transactional
-    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId, Long statusId) {
-        EmployeeEntity employeeEntity = new EmployeeEntity();
-        EmployeeAddressEntity addressEntity = new EmployeeAddressEntity();
+    public EmployeeResponseDTO saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId, Long statusId) {
 
-        EmployeeStatus status = statusService.getStatusById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
+        try {
+            //Address Entity
+            EmployeeAddressEntity employeeAddressEntity = new EmployeeAddressEntity();
 
+            employeeAddressEntity.setStreetAddress(employeeRequestDTO.getAddress().getStreetAddress());
+            employeeAddressEntity.setCity(employeeRequestDTO.getAddress().getCity());
+            employeeAddressEntity.setSuburb(employeeRequestDTO.getAddress().getSuburb());
+            employeeAddressEntity.setZipCode(employeeRequestDTO.getAddress().getZipCode());
 
-        employeeRepository.findByEmail(employeeRequestDTO.getEmail())
-                .ifPresent(e -> {
-                    throw new IllegalArgumentException("Email " + "'" + employeeRequestDTO.getEmail() + "'" + " already exists");
-                });
+            employeeAddressRepository.save(employeeAddressEntity);
 
-        employeeEntity.setName(employeeRequestDTO.getName());
-        employeeEntity.setSurname(employeeRequestDTO.getSurname());
-        employeeEntity.setEmail(employeeRequestDTO.getEmail());
-        employeeEntity.setNumber(employeeRequestDTO.getNumber());
-        employeeEntity.setIdNumber(employeeRequestDTO.getIdNumber());
-        employeeEntity.setDob(employeeRequestDTO.getDob());
-        employeeEntity.setGender(employeeRequestDTO.getGender());
-        employeeEntity.setEthnicity(employeeRequestDTO.getEthnicity());
-        employeeEntity.setOccupation(employeeRequestDTO.getOccupation());
-        employeeEntity.setExperience(employeeRequestDTO.getExperience());
-        employeeEntity.setSummary(employeeRequestDTO.getSummary());
-        employeeEntity.setStatus(status);
+            //Employee Entity
+            EmployeeEntity employeeEntity = new EmployeeEntity();
 
-        employeeEntity.setProjectId(projectId);
+            employeeRepository.findByEmail(employeeRequestDTO.getEmail())
+                    .ifPresent(e -> {
+                        throw new IllegalArgumentException("Email '" + employeeRequestDTO.getEmail() + "' already exists");
+                    });
 
-        addressEntity.setCity(employeeRequestDTO.getAddress().getCity());
-        addressEntity.setSuburb(employeeRequestDTO.getAddress().getSuburb());
-        addressEntity.setStreetAddress(employeeRequestDTO.getAddress().getStreetAddress());
-        addressEntity.setZipCode(employeeRequestDTO.getAddress().getZipCode());
+            employeeEntity.setName(employeeRequestDTO.getName());
+            employeeEntity.setSurname(employeeRequestDTO.getSurname());
+            employeeEntity.setEmail(employeeRequestDTO.getEmail());
+            employeeEntity.setNumber(employeeRequestDTO.getNumber());
+            employeeEntity.setIdNumber(employeeRequestDTO.getIdNumber());
+            employeeEntity.setDob(employeeRequestDTO.getDob());
+            employeeEntity.setGender(employeeRequestDTO.getGender());
+            employeeEntity.setEthnicity(employeeRequestDTO.getEthnicity());
+            employeeEntity.setOccupation(employeeRequestDTO.getOccupation());
+            employeeEntity.setExperience(employeeRequestDTO.getExperience());
+            employeeEntity.setSummary(employeeRequestDTO.getSummary());
+            employeeEntity.setAddress(employeeAddressEntity);
 
-        employeeEntity.setAddress(addressEntity);
-        addressEntity.setEmployee(employeeEntity);
+            EmployeeStatus status = statusService.getStatusById(statusId)
+                    .orElseThrow(() -> new RuntimeException("Status not found with ID: " + statusId));
+            employeeEntity.setStatus(status);
 
-        employeeRepository.save(employeeEntity);
+            employeeEntity.setProjectId(projectId);
+
+            employeeRepository.save(employeeEntity);
+
+            // Response DTO
+            EmployeeResponseDTO responseDTO = new EmployeeResponseDTO();
+
+            responseDTO.setEmployeeId(employeeEntity.getEmployeeId());
+            responseDTO.setSuccessMessage("Employee saved successfully.");
+            responseDTO.setSuccess(true);
+
+            return responseDTO;
+        } catch (Exception e) {
+            EmployeeResponseDTO responseDTO = new EmployeeResponseDTO();
+
+            responseDTO.setErrorMessage("Unable to save employee: " + e.getMessage());
+            responseDTO.setSuccess(false);
+
+            return responseDTO;
+        }
     }
 
     public List<EmployeeResponseDTO> getAllEmployees() {

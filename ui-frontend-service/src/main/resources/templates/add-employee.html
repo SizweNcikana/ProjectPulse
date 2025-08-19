@@ -365,7 +365,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                     </div>
                                                     <div class="card-block">
-                                                        <form th:action="@{/api/v2/employees/save}" th:object="${employee}" method="POST"  class="form-material">
+                                                        <form th:action="@{/employees/save-employee}" th:object="${employee}" method="POST"  class="form-material">
                                                             <div class="form-group form-primary row">
                                                                 <div class="mt-3 col-sm-6">
                                                                     <input type="text" th:field="*{name}" class="form-control">

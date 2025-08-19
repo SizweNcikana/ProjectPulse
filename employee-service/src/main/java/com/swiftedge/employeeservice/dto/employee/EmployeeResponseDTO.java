@@ -1,10 +1,8 @@
 package com.swiftedge.employeeservice.dto.employee;
 
+import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -12,9 +10,10 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class EmployeeResponseDTO {
 
-    private Long id;
+    private Long employeeId;;
     private String name;
     private String surname;
     private String email;
@@ -26,4 +25,8 @@ public class EmployeeResponseDTO {
     private String experience;
     private Long statusId;
     private EmployeeStatus status;
+
+    private String successMessage;
+    private String errorMessage;
+    private boolean success;
 }
