@@ -12,6 +12,7 @@ import com.swiftedge.employeeservice.service.status.StatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,10 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.MessageFormat;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -59,52 +57,34 @@ public class EmployeeServiceController {
 
     }
 
-    @PostMapping("/save")
-    public String saveEmployee(@Valid
-                               @ModelAttribute("employee")
-                               EmployeeRequestDTO employeeRequestDTO,
-                               BindingResult bindingResult,
-                               RedirectAttributes redirectAttributes) {
-
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Validation errors occurred. Please correct them and try again.");
-            return "redirect:/api/v2/employees/add";
-        }
-
+    @PostMapping("/save-employee")
+    public ResponseEntity<EmployeeResponseDTO> saveEmployee(@RequestBody EmployeeRequestDTO employeeRequestDTO) {
         try {
-            // Fetch the project ID from the dropdown (selected project ID)
             selectedProjectId = employeeRequestDTO.getProject();
+            String defaultStatus = "NEW";
 
-            statuses = statusService.getAllStatuses();
-
-            String statusName = "NEW";
-
-            /*
-            Search for the ID for of status 'NEW', if found, save it as the default for a new employee
-            being added to the System.
-             */
-            statuses.stream()
-                    .filter(s -> s.getStatusName().equalsIgnoreCase(statusName))
+            StatusDTO employeeStatus = statusService.getAllStatuses().stream()
+                    .filter(s -> s.getStatusName().equalsIgnoreCase(defaultStatus))
                     .findFirst()
-                    .flatMap(status -> {
-                        Long statusId = status.getStatusId();
-                        return statusService.getStatusById(statusId);
-                    })
-                    .ifPresentOrElse(employeeStatus -> {
-                        log.info("Employee Status: {}", employeeStatus.getId());
-                        employeeService.saveEmployee(employeeRequestDTO, selectedProjectId, employeeStatus.getId());
-                    }, () -> {
-                        log.error("No matching status found or status ID is invalid.");
-                    });
+                    .orElseThrow(() -> new IllegalArgumentException("No matching status found for: " + defaultStatus));
 
-            redirectAttributes.addFlashAttribute("successMessage", "Employee data saved successfully.");
+            log.info("Assigning status '{}' (id={}) to employee", employeeStatus.getStatusName(), employeeStatus.getStatusId());
 
-        } catch (IllegalArgumentException iex) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error occurred. " + iex.getMessage());
-            return "redirect:/api/v2/employees/add";
+            EmployeeResponseDTO savedEmployee = employeeService.saveEmployee(
+                    employeeRequestDTO,
+                    employeeRequestDTO.getProject(),
+                    employeeStatus.getStatusId()
+            );
+
+            return ResponseEntity.ok(savedEmployee);
+
+        } catch (IllegalArgumentException ex) {
+            log.error("Failed to save employee: {}", ex.getMessage());
+            return ResponseEntity.badRequest().build();
+        } catch (Exception ex) {
+            log.error("Unexpected error saving employee", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return "redirect:/api/v2/employees/add";
-
     }
 
     @GetMapping("/success")

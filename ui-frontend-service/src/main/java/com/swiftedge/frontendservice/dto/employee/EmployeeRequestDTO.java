@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Data
 @Getter
 @Setter
-public class EmployeeDTO {
+public class EmployeeRequestDTO {
 
     @NotBlank(message = "First name is required.")
     @Size(max = 20, message = "First name cannot exceed 20 characters.")
