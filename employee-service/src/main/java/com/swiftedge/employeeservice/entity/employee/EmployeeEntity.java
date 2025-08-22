@@ -1,6 +1,7 @@
 package com.swiftedge.employeeservice.entity.employee;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
 import jakarta.persistence.*;

@@ -1,19 +1,18 @@
-package com.swiftedge.employeeservice.dto.employee;
+package com.swiftedge.frontendservice.dto.employee;
 
-import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
+import com.swiftedge.frontendservice.dto.address.AddressDTO;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Data
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class EmployeeRequestDTO {
+public class EmployeeDTO {
+
     @NotBlank(message = "First name is required.")
     @Size(max = 20, message = "First name cannot exceed 20 characters.")
     private String name;
@@ -55,8 +54,9 @@ public class EmployeeRequestDTO {
     @Size(max = 500, message = "Summary cannot exceed 500 characters")
     private String summary;
 
-    private AddressRequestDTO address; //Nested employee address
+    private AddressDTO address;
 
     private Long project;
-    private Long statusId;
+    private String statusName;
+
 }

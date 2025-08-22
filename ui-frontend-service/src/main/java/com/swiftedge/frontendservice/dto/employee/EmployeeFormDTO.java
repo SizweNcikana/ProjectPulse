@@ -10,5 +10,5 @@ public class EmployeeFormDTO {
     private String activeMenu;
     private String activePage;
     private List<ProjectDTO> projects;
-    private EmployeeRequestDTO employee;
+    private EmployeeDTO employee;
 }

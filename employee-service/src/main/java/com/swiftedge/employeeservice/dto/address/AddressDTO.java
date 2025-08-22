@@ -3,13 +3,12 @@ package com.swiftedge.employeeservice.dto.address;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.stereotype.Service;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressRequestDTO {
+public class AddressDTO {
 
     @NotBlank(message = "Employee City required.")
     @Size(max = 30, message = "City cannot exceed 30 characters.")
