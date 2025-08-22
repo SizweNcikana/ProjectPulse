@@ -15,4 +15,13 @@ public class ProjectDTO {
 
     @NotNull
     private String projectName;
+
+    @NotNull
+    private String description;
+
+    @NotNull
+    private String dateCreated;
+
+    @NotNull
+    private ProjectStatusDTO projectStatus;
 }

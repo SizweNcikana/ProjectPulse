@@ -16,4 +16,8 @@ public class ProjectDTO {
 
     @NotNull
     private String projectName;
+
+    @NotNull
+    private String description;
+
 }

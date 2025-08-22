@@ -1,7 +1,7 @@
 package com.swiftedge.employeeservice.controller.employeeServiceController;
 
-import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
-import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
+import com.swiftedge.employeeservice.dto.address.AddressDTO;
+import com.swiftedge.employeeservice.dto.employee.EmployeeDTO;
 import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
 import com.swiftedge.employeeservice.dto.project.ProjectDTO;
 import com.swiftedge.employeeservice.dto.status.StatusDTO;
@@ -9,7 +9,6 @@ import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.service.employee.EmployeeService;
 import com.swiftedge.employeeservice.service.status.StatusService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -47,8 +46,8 @@ public class EmployeeServiceController {
         projectList = employeeService.getAllProjectsFromProjectService();
         response.put("projects", projectList);
 
-        EmployeeRequestDTO employee = new EmployeeRequestDTO();
-        employee.setAddress(new AddressRequestDTO());
+        EmployeeDTO employee = new EmployeeDTO();
+        employee.setAddress(new AddressDTO());
         response.put("employee", employee);
 
         log.info("Projects: {}", projectList);
@@ -57,10 +56,16 @@ public class EmployeeServiceController {
 
     }
 
+    @GetMapping("/view-employees")
+    public ResponseEntity<List<EmployeeResponseDTO>> viewEmployees() {
+        List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
+    }
+
     @PostMapping("/save-employee")
-    public ResponseEntity<EmployeeResponseDTO> saveEmployee(@RequestBody EmployeeRequestDTO employeeRequestDTO) {
+    public ResponseEntity<EmployeeResponseDTO> saveEmployee(@RequestBody EmployeeDTO employeeDTO, ProjectDTO projectDTO) {
         try {
-            selectedProjectId = employeeRequestDTO.getProject();
+            selectedProjectId = projectDTO.getProjectId();
             String defaultStatus = "NEW";
 
             StatusDTO employeeStatus = statusService.getAllStatuses().stream()
@@ -71,8 +76,8 @@ public class EmployeeServiceController {
             log.info("Assigning status '{}' (id={}) to employee", employeeStatus.getStatusName(), employeeStatus.getStatusId());
 
             EmployeeResponseDTO savedEmployee = employeeService.saveEmployee(
-                    employeeRequestDTO,
-                    employeeRequestDTO.getProject(),
+                    employeeDTO,
+                    employeeDTO.getProjectId(),
                     employeeStatus.getStatusId()
             );
 
@@ -91,17 +96,17 @@ public class EmployeeServiceController {
     public String showSuccessPage() {
         return "employee-success";
     }
-
-    @GetMapping("/view-all")
-    public String viewAllEmployees(Model model) {
-        model.addAttribute("activeMenu", "employees");
-        model.addAttribute("activePage", "all-employees");
-
-        List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
-        model.addAttribute("employeeEntityList", employees);
-
-        return "employees-view-all";
-    }
+//
+//    @GetMapping("/view-all")
+//    public String viewAllEmployees(Model model) {
+//        model.addAttribute("activeMenu", "employees");
+//        model.addAttribute("activePage", "all-employees");
+//
+//        List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
+//        model.addAttribute("employeeEntityList", employees);
+//
+//        return "employees-view-all";
+//    }
 
     @GetMapping("/edit")
     public String editEmployee(Model model) {
@@ -203,8 +208,8 @@ public class EmployeeServiceController {
     public String updateEmployee(
             @PathVariable("id") Long id,
             @RequestParam("status") Long selectedStatus,
-            @ModelAttribute("employee") EmployeeResponseDTO employeeResponseDTO,
-            @ModelAttribute("address") AddressRequestDTO addressRequestDTO,
+            @ModelAttribute("employee") EmployeeDTO employeeDTO,
+            @ModelAttribute("address") AddressDTO addressDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
@@ -212,16 +217,19 @@ public class EmployeeServiceController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage",
                     "Validation errors occurred. Please correct them and try again.");
-            return "redirect:/api/v2/employees/search?name="+employeeResponseDTO.getName()+"&surname="+employeeResponseDTO.getSurname();
+            return "redirect:/api/v2/employees/search";
         }
+        StatusDTO statusDTO = new StatusDTO();
 
         try {
-            Long statValue = employeeResponseDTO.getStatusId();
+            Long statValue = statusDTO.getStatusId();
             if (selectedStatus == null) {
                 log.info("Selected status is null");
+            } else {
+                System.out.println("Selected status is " + statValue);
             }
 
-            isUpdated = employeeService.updateEmployee(id, employeeResponseDTO, addressRequestDTO, selectedStatus);
+            isUpdated = employeeService.updateEmployee(id, employeeDTO, addressDTO, selectedStatus);
 
             if (isUpdated) {
 
@@ -243,17 +251,17 @@ public class EmployeeServiceController {
     public String assignEmployeeToNewProject(
             @PathVariable("id") Long id,
             @ModelAttribute ProjectDTO projectDTO,
-            EmployeeRequestDTO employeeRequestDTO,
+            EmployeeDTO employeeDTO,
             RedirectAttributes redirectAttributes
     )
     {
          try {
              // Fetch the project ID from the dropdown (selected project ID)
-             selectedProjectId = employeeRequestDTO.getProject();
+             selectedProjectId = projectDTO.getProjectId();
              log.info("Selected project id: {}", selectedProjectId);
 
              if (selectedProjectId != null && !selectedProjectId.equals(projectId)) {
-                 employeeService.updateAssignedEmployeeProject(id, selectedProjectId);
+                 employeeService.updateAssignedEmployeeProject(id);
 
                  redirectAttributes.addFlashAttribute("successMessage",
                          "Project updated successfully for the employee.");

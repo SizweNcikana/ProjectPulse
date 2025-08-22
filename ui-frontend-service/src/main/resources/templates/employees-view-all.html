@@ -248,7 +248,7 @@
                             <div class="pcoded-navigation-label">Dashboard</div>
                             <ul class="pcoded-item pcoded-left-item">
                                 <li class="">
-                                    <a th:href="@{/api/v2/employees/home}" class="waves-effect waves-dark">
+                                    <a th:href="@{/home}" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
                                         <span class="pcoded-mtext">Dashboard</span>
                                         <span class="pcoded-mcaret"></span>
@@ -265,14 +265,14 @@
                                     </a>
                                     <ul class="pcoded-submenu">
                                         <li th:classappend="${activePage == 'all-employees'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/employees/view-all}" class="waves-effect waves-dark">
+                                            <a th:href="@{/employees/view-employees}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">All Employees</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'employees'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/employees/add}" class="waves-effect waves-dark">
+                                            <a th:href="@{/employees/add-employee}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Add Employee</span>
                                                 <span class="pcoded-mcaret"></span>
@@ -368,19 +368,15 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                        <tr th:each="employees : ${ employeeEntityList }">
-                                                            <td th:text="${ employees.name }"></td>
-                                                            <td th:text="${ employees.surname }"></td>
-                                                            <td th:text="${ employees.occupation }"></td>
-                                                            <td th:text="${ employees.email }"></td>
-                                                            <td th:text="${ employees.number }"></td>
-                                                            <td th:text="${ employees.dob }"></td>
-                                                            <td th:text="${ employees.idNumber }"></td>
-
-                                                            <!-- Show status if present, else display 'N/A'.
-                                                            This prevents NullPointerException during rendering if the status is not yet assigned -->
-
-                                                            <td th:text="${ employees.status != null ? employees.status.status : 'N/A' }"></td>
+                                                        <tr th:each="emp : ${employees}">
+                                                            <td th:text="${emp.employee.name}"></td>
+                                                            <td th:text="${emp.employee.surname}"></td>
+                                                            <td th:text="${emp.employee.occupation}"></td>
+                                                            <td th:text="${emp.employee.email}"></td>
+                                                            <td th:text="${emp.employee.number}"></td>
+                                                            <td th:text="${emp.employee.dob}"></td>
+                                                            <td th:text="${emp.employee.idNumber}"></td>
+                                                            <td th:text="${emp.employee.statusName}"></td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
