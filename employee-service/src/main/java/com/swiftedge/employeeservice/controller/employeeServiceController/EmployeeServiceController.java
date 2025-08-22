@@ -96,17 +96,6 @@ public class EmployeeServiceController {
     public String showSuccessPage() {
         return "employee-success";
     }
-//
-//    @GetMapping("/view-all")
-//    public String viewAllEmployees(Model model) {
-//        model.addAttribute("activeMenu", "employees");
-//        model.addAttribute("activePage", "all-employees");
-//
-//        List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
-//        model.addAttribute("employeeEntityList", employees);
-//
-//        return "employees-view-all";
-//    }
 
     @GetMapping("/edit")
     public String editEmployee(Model model) {
