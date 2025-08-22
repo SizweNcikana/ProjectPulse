@@ -262,21 +262,21 @@
                                     </a>
                                     <ul class="pcoded-submenu">
                                         <li th:classappend="${activePage == 'all-employees'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/employees/view-employees}" class="waves-effect waves-dark">
+                                            <a th:href="@{/employees/view-employees}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">All Employees</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'employees'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/employees/add-employee}" class="waves-effect waves-dark">
+                                            <a th:href="@{/employees/add-employee}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Add Employee</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
-                                        <li th:classappend="${activePage == 'edit-employee'} ? 'active' : ''">
-                                            <a th:href="@{/api/v2/employees/edit}" class="waves-effect waves-dark">
+                                        <li th:classappend="${activePage == 'view-employee'} ? 'active' : ''">
+                                            <a th:href="@{/employees/view-employee}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Edit Employees</span>
                                                 <span class="pcoded-mcaret"></span>

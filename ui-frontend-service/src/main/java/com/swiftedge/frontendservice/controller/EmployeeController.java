@@ -52,16 +52,22 @@ public class EmployeeController {
     public String viewEmployees(Model model) {
         List<EmployeeResponseDTO> employees = employeeClient.getEmployees("/view-employees");
 
-        for (EmployeeResponseDTO employee : employees) {
-            model.addAttribute("status", employee.getStatus());
-            log.info("Status: {}", employee.getStatus());
-        }
-
         model.addAttribute("activeMenu", "employees");
         model.addAttribute("activePage", "all-employees");
         model.addAttribute("employees", employees);
 
         return "employees-view-all";
+    }
+
+    @GetMapping("/view-employee")
+    public String viewEmployee(Model model) {
+
+        formResponseDTO = employeeClient.employeeData("/view-employee");
+
+        model.addAttribute("activeMenu", formResponseDTO.getActiveMenu());
+        model.addAttribute("activePage", formResponseDTO.getActivePage());
+
+        return "edit-employee";
     }
 
 }

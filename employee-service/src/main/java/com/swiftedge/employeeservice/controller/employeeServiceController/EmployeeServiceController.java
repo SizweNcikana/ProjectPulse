@@ -56,12 +56,6 @@ public class EmployeeServiceController {
 
     }
 
-    @GetMapping("/view-employees")
-    public ResponseEntity<List<EmployeeResponseDTO>> viewEmployees() {
-        List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
-        return ResponseEntity.ok(employees);
-    }
-
     @PostMapping("/save-employee")
     public ResponseEntity<EmployeeResponseDTO> saveEmployee(@RequestBody EmployeeDTO employeeDTO, ProjectDTO projectDTO) {
         try {
@@ -92,9 +86,26 @@ public class EmployeeServiceController {
         }
     }
 
+    @GetMapping("/view-employees")
+    public ResponseEntity<List<EmployeeResponseDTO>> viewEmployees() {
+        List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
+    }
+
     @GetMapping("/success")
     public String showSuccessPage() {
         return "employee-success";
+    }
+
+    @GetMapping("/view-employee")
+    public ResponseEntity<Map<String, Object>> viewEmployee() {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("activeMenu", "employees");
+        response.put("activePage", "view-employee");
+
+        return ResponseEntity.ok(response);
+
     }
 
     @GetMapping("/edit")
