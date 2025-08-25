@@ -1,4 +1,4 @@
-package com.swiftedge.employeeservice.dto.project;
+package com.swiftedge.dtolibrary.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

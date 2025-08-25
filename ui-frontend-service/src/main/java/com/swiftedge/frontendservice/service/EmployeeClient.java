@@ -1,8 +1,8 @@
 package com.swiftedge.frontendservice.service;
 
 import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;
-import com.swiftedge.frontendservice.dto.employee.EmployeeDTO;
-import com.swiftedge.frontendservice.dto.employee.EmployeeResponseDTO;
+import com.swiftedge.dtolibrary.dto.EmployeeDTO;
+import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

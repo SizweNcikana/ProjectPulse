@@ -1,9 +1,8 @@
 package com.swiftedge.employeeservice.controller.homeController;
 
-import com.swiftedge.employeeservice.dto.employee.EmployeeDTO;
-import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
-import com.swiftedge.employeeservice.dto.project.ProjectDTO;
-import com.swiftedge.employeeservice.dto.status.StatusDTO;
+import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
+import com.swiftedge.dtolibrary.dto.ProjectDTO;
+import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.employeeservice.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

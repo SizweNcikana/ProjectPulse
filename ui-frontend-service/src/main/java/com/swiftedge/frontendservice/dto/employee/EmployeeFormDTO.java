@@ -1,5 +1,6 @@
 package com.swiftedge.frontendservice.dto.employee;
 
+import com.swiftedge.dtolibrary.dto.EmployeeDTO;
 import com.swiftedge.frontendservice.dto.project.ProjectDTO;
 import lombok.Data;
 

@@ -1,16 +1,15 @@
-package com.swiftedge.employeeservice.dto.employee;
+package com.swiftedge.dtolibrary.dto;
 
-import com.swiftedge.employeeservice.dto.address.AddressDTO;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
 
+@Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class EmployeeDTO {
 
     private Long employeeId;
@@ -56,8 +55,9 @@ public class EmployeeDTO {
     @Size(max = 500, message = "Summary cannot exceed 500 characters")
     private String summary;
 
-    private AddressDTO address; //Nested employee address
+    private AddressDTO address;
 
     private Long projectId;
     private String statusName;
+
 }

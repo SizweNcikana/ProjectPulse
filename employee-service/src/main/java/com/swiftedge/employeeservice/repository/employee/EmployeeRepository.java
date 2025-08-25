@@ -1,6 +1,6 @@
 package com.swiftedge.employeeservice.repository.employee;
 
-import com.swiftedge.employeeservice.dto.status.StatusDTO;
+import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,7 +21,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
     @Query("SELECT e.address FROM EmployeeEntity e WHERE e.name = :name AND e.surname = :surname")
     List<EmployeeAddressEntity> findAddressByNameAndSurname(@Param("name") String name, @Param("surname") String surname);
 
-    @Query("SELECT new com.swiftedge.employeeservice.dto.status.StatusDTO(s.id, s.status, COUNT(p)) " +
+    @Query("SELECT new com.swiftedge.dtolibrary.dto.StatusDTO(s.id, s.status, COUNT(p)) " +
             "FROM EmployeeEntity p JOIN p.status s GROUP BY s.id, s.status")
     List<StatusDTO> countEmployeesGroupedByStatus();
 }

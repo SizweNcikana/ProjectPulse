@@ -1,8 +1,8 @@
 package com.swiftedge.frontendservice.controller;
 
 import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;
-import com.swiftedge.frontendservice.dto.employee.EmployeeDTO;
-import com.swiftedge.frontendservice.dto.employee.EmployeeResponseDTO;
+import com.swiftedge.dtolibrary.dto.EmployeeDTO;
+import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
 import com.swiftedge.frontendservice.service.EmployeeClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

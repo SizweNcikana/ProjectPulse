@@ -1,7 +1,5 @@
-package com.swiftedge.employeeservice.dto.employee;
+package com.swiftedge.dtolibrary.dto;
 
-import com.swiftedge.employeeservice.dto.project.ProjectDTO;
-import com.swiftedge.employeeservice.dto.status.StatusDTO;
 import lombok.*;
 
 @Getter
