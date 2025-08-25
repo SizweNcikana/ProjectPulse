@@ -1,4 +1,4 @@
-package com.swiftedge.employeeservice.dto.status;
+package com.swiftedge.dtolibrary.dto;
 
 import lombok.*;
 

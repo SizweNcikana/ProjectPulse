@@ -1,10 +1,10 @@
 package com.swiftedge.employeeservice.service.employee;
 
-import com.swiftedge.employeeservice.dto.address.AddressDTO;
-import com.swiftedge.employeeservice.dto.employee.EmployeeDTO;
-import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
-import com.swiftedge.employeeservice.dto.project.ProjectDTO;
-import com.swiftedge.employeeservice.dto.status.StatusDTO;
+import com.swiftedge.dtolibrary.dto.AddressDTO;
+import com.swiftedge.dtolibrary.dto.EmployeeDTO;
+import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
+import com.swiftedge.dtolibrary.dto.ProjectDTO;
+import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
@@ -74,8 +74,6 @@ public class EmployeeService {
                 employeeAddressEntity.setSuburb(employeeDTO.getAddress().getSuburb());
                 employeeAddressEntity.setZipCode(employeeDTO.getAddress().getZipCode());
                 employeeEntity.setAddress(employeeAddressEntity);
-
-//                employeeAddressRepository.save(employeeAddressEntity);
             }
 
             EmployeeStatus status = statusService.getStatusById(statusId)
