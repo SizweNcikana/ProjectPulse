@@ -1,10 +1,6 @@
 package com.swiftedge.employeeservice.service.employee;
 
-import com.swiftedge.dtolibrary.dto.AddressDTO;
-import com.swiftedge.dtolibrary.dto.EmployeeDTO;
-import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
-import com.swiftedge.dtolibrary.dto.ProjectDTO;
-import com.swiftedge.dtolibrary.dto.StatusDTO;
+import com.swiftedge.dtolibrary.dto.*;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
@@ -98,7 +94,11 @@ public class EmployeeService {
                     saved.getSummary(),
                     employeeDTO.getAddress(),
                     (saved.getProjectId() != null ? saved.getProjectId() : null),
-                    saved.getStatus().getStatus()
+                    saved.getStatus() != null ? new StatusDTO(
+                            saved.getStatus().getId(),
+                            saved.getStatus().getStatus(),
+                            0L
+                    ) : null
 
             );
 
@@ -150,7 +150,11 @@ public class EmployeeService {
                                     e.getAddress().getZipCode()
                             ) : null,
                             (e.getProjectId() != null ? e.getProjectId() : null),
-                            e.getStatus().getStatus()
+                            e.getStatus() != null ? new StatusDTO(
+                                    e.getStatus().getId(),
+                                    e.getStatus().getStatus(),
+                                    0L
+                            ) : null
                     );
 
                     // map Status to StatusDTO

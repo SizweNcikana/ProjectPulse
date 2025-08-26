@@ -1,10 +1,6 @@
 package com.swiftedge.employeeservice.controller.employeeServiceController;
 
-import com.swiftedge.dtolibrary.dto.AddressDTO;
-import com.swiftedge.dtolibrary.dto.EmployeeDTO;
-import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
-import com.swiftedge.dtolibrary.dto.ProjectDTO;
-import com.swiftedge.dtolibrary.dto.StatusDTO;
+import com.swiftedge.dtolibrary.dto.*;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.service.employee.EmployeeService;
@@ -89,6 +85,9 @@ public class EmployeeServiceController {
     @GetMapping("/view-employees")
     public ResponseEntity<List<EmployeeResponseDTO>> viewEmployees() {
         List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
+        for (EmployeeResponseDTO employee : employees) {
+            System.out.println("Search results: " + employee);
+        }
         return ResponseEntity.ok(employees);
     }
 
@@ -122,87 +121,88 @@ public class EmployeeServiceController {
         return "edit-employee";
     }
 
-    @GetMapping("/search")
-    public String findEmployee(@RequestParam("name") String name,
-                               @RequestParam("surname") String surname,
-                               Model model)
-    {
-        model.addAttribute("activeMenu", "employees");
-        model.addAttribute("activePage", "edit-employee");
+//    @GetMapping("/search-employee")
+//    public ResponseEntity<EmployeeSearchResponseDTO> searchEmployee(
+//            @RequestParam String name,
+//            @RequestParam String surname) {
+//
+//        EmployeeSearchResponseDTO response = employeeService.searchEmployeeByNameAndSurname(name, surname);
+//        return ResponseEntity.ok(response);
+//    }
+
+    @GetMapping("/search-employee")
+    public ResponseEntity<EmployeeSearchResponseDTO> searchEmployee(
+            @RequestParam("name") String name,
+            @RequestParam("surname") String surname) {
 
         List<EmployeeEntity> employees = employeeService.searchEmployee(name, surname);
         List<EmployeeAddressEntity> addresses = employeeService.getEmployeeAddress(name, surname);
-        statuses = statusService.getAllStatuses();
-        projectList = employeeService.getAllProjectsFromProjectService();
-        model.addAttribute("statusList", statuses);
-        log.info("Status: {}", statuses.listIterator().next().getStatusName());
+        List<StatusDTO> statuses = statusService.getAllStatuses();
+        List<ProjectDTO> projectList = employeeService.getAllProjectsFromProjectService();
 
+        System.out.println("Name: " + name + " Surname: " + surname + " Employees: " + employees);
+        System.out.println("Search results: " + employees);
 
-        if (addresses.isEmpty() && employees.isEmpty()) {
-            model.addAttribute("searchErrorMessage",
-                    MessageFormat.format("Employee with name {0} {1} does not exist.", name, surname));
-        } else {
-            String streetAddress = addresses.get(0).getStreetAddress();
-            String suburb = addresses.get(0).getSuburb();
-            String city = addresses.get(0).getCity();
-            String zipCode = addresses.get(0).getZipCode();
-
-            EmployeeAddressEntity employeeAddressEntity = new EmployeeAddressEntity();
-
-            employeeAddressEntity.setStreetAddress(streetAddress);
-            employeeAddressEntity.setSuburb(suburb);
-            employeeAddressEntity.setCity(city);
-            employeeAddressEntity.setZipCode(zipCode);
-
-            for (EmployeeEntity employee : employees) {
-                model.addAttribute("Id", employee.getEmployeeId());
-                model.addAttribute("name", employee.getName());
-                model.addAttribute("surname", employee.getSurname());
-                model.addAttribute("email", employee.getEmail());
-                model.addAttribute("number", employee.getNumber());
-                model.addAttribute("idNumber", employee.getIdNumber());
-                model.addAttribute("dob", employee.getDob());
-                model.addAttribute("occupation", employee.getOccupation());
-                model.addAttribute("statuses", statuses);
-                model.addAttribute("ethnicity", employee.getEthnicity());
-                model.addAttribute("years_experience", employee.getExperience());
-                model.addAttribute("status", employee.getStatus().getStatus());
-
-
-                Long currentStatus = employee.getStatus().getId();
-                model.addAttribute("selectedStatus", currentStatus);
-
-                model.addAttribute("summary", employee.getSummary());
-
-                model.addAttribute("city", city);
-                model.addAttribute("suburb", suburb);
-                model.addAttribute("address", streetAddress);
-                model.addAttribute("zipCode", zipCode);
-
-                //Get the list of Projects and sorts it in Alphabetical order
-                model.addAttribute("projects", projectList.stream()
-                        .sorted(Comparator.comparing(ProjectDTO::getProjectName))
-                        .collect(Collectors.toList()));
-
-                projectId = employee.getProjectId();
-                if (projectId != null) {
-                    ProjectDTO projectDTO = employeeService.getProjectById(projectId);
-                    String projectName = projectDTO.getProjectName();
-                    log.info("Project Name: {}", projectName);
-
-                    if (projectDTO != null) {
-                        log.info("Project id: {} project name: {}", projectId, projectDTO.getProjectName());
-                        model.addAttribute("assignedProject", projectDTO);
-                        model.addAttribute("projectName", projectDTO.getProjectName());
-                    } else {
-                        log.warn("Project id: not found");
-                    }
-                }
-            }
+        if (employees.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return "edit-employee";
+        EmployeeEntity employee = employees.get(0);  // single employee
+
+        // Map address
+        AddressDTO addressDTO = null;
+        if (!addresses.isEmpty()) {
+            EmployeeAddressEntity address = addresses.get(0);
+            addressDTO = new AddressDTO(
+                    address.getCity(),
+                    address.getSuburb(),
+                    address.getStreetAddress(),
+                    address.getZipCode()
+            );
+        }
+
+        // Assigned project
+        ProjectDTO assignedProject = null;
+        if (employee.getProjectId() != null) {
+            assignedProject = employeeService.getProjectById(employee.getProjectId());
+        }
+
+        // EmployeeResponseDTO
+        EmployeeResponseDTO employeeDTO = EmployeeResponseDTO.builder()
+                .employee(EmployeeDTO.builder()
+                        .employeeId(employee.getEmployeeId())
+                        .name(employee.getName())
+                        .surname(employee.getSurname())
+                        .email(employee.getEmail())
+                        .number(employee.getNumber())
+                        .IdNumber(employee.getIdNumber())
+                        .dob(employee.getDob())
+                        .occupation(employee.getOccupation())
+                        .ethnicity(employee.getEthnicity())
+                        .experience(employee.getExperience())
+                        .summary(employee.getSummary())
+                        .status(employee.getStatus() != null ?
+                                new StatusDTO(employee.getStatus().getId(),
+                                        employee.getStatus().getStatus(), 0L) : null)
+                        .build())
+                .success(true)
+                .successMessage("Employee found")
+                .build();
+
+        // Build final response DTO
+        EmployeeSearchResponseDTO responseDTO = EmployeeSearchResponseDTO.builder()
+                .employee(employeeDTO)
+                .address(addressDTO)
+                .statuses(statuses)
+                .availableProjects(projectList.stream()
+                        .sorted(Comparator.comparing(ProjectDTO::getProjectName))
+                        .collect(Collectors.toList()))
+                .assignedProject(assignedProject)
+                .build();
+
+        return ResponseEntity.ok(responseDTO);
     }
+
 
     @PostMapping("/{id}/update")
     public String updateEmployee(
