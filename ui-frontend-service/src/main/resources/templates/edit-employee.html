@@ -430,7 +430,7 @@
                                                                     <div class="tab-content card-block">
                                                                         <div class="tab-pane active" id="home7" role="tabpanel">
                                                                             <h4 class="m-2 mt-3 sub-title">Employee Summary</h4>
-                                                                            <p class="m-4" th:name="summary" th:text="${summary}"></p>
+                                                                            <p class="m-4" th:name="summary" th:text="${employee?.employee?.summary}"></p>
 
                                                                             <h4 class="m-2 mt-4 sub-title">Profile Details</h4>
 
@@ -439,131 +439,106 @@
                                                                                 <strong>Error!</strong> <span th:text="${searchErrorMessage}"></span>
                                                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                                             </div>
-
-                                                                            <!-- Info Alert -->
-                                                                            <div th:if="${infoMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
-                                                                                <i class="bi-info-circle-fill"></i>
-                                                                                <strong>Info!</strong> <span th:text="${infoMessage}"></span>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                                            </div>
-
-                                                                            <!-- Success Alert -->
-                                                                            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                                                                                <i class="bi-check-circle-fill"></i>
-                                                                                <strong>Success!</strong> <span th:text="${successMessage}"></span>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                                            </div>
-
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <span class="form-bar"></span>
-                                                                                    <dt class="col-sm-3"></dt>
-                                                                                    <dd></dd>
-                                                                                </div>
-                                                                                <div class="col-lg-6 col-md-4">
-                                                                                    <span class="form-bar"></span>
-                                                                                    <dt class="col-sm-3"></dt>
-                                                                                    <dd></dd>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8">
-                                                                                        <b>Employee Name</b>
+                                                                            <div th:if="${employee != null}">
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Employee Name</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="name" th:text="${employee?.employee?.name}">N/A</div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="name" th:text="${employee?.employee?.name}">N/A</div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8">
-                                                                                        <b>Employee Surname</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Employee Surname</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="surname" th:text="${employee?.employee?.surname}">N/A</div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="surname" th:text="${employee?.employee?.surname}">N/A</div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8">
-                                                                                        <b>Occupation</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Occupation</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="occupation" th:text="${employee?.employee?.occupation}">N/A</div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="occupation" th:text="${employee?.employee?.occupation}">N/A</div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8">
-                                                                                        <b>Years of Experience</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Years of Experience</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="years_experience" th:text="${employee?.employee?.experience}"></div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="years_experience" th:text="${employee?.employee?.experience}"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8">
-                                                                                        <b>Status</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Status</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="status" th:text="${currentStatus}"></div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="status" th:text="${currentStatus}"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8">
-                                                                                        <b>Ethnicity</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Ethnicity</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="ethnicity" th:text="${employee?.employee?.ethnicity}"></div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="ethnicity" th:text="${employee?.employee?.ethnicity}"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8">
-                                                                                        <b>Address</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Address</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="fullAddress" th:text="${address?.streetAddress}"></div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="fullAddress" th:text="${address?.streetAddress}"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8">
-                                                                                        <b>Phone Number</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8">
+                                                                                            <b>Phone Number</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-8" th:name="number" th:text="${employee?.employee?.number}"></div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="number" th:text="${employee?.employee?.number}"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-1 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-6">
-                                                                                        <b>Email Address</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-1 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-6">
+                                                                                            <b>Email Address</b>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-10" th:name="email" th:text="${employee?.employee?.email}"></div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-10" th:name="email" th:text="${employee?.employee?.email}"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group form-primary row">
-                                                                                <div class="m-1 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-6">
-                                                                                        <b>Assigned Project</b>
+                                                                                <div class="form-group form-primary row">
+                                                                                    <div class="m-1 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-6">
+                                                                                            <b>Assigned Project</b>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-10" th:name="projectName" th:text="${assignedProject?.projectName}"></div>
+                                                                                    <div class="m-2 col-lg-5 col-md-4">
+                                                                                        <div class="col-sm-10" th:name="projectName" th:text="${assignedProject?.projectName}"></div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                             <h4 class="m-2 mt-4 sub-title"></h4>
@@ -592,13 +567,13 @@
                                                                                         <input type="email" class="form-control" id="email" placeholder="Email" name="email" required th:value="${employee?.employee?.email}">
                                                                                         <label for="email">Email</label>
                                                                                     </div>
-                                                                                    <div class="form-floating col-sm-5 m-3 mt-2">
-                                                                                        <input type="text" class="form-control" id="number" placeholder="Phone Number" name="number"
-                                                                                               maxlength="10" required
-                                                                                               oninput="this.value = this.value.slice(0, this.maxLength);"
-                                                                                               th:value="${employee?.employee?.number}">
-                                                                                        <label for="number">Phone Number</label>
-                                                                                    </div>
+                                                                                        <div class="form-floating col-sm-5 m-3 mt-2">
+                                                                                            <input type="text" class="form-control" id="number" placeholder="Phone Number" name="number"
+                                                                                                   maxlength="10" required
+                                                                                                   oninput="this.value = this.value.slice(0, this.maxLength);"
+                                                                                                   th:value="${employee?.employee?.number}">
+                                                                                            <label for="number">Phone Number</label>
+                                                                                        </div>
                                                                                 </div>
 
                                                                                 <!-- Occupation and Years of Experience -->
@@ -622,8 +597,6 @@
                                                                                         </select>
                                                                                         <label for="status">Status</label>
                                                                                     </div>
-
-
                                                                                 </div>
 
                                                                                 <!-- Summary -->
@@ -698,19 +671,6 @@
                                                                                         </select>
                                                                                         <label for="project">All Projects</label>
                                                                                     </div>
-
-<!--                                                                                    <div class="form-floating col-sm-3 m-2 mt-2">-->
-<!--                                                                                        <select name="status" class="form-select" id="status">-->
-<!--                                                                                            <option value="">&#45;&#45; Select status &#45;&#45;</option>-->
-<!--                                                                                            <option th:each="status : ${statusList}"-->
-<!--                                                                                                    th:value="${status.statusId}"-->
-<!--                                                                                                    th:text="${status.statusName}"-->
-<!--                                                                                                    th:selected="${status.statusId == selectedStatusId}">-->
-<!--                                                                                            </option>-->
-<!--                                                                                        </select>-->
-<!--                                                                                        <label for="status">Status</label>-->
-<!--                                                                                    </div>-->
-
                                                                                 </div>
                                                                                 <h4 class="m-2 mt-4 sub-title"> </h4>
                                                                                 <div class="form-group form-primary form-static-label row">

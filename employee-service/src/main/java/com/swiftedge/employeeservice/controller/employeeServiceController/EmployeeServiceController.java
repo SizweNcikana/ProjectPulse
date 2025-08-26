@@ -121,15 +121,6 @@ public class EmployeeServiceController {
         return "edit-employee";
     }
 
-//    @GetMapping("/search-employee")
-//    public ResponseEntity<EmployeeSearchResponseDTO> searchEmployee(
-//            @RequestParam String name,
-//            @RequestParam String surname) {
-//
-//        EmployeeSearchResponseDTO response = employeeService.searchEmployeeByNameAndSurname(name, surname);
-//        return ResponseEntity.ok(response);
-//    }
-
     @GetMapping("/search-employee")
     public ResponseEntity<EmployeeSearchResponseDTO> searchEmployee(
             @RequestParam("name") String name,
@@ -144,6 +135,7 @@ public class EmployeeServiceController {
         System.out.println("Search results: " + employees);
 
         if (employees.isEmpty()) {
+            System.out.println("No matching employees");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
