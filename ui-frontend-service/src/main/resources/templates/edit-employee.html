@@ -353,7 +353,7 @@
                                                                 <div class="card quater-card">
                                                                     <div class="card-block">
                                                                         <h4 class="sub-title">Search Employee</h4>
-                                                                        <form th:action="@{/api/v2/employees/search}" method="GET"
+                                                                        <form th:action="@{/employees/search-employee}" method="GET"
                                                                               class="form-material">
                                                                             <div class="form-group form-primary row">
                                                                                 <div class="mt-3 col-sm-12">
@@ -473,7 +473,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="name" th:text="${name}"></div>
+                                                                                    <div class="col-sm-8" th:name="name" th:text="${employee?.employee?.name}">N/A</div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -483,7 +483,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="surname" th:text="${surname}"></div>
+                                                                                    <div class="col-sm-8" th:name="surname" th:text="${employee?.employee?.surname}">N/A</div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -493,7 +493,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="occupation" th:text="${occupation}"></div>
+                                                                                    <div class="col-sm-8" th:name="occupation" th:text="${employee?.employee?.occupation}">N/A</div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -503,7 +503,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="years_experience" th:text="${years_experience}"></div>
+                                                                                    <div class="col-sm-8" th:name="years_experience" th:text="${employee?.employee?.experience}"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -513,7 +513,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="status" th:text="${status}"></div>
+                                                                                    <div class="col-sm-8" th:name="status" th:text="${currentStatus}"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -523,7 +523,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="ethnicity" th:text="${ethnicity}"></div>
+                                                                                    <div class="col-sm-8" th:name="ethnicity" th:text="${employee?.employee?.ethnicity}"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -533,7 +533,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="fullAddress" th:text="${address}"></div>
+                                                                                    <div class="col-sm-8" th:name="fullAddress" th:text="${address?.streetAddress}"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -543,7 +543,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-8" th:name="number" th:text="${number}"></div>
+                                                                                    <div class="col-sm-8" th:name="number" th:text="${employee?.employee?.number}"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -553,7 +553,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-10" th:name="email" th:text="${email}"></div>
+                                                                                    <div class="col-sm-10" th:name="email" th:text="${employee?.employee?.email}"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group form-primary row">
@@ -563,7 +563,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="m-2 col-lg-5 col-md-4">
-                                                                                    <div class="col-sm-10" th:name="projectName" th:text="${projectName}"></div>
+                                                                                    <div class="col-sm-10" th:name="projectName" th:text="${assignedProject?.projectName}"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <h4 class="m-2 mt-4 sub-title"></h4>
@@ -577,11 +577,11 @@
                                                                                 <!-- Employee Name and Surname -->
                                                                                 <div class="row mb-3">
                                                                                     <div class="form-floating col-sm-5 m-3 mt-2">
-                                                                                        <input type="text" class="form-control" id="name" placeholder="Employee Name" name="name" required th:value="${name}">
+                                                                                        <input type="text" class="form-control" id="name" placeholder="Employee Name" name="name" required th:value="${employee?.employee?.name}">
                                                                                         <label for="name">Employee Name</label>
                                                                                     </div>
                                                                                     <div class="form-floating col-sm-5 m-3 mt-2">
-                                                                                        <input type="text" class="form-control" id="surname" placeholder="Employee Surname" name="surname" required th:value="${surname}">
+                                                                                        <input type="text" class="form-control" id="surname" placeholder="Employee Surname" name="surname" required th:value="${employee?.employee?.surname}">
                                                                                         <label for="surname">Employee Surname</label>
                                                                                     </div>
                                                                                 </div>
@@ -589,14 +589,14 @@
                                                                                 <!-- Email and Phone Number -->
                                                                                 <div class="row mb-3">
                                                                                     <div class="form-floating col-sm-5 m-3 mt-2">
-                                                                                        <input type="email" class="form-control" id="email" placeholder="Email" name="email" required th:value="${email}">
+                                                                                        <input type="email" class="form-control" id="email" placeholder="Email" name="email" required th:value="${employee?.employee?.email}">
                                                                                         <label for="email">Email</label>
                                                                                     </div>
                                                                                     <div class="form-floating col-sm-5 m-3 mt-2">
                                                                                         <input type="text" class="form-control" id="number" placeholder="Phone Number" name="number"
                                                                                                maxlength="10" required
                                                                                                oninput="this.value = this.value.slice(0, this.maxLength);"
-                                                                                               th:value="${number}">
+                                                                                               th:value="${employee?.employee?.number}">
                                                                                         <label for="number">Phone Number</label>
                                                                                     </div>
                                                                                 </div>
@@ -604,30 +604,32 @@
                                                                                 <!-- Occupation and Years of Experience -->
                                                                                 <div class="row mb-3">
                                                                                     <div class="form-floating col-sm-4 m-3 mt-2">
-                                                                                        <input type="text" class="form-control" id="occupation" placeholder="Occupation" name="occupation" required th:value="${occupation}">
+                                                                                        <input type="text" class="form-control" id="occupation" placeholder="Occupation" name="occupation" required th:value="${employee?.employee?.occupation}">
                                                                                         <label for="occupation">Occupation</label>
                                                                                     </div>
                                                                                     <div class="form-floating col-sm-3 m-3 mt-2">
-                                                                                        <input type="number" class="form-control" id="experience" placeholder="Years of Experience" name="experience" th:value="${years_experience}">
+                                                                                        <input type="number" class="form-control" id="experience" placeholder="Years of Experience" name="experience" th:value="${employee?.employee?.experience}">
                                                                                         <label for="experience">Years of Experience</label>
                                                                                     </div>
                                                                                     <div class="form-floating col-sm-3 m-2 mt-2">
-                                                                                        <select name="status" class="form-select" id="status" th:value="${selectedStatus}">
+                                                                                        <select name="status" class="form-select" id="status">
                                                                                             <option value="">-- Select status --</option>
                                                                                             <option th:each="status : ${statusList}"
                                                                                                     th:value="${status.statusId}"
                                                                                                     th:text="${status.statusName}"
-                                                                                                    th:selected="${status.statusId == selectedStatus}"></option>>
+                                                                                                    th:selected="${status.statusId == selectedStatusId}">
                                                                                             </option>
                                                                                         </select>
                                                                                         <label for="status">Status</label>
                                                                                     </div>
+
+
                                                                                 </div>
 
                                                                                 <!-- Summary -->
                                                                                 <div class="row mb-3">
                                                                                     <div class="form-floating col-sm-10 m-3 mt-2">
-                                                                                        <textarea class="form-control" id="summary" placeholder="Employee Summary" name="summary" required th:text="${summary}"></textarea>
+                                                                                        <textarea class="form-control" id="summary" placeholder="Employee Summary" name="summary" required th:text="${employee?.employee?.summary}"></textarea>
                                                                                         <label for="summary">Employee Summary</label>
                                                                                     </div>
                                                                                 </div>
@@ -635,21 +637,21 @@
                                                                                 <!-- Address Fields -->
                                                                                 <div class="row mb-3">
                                                                                     <div class="form-floating col-sm-5 m-3 mt-2">
-                                                                                        <input type="text" class="form-control" id="address" placeholder="Street Address" name="streetAddress" required th:value="${address}">
+                                                                                        <input type="text" class="form-control" id="address" placeholder="Street Address" name="streetAddress" required th:value="${address?.streetAddress}">
                                                                                         <label for="address">Street Address</label>
                                                                                     </div>
                                                                                     <div class="form-floating col-sm-5 m-3 mt-2">
-                                                                                        <input type="text" class="form-control" id="suburb" placeholder="Suburb" name="suburb" required th:value="${suburb}">
+                                                                                        <input type="text" class="form-control" id="suburb" placeholder="Suburb" name="suburb" required th:value="${address?.suburb}">
                                                                                         <label for="suburb">Suburb</label>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
                                                                                     <div class="form-floating col-sm-5 m-3 mt-2">
-                                                                                        <input type="text" class="form-control" id="city" placeholder="City" name="city" required th:value="${city}">
+                                                                                        <input type="text" class="form-control" id="city" placeholder="City" name="city" required th:value="${address?.city}">
                                                                                         <label for="city">City</label>
                                                                                     </div>
                                                                                     <div class="form-floating col-sm-5 m-3 mt-2">
-                                                                                        <input type="text" class="form-control" id="zipCode" placeholder="Zip Code" name="zipCode" required th:value="${zipCode}">
+                                                                                        <input type="text" class="form-control" id="zipCode" placeholder="Zip Code" name="zipCode" required th:value="${address?.zipCode}">
                                                                                         <label for="zipCode">Zip Code</label>
                                                                                     </div>
                                                                                 </div>
@@ -689,13 +691,26 @@
                                                                                     <div class="form-floating m-2 mt-3 col-md-5">
                                                                                         <select name="project" class="form-select" id="project">
                                                                                             <option value="">-- Select an option --</option>
-                                                                                            <option th:each="project : ${projects}"
+                                                                                            <option th:each="project : ${availableProjects}"
                                                                                                     th:value="${project.projectId}"
                                                                                                     th:text="${project.projectName}">
                                                                                             </option>
                                                                                         </select>
                                                                                         <label for="project">All Projects</label>
                                                                                     </div>
+
+<!--                                                                                    <div class="form-floating col-sm-3 m-2 mt-2">-->
+<!--                                                                                        <select name="status" class="form-select" id="status">-->
+<!--                                                                                            <option value="">&#45;&#45; Select status &#45;&#45;</option>-->
+<!--                                                                                            <option th:each="status : ${statusList}"-->
+<!--                                                                                                    th:value="${status.statusId}"-->
+<!--                                                                                                    th:text="${status.statusName}"-->
+<!--                                                                                                    th:selected="${status.statusId == selectedStatusId}">-->
+<!--                                                                                            </option>-->
+<!--                                                                                        </select>-->
+<!--                                                                                        <label for="status">Status</label>-->
+<!--                                                                                    </div>-->
+
                                                                                 </div>
                                                                                 <h4 class="m-2 mt-4 sub-title"> </h4>
                                                                                 <div class="form-group form-primary form-static-label row">

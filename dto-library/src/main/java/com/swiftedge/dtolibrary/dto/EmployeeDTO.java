@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@ToString
 public class EmployeeDTO {
 
     private Long employeeId;
@@ -58,6 +60,6 @@ public class EmployeeDTO {
     private AddressDTO address;
 
     private Long projectId;
-    private String statusName;
+    private StatusDTO status;
 
 }

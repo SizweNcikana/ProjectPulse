@@ -1,5 +1,6 @@
 package com.swiftedge.frontendservice.service;
 
+import com.swiftedge.dtolibrary.dto.EmployeeSearchResponseDTO;
 import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;
 import com.swiftedge.dtolibrary.dto.EmployeeDTO;
 import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
@@ -49,4 +50,18 @@ public class EmployeeClient {
                 .collectList()
                 .block();
     }
+
+    public EmployeeSearchResponseDTO employeeResponseData(String uri) {
+
+        System.out.println("uri: " + uri);
+
+        return builder.baseUrl(baseUrl)
+                .build()
+                .get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(EmployeeSearchResponseDTO.class)
+                .block();
+    }
+
 }

@@ -28,4 +28,5 @@ public class AddressDTO {
     @NotBlank(message = "Employee zip code required.")
     @Size(max = 10, message = "Zip Code cannot exceed 10 characters.")
     private String zipCode;
+
 }
