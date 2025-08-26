@@ -5,8 +5,10 @@ import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;
 import com.swiftedge.dtolibrary.dto.EmployeeDTO;
 import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -53,15 +55,22 @@ public class EmployeeClient {
 
     public EmployeeSearchResponseDTO employeeResponseData(String uri) {
 
-        System.out.println("uri: " + uri);
+        try {
+            return builder.baseUrl(baseUrl)
+                    .build()
+                    .get()
+                    .uri(uri)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, clientResponse ->
+                            Mono.error(new RuntimeException("Employee not found.")))
+                    .bodyToMono(EmployeeSearchResponseDTO.class)
+                    .block();
 
-        return builder.baseUrl(baseUrl)
-                .build()
-                .get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(EmployeeSearchResponseDTO.class)
-                .block();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());;
+        }
+
+        return null;
     }
 
 }
