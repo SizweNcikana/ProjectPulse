@@ -691,13 +691,26 @@
                                                                                     <div class="form-floating m-2 mt-3 col-md-5">
                                                                                         <select name="project" class="form-select" id="project">
                                                                                             <option value="">-- Select an option --</option>
-                                                                                            <option th:each="project : ${projects}"
+                                                                                            <option th:each="project : ${availableProjects}"
                                                                                                     th:value="${project.projectId}"
                                                                                                     th:text="${project.projectName}">
                                                                                             </option>
                                                                                         </select>
                                                                                         <label for="project">All Projects</label>
                                                                                     </div>
+
+<!--                                                                                    <div class="form-floating col-sm-3 m-2 mt-2">-->
+<!--                                                                                        <select name="status" class="form-select" id="status">-->
+<!--                                                                                            <option value="">&#45;&#45; Select status &#45;&#45;</option>-->
+<!--                                                                                            <option th:each="status : ${statusList}"-->
+<!--                                                                                                    th:value="${status.statusId}"-->
+<!--                                                                                                    th:text="${status.statusName}"-->
+<!--                                                                                                    th:selected="${status.statusId == selectedStatusId}">-->
+<!--                                                                                            </option>-->
+<!--                                                                                        </select>-->
+<!--                                                                                        <label for="status">Status</label>-->
+<!--                                                                                    </div>-->
+
                                                                                 </div>
                                                                                 <h4 class="m-2 mt-4 sub-title"> </h4>
                                                                                 <div class="form-group form-primary form-static-label row">

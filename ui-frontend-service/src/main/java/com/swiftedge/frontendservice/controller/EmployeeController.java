@@ -2,11 +2,8 @@ package com.swiftedge.frontendservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.swiftedge.dtolibrary.dto.EmployeeSearchResponseDTO;
-import com.swiftedge.dtolibrary.dto.StatusDTO;
+import com.swiftedge.dtolibrary.dto.*;
 import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;
-import com.swiftedge.dtolibrary.dto.EmployeeDTO;
-import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
 import com.swiftedge.frontendservice.service.EmployeeClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
