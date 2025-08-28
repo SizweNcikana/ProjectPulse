@@ -1,6 +1,7 @@
 package com.swiftedge.frontendservice.service;
 
 import com.swiftedge.dtolibrary.dto.EmployeeSearchResponseDTO;
+import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;
 import com.swiftedge.dtolibrary.dto.EmployeeDTO;
 import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
@@ -71,6 +72,27 @@ public class EmployeeClient {
         }
 
         return null;
+    }
+
+    public EmployeeDTO updateEmployee(String uri, Long id, EmployeeDTO employeeDTO) {
+        return builder.baseUrl(baseUrl)
+                .build()
+                .put()
+                .uri(uri + "/" + id)
+                .bodyValue(employeeDTO)
+                .retrieve()
+                .bodyToMono(EmployeeDTO.class)
+                .block();
+    }
+
+    public List<StatusDTO> getStatuses(String uri) {
+        return builder.build()
+                .get()
+                .uri(uri)
+                .retrieve()
+                .bodyToFlux(StatusDTO.class)
+                .collectList()
+                .block();
     }
 
 }

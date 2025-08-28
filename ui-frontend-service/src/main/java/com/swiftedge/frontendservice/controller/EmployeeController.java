@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -92,8 +93,8 @@ public class EmployeeController {
 
         if (responseDTO == null || responseDTO.getEmployee() == null) {
             model.addAttribute("searchErrorMessage",
-                    String.format("Employee with name %s %s does not exist.", name, surname));
-            return "edit-employee"; // stay on same page with error
+                    String.format("Employee %s %s does not exist.", name, surname));
+            return "edit-employee";
         }
 
         try {
@@ -109,17 +110,21 @@ public class EmployeeController {
         String statusName = responseDTO.getEmployee().getEmployee().getStatus().getStatusName();
         Long selectedStatusId = responseDTO.getEmployee().getEmployee().getStatus().getStatusId();
 
+        System.out.println("Active Status Id: " + selectedStatusId);
+
         List<StatusDTO> statusList = responseDTO.getStatuses();
 
         model.addAttribute("statusList", statusList);
         model.addAttribute("selectedStatusId", selectedStatusId);
 
         System.out.println("Employee current status: " + statusName);
+
+
         statusList.forEach(s -> System.out.println("\nAvailable status: \n" + s.getStatusName()));
 
         assert responseDTO != null;
 
-        model.addAttribute("employee", responseDTO.getEmployee());
+        model.addAttribute("employeeResponse", responseDTO.getEmployee());
         model.addAttribute("address", responseDTO.getAddress());
         model.addAttribute("statuses", responseDTO.getStatuses());
         model.addAttribute("currentStatus", statusName);
@@ -127,6 +132,66 @@ public class EmployeeController {
         model.addAttribute("assignedProject", responseDTO.getAssignedProject());
 
         return "edit-employee";
+    }
+
+    @PostMapping("/update-employee/{id}")
+    public String updateEmployee(@PathVariable("id") Long id,
+                                 @RequestParam("statusId") Long selectedStatusId,
+                                 @ModelAttribute("employee") EmployeeDTO employeeDTO,
+                                 @ModelAttribute("address") AddressDTO addressDTO,
+                                 @RequestParam(value = "projectIds", required = false) List<Long> projectIds,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes) {
+
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("searchErrorMessage",
+                    "Validation errors occurred. Please correct them and try again.");
+            return "redirect:/employee/view-employee";
+        }
+
+        try {
+
+            StatusDTO statusDTO = new StatusDTO();
+            statusDTO.setStatusId(selectedStatusId);
+            employeeDTO.setStatus(statusDTO);
+
+            employeeDTO.setAddress(addressDTO);
+
+            if (projectIds != null && !projectIds.isEmpty()) {
+                List<ProjectDTO> projects = projectIds.stream()
+                        .map(pid -> {
+                            ProjectDTO p = new ProjectDTO();
+                            p.setProjectId(pid);
+                            return p;
+                        })
+                        .toList();
+                employeeDTO.setProjectId(projects.get(0).getProjectId());
+            }
+
+            EmployeeDTO updatedEmployee = employeeClient.updateEmployee("/update-employee", id, employeeDTO);
+
+            redirectAttributes.addFlashAttribute("activePage", "view-employee");
+            redirectAttributes.addFlashAttribute("successMessage", "Employee updated successfully.");
+
+            if (updatedEmployee != null) {
+                if (!updatedEmployee.equals(employeeDTO)) {
+                    redirectAttributes.addFlashAttribute("successMessage", "Employee updated successfully.");
+                } else {
+                    redirectAttributes.addFlashAttribute("infoMessage",
+                            "No changes were made as the provided data matches the current data.");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("searchErrorMessage", "Employee update failed. Please try again.");
+
+            }
+
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + ex.getMessage());
+            return "redirect:/view-employee";
+        }
+
+        return "redirect:/employees/view-employee";
     }
 
 }

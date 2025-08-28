@@ -8,6 +8,7 @@ import com.swiftedge.employeeservice.exceptions.StatusNotFoundException;
 import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
 import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepository;
 import com.swiftedge.employeeservice.service.status.StatusService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -180,102 +181,102 @@ public class EmployeeService {
         return employeeRepository.findAddressByNameAndSurname(name, surname);
     }
 
-    public boolean updateEmployee(Long id, EmployeeDTO employeeDTO, AddressDTO addressDTO, Long statusId) {
+    @Transactional
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
+        System.out.println("Here.....");
 
         existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
+                .orElseThrow(() -> new RuntimeException("Employee with ID " + id + " not found"));
 
-        boolean isUpdated = false;
 
         if (!existingEmployee.getName().equals(employeeDTO.getName())) {
             validateName(employeeDTO.getName());
             existingEmployee.setName(employeeDTO.getName());
-            isUpdated = true;
         }
 
         if (!existingEmployee.getSurname().equals(employeeDTO.getSurname())) {
             validateSurname(employeeDTO.getSurname());
             existingEmployee.setSurname(employeeDTO.getSurname());
-            isUpdated = true;
         }
 
         if (!existingEmployee.getEmail().equals(employeeDTO.getEmail())) {
             validateEmail(employeeDTO.getEmail());
             existingEmployee.setEmail(employeeDTO.getEmail());
-            isUpdated = true;
         }
 
         if (!existingEmployee.getNumber().equals(employeeDTO.getNumber())) {
             validatePhoneNumber(employeeDTO.getNumber());
             existingEmployee.setNumber(employeeDTO.getNumber());
-            isUpdated = true;
         }
 
         if (!existingEmployee.getOccupation().equals(employeeDTO.getOccupation())) {
             validateOccupation(employeeDTO.getOccupation());
             existingEmployee.setOccupation(employeeDTO.getOccupation());
-            isUpdated = true;
         }
 
         if (!existingEmployee.getExperience().equals(employeeDTO.getExperience())) {
             validateExperience(employeeDTO.getExperience());
             existingEmployee.setExperience(employeeDTO.getExperience());
-            isUpdated = true;
         }
 
         if (!existingEmployee.getSummary().equals(employeeDTO.getSummary())) {
             validateSummary(employeeDTO.getSummary());
             existingEmployee.setSummary(employeeDTO.getSummary());
-            isUpdated = true;
         }
 
-        EmployeeStatus newStatus = statusService.getStatusById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
-
-        EmployeeStatus currentStatus = existingEmployee.getStatus();
-
-        System.out.println("New status ID: " + newStatus.getId());
-
-
-        if (currentStatus == null) {
-            throw new StatusNotFoundException("Employee status not found");
-        } else if (currentStatus.getId().equals(newStatus.getId())) {
-            System.out.println("Status is the same");
-        } else {
+        if (employeeDTO.getStatus() != null) {
+            EmployeeStatus newStatus = statusService.getStatusById(employeeDTO.getStatus().getStatusId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
             existingEmployee.setStatus(newStatus);
-            isUpdated = true;
         }
 
-        //Save employee Address
-        EmployeeAddressEntity addressEntity = existingEmployee.getAddress();
-        if (addressEntity != null) {
-            if (!addressEntity.getStreetAddress().equals(addressDTO.getStreetAddress())) {
-                addressEntity.setStreetAddress(addressDTO.getStreetAddress());
-                isUpdated = true;
+        if (employeeDTO.getAddress() != null) {
+            EmployeeAddressEntity addressEntity = existingEmployee.getAddress();
+            if (addressEntity == null) {
+                addressEntity = new EmployeeAddressEntity();
             }
-
-            if (!addressEntity.getCity().equals(addressDTO.getCity())) {
-                addressEntity.setCity(addressDTO.getCity());
-                isUpdated = true;
-            }
-
-            if (!addressEntity.getSuburb().equals(addressDTO.getSuburb())) {
-                addressEntity.setSuburb(addressDTO.getSuburb());
-                isUpdated = true;
-            }
-
-            if (!addressEntity.getZipCode().equals(addressDTO.getZipCode())) {
-                addressEntity.setZipCode(addressDTO.getZipCode());
-                isUpdated = true;
-            }
-            existingEmployee.setAddress(addressEntity);
+            addressEntity.setStreetAddress(employeeDTO.getAddress().getStreetAddress());
+            addressEntity.setCity(employeeDTO.getAddress().getCity());
+            addressEntity.setSuburb(employeeDTO.getAddress().getSuburb());
+            addressEntity.setZipCode(employeeDTO.getAddress().getZipCode());
         }
 
-        if (isUpdated) {
-            employeeRepository.save(existingEmployee);
-        }
+        //To add Section for Status and Project Update
 
-        return isUpdated;
+        EmployeeEntity saved = employeeRepository.save(existingEmployee);
+
+        EmployeeDTO response = new EmployeeDTO(
+                saved.getEmployeeId(),
+                saved.getName(),
+                saved.getSurname(),
+                saved.getEmail(),
+                saved.getNumber(),
+                saved.getIdNumber(),
+                saved.getDob(),
+                saved.getGender(),
+                saved.getEthnicity(),
+                saved.getOccupation(),
+                saved.getExperience(),
+                saved.getSummary(),
+                saved.getAddress() != null
+                        ? new AddressDTO(
+                        saved.getAddress().getSuburb(),
+                        saved.getAddress().getCity(),
+                        saved.getAddress().getStreetAddress(),
+                        saved.getAddress().getZipCode()
+                )
+                        : null,
+                saved.getProjectId(),
+                saved.getStatus() != null
+                        ? new StatusDTO(
+                        saved.getStatus().getId(),
+                        saved.getStatus().getStatus(),
+                        0L
+                )
+                        : null
+        );
+
+        return response;
     }
 
     private void validateName(String name) {
