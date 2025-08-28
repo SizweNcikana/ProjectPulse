@@ -157,17 +157,17 @@ public class EmployeeController {
             employeeDTO.setStatus(statusDTO);
 
             employeeDTO.setAddress(addressDTO);
-
-            if (projectIds != null && !projectIds.isEmpty()) {
-                List<ProjectDTO> projects = projectIds.stream()
-                        .map(pid -> {
-                            ProjectDTO p = new ProjectDTO();
-                            p.setProjectId(pid);
-                            return p;
-                        })
-                        .toList();
-                employeeDTO.setProjectId(projects.get(0).getProjectId());
-            }
+//
+//            if (projectIds != null && !projectIds.isEmpty()) {
+//                List<ProjectDTO> projects = projectIds.stream()
+//                        .map(pid -> {
+//                            ProjectDTO p = new ProjectDTO();
+//                            p.setProjectId(pid);
+//                            return p;
+//                        })
+//                        .toList();
+//                employeeDTO.setProjectId(projects.get(0).getProjectId());
+//            }
 
             EmployeeDTO updatedEmployee = employeeClient.updateEmployee("/update-employee", id, employeeDTO);
 
