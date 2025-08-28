@@ -5,6 +5,7 @@ import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.service.employee.EmployeeService;
 import com.swiftedge.employeeservice.service.status.StatusService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -131,9 +132,6 @@ public class EmployeeServiceController {
         List<StatusDTO> statuses = statusService.getAllStatuses();
         List<ProjectDTO> projectList = employeeService.getAllProjectsFromProjectService();
 
-        System.out.println("Name: " + name + " Surname: " + surname + " Employees: " + employees);
-        System.out.println("Search results: " + employees);
-
         if (employees.isEmpty()) {
             System.out.println("No matching employees");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -168,11 +166,17 @@ public class EmployeeServiceController {
                         .email(employee.getEmail())
                         .number(employee.getNumber())
                         .IdNumber(employee.getIdNumber())
+                        .gender(employee.getGender())
                         .dob(employee.getDob())
                         .occupation(employee.getOccupation())
                         .ethnicity(employee.getEthnicity())
                         .experience(employee.getExperience())
                         .summary(employee.getSummary())
+                        .address(employee.getAddress() != null ?
+                                new AddressDTO(employee.getAddress().getStreetAddress(),
+                                        employee.getAddress().getSuburb(),
+                                        employee.getAddress().getCity(),
+                                        employee.getAddress().getZipCode()) : null)
                         .status(employee.getStatus() != null ?
                                 new StatusDTO(employee.getStatus().getId(),
                                         employee.getStatus().getStatus(), 0L) : null)
@@ -195,48 +199,16 @@ public class EmployeeServiceController {
         return ResponseEntity.ok(responseDTO);
     }
 
-
-    @PostMapping("/{id}/update")
-    public String updateEmployee(
-            @PathVariable("id") Long id,
-            @RequestParam("status") Long selectedStatus,
-            @ModelAttribute("employee") EmployeeDTO employeeDTO,
-            @ModelAttribute("address") AddressDTO addressDTO,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes
-    ) {
-        // Validation errors
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Validation errors occurred. Please correct them and try again.");
-            return "redirect:/api/v2/employees/search";
-        }
-        StatusDTO statusDTO = new StatusDTO();
+    @PutMapping("/update-employee/{id}")
+    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
 
         try {
-            Long statValue = statusDTO.getStatusId();
-            if (selectedStatus == null) {
-                log.info("Selected status is null");
-            } else {
-                System.out.println("Selected status is " + statValue);
-            }
-
-            isUpdated = employeeService.updateEmployee(id, employeeDTO, addressDTO, selectedStatus);
-
-            if (isUpdated) {
-
-                redirectAttributes.addFlashAttribute("successMessage",
-                        "Employee updated successfully.");
-            } else {
-                redirectAttributes.addFlashAttribute("infoMessage",
-                        "No changes were made as the provided data matches the current data.");
-            }
-
-        } catch (IllegalArgumentException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Error: " + ex.getMessage());
+            System.out.println("Id: " + id + " EmployeeDTO: " + employeeDTO.getName());
+            EmployeeDTO updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
+            return ResponseEntity.ok(updatedEmployee);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return "redirect:/api/v2/employees/edit";
     }
 
     @PostMapping("/{id}/assign-project")
