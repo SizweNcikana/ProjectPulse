@@ -85,13 +85,14 @@ public class EmployeeClient {
                 .block();
     }
 
-    public List<StatusDTO> getStatuses(String uri) {
-        return builder.build()
-                .get()
-                .uri(uri)
+    public EmployeeDTO assignProjectToEmployee(String uri, Long employeeId, EmployeeDTO employeeDTO) {
+        return builder.baseUrl(baseUrl)
+                .build()
+                .put()
+                .uri(uri + "/" + employeeId)
+                .bodyValue(employeeDTO)
                 .retrieve()
-                .bodyToFlux(StatusDTO.class)
-                .collectList()
+                .bodyToMono(EmployeeDTO.class)
                 .block();
     }
 

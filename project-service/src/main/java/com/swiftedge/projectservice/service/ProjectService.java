@@ -1,5 +1,6 @@
 package com.swiftedge.projectservice.service;
 
+import com.swiftedge.dtolibrary.dto.ProjectDTO;
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
 import com.swiftedge.projectservice.dto.ProjectResponseDTO;
 import com.swiftedge.projectservice.dto.ProjectStatusDTO;
@@ -51,7 +52,7 @@ public class ProjectService {
         projectRepository.save(projectEntity);
     }
 
-    public List<ProjectResponseDTO> getAllProjects() {
+    public List<ProjectDTO> getAllProjects() {
 
         // Map each Project entity to ProjectResponseDTO
         return projectRepository.findAll().stream()
@@ -59,15 +60,19 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
-    private ProjectResponseDTO mapToResponseDTO(ProjectEntity projectEntity) {
-        ProjectResponseDTO projectResponseDTO = new ProjectResponseDTO();
+    private ProjectDTO mapToResponseDTO(ProjectEntity projectEntity) {
+        ProjectDTO projectDTO = new ProjectDTO();
 
-        projectResponseDTO.setProjectName(projectEntity.getProjectName());
-        projectResponseDTO.setStartDate(projectEntity.getStartDate());
-        projectResponseDTO.setDuration(projectEntity.getDuration());
-        projectResponseDTO.setDescription(projectEntity.getDescription());
-        projectResponseDTO.setStatusName(projectEntity.getStatus().getStatus());
-        return projectResponseDTO;
+        projectDTO.setProjectId(projectEntity.getProjectId());
+        projectDTO.setProjectName(projectEntity.getProjectName());
+        projectDTO.setStartDate(projectEntity.getStartDate());
+        projectDTO.setDuration(projectEntity.getDuration());
+        projectDTO.setDescription(projectEntity.getDescription());
+
+        if (projectEntity.getStatus() != null) {
+            projectDTO.setStatusName(projectEntity.getStatus().getStatus());
+        }
+        return projectDTO;
     }
 
     public Optional<ProjectEntity> searchProjectByName(ProjectRequestDTO projectRequestDTO) {
@@ -190,7 +195,7 @@ public class ProjectService {
         return projectRepository.countProjectsGroupedByStatus();
     }
 
-    public Optional<ProjectResponseDTO> getProjectById(Long projectId) {
+    public Optional<ProjectDTO> getProjectById(Long projectId) {
 
         Optional<ProjectEntity> existingProject = projectRepository.findById(projectId);
 

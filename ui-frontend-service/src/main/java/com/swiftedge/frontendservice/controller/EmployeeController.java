@@ -119,7 +119,6 @@ public class EmployeeController {
 
         System.out.println("Employee current status: " + statusName);
 
-
         statusList.forEach(s -> System.out.println("\nAvailable status: \n" + s.getStatusName()));
 
         assert responseDTO != null;
@@ -139,7 +138,6 @@ public class EmployeeController {
                                  @RequestParam("statusId") Long selectedStatusId,
                                  @ModelAttribute("employee") EmployeeDTO employeeDTO,
                                  @ModelAttribute("address") AddressDTO addressDTO,
-                                 @RequestParam(value = "projectIds", required = false) List<Long> projectIds,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes) {
 
@@ -157,17 +155,6 @@ public class EmployeeController {
             employeeDTO.setStatus(statusDTO);
 
             employeeDTO.setAddress(addressDTO);
-//
-//            if (projectIds != null && !projectIds.isEmpty()) {
-//                List<ProjectDTO> projects = projectIds.stream()
-//                        .map(pid -> {
-//                            ProjectDTO p = new ProjectDTO();
-//                            p.setProjectId(pid);
-//                            return p;
-//                        })
-//                        .toList();
-//                employeeDTO.setProjectId(projects.get(0).getProjectId());
-//            }
 
             EmployeeDTO updatedEmployee = employeeClient.updateEmployee("/update-employee", id, employeeDTO);
 
@@ -189,6 +176,41 @@ public class EmployeeController {
         } catch (IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + ex.getMessage());
             return "redirect:/view-employee";
+        }
+
+        return "redirect:/employees/view-employee";
+    }
+
+    @PostMapping("/assign-project/{id}")
+    public String updateEmployee(@PathVariable("id") Long id,
+                                 @RequestParam("myProject") Long currentProjectId,
+                                 @RequestParam("projectId") Long selectedProjectId,
+                                 RedirectAttributes redirectAttributes) {
+
+        try {
+
+            if (!selectedProjectId.equals(currentProjectId)) {
+                ProjectDTO projectDTO = new ProjectDTO();
+                projectDTO.setProjectId(selectedProjectId);
+
+                EmployeeDTO employeeDTO = new EmployeeDTO();
+                employeeDTO.setProjectId(selectedProjectId);
+
+                EmployeeDTO updatedEmployee = employeeClient.assignProjectToEmployee("/assign-project", id, employeeDTO);
+
+                if (updatedEmployee != null) {
+                    redirectAttributes.addFlashAttribute("successMessage",
+                            "Employee assigned to new Project successfully.");
+                } else {
+                    redirectAttributes.addFlashAttribute("errorMessage",
+                            "Failed to assign employee to Project");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("infoMessage",
+                        "No changes were made as the selected project matches the current one.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error while assigning project. " + e.getMessage());
         }
 
         return "redirect:/employees/view-employee";

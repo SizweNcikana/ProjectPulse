@@ -4,11 +4,9 @@ import com.swiftedge.dtolibrary.dto.*;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
-import com.swiftedge.employeeservice.exceptions.StatusNotFoundException;
 import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
 import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepository;
 import com.swiftedge.employeeservice.service.status.StatusService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -183,7 +181,6 @@ public class EmployeeService {
 
     @Transactional
     public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
-        System.out.println("Here.....");
 
         existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee with ID " + id + " not found"));
@@ -331,12 +328,15 @@ public class EmployeeService {
         }
     }
 
-    public void updateAssignedEmployeeProject(Long id) {
-        existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
+    public EmployeeDTO updateAssignedEmployeeProject(Long employeeId, Long projectId) {
 
-        existingEmployee.setProjectId(projectDTO.getProjectId());
+        existingEmployee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found."));
+
+        existingEmployee.setProjectId(projectId);
         employeeRepository.save(existingEmployee);
+
+        return new EmployeeDTO();
     }
 
     /**

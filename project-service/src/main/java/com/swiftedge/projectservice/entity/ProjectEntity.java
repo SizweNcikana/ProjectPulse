@@ -19,6 +19,7 @@ public class ProjectEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
+    @Column(nullable = false, unique = true)
     private Long projectId;
 
     @Column(nullable = false, unique = true)
