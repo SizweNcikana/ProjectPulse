@@ -216,4 +216,19 @@ public class EmployeeController {
         return "redirect:/employees/view-employee";
     }
 
+    @PostMapping("/delete-employee/{id}")
+    public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        if (id != null) {
+            String updatedEmployee = employeeClient.deleteEmployee("/delete-employee", id);
+            if (updatedEmployee != null) {
+                redirectAttributes.addFlashAttribute("successMessage", "Employee deleted successfully.");
+                return "redirect:/employees/view-employee";
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete employee");
+            }
+        }
+        return "redirect:/employees/view-employee";
+    }
+
 }
