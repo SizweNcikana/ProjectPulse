@@ -719,20 +719,7 @@
                                                                         <div class="tab-pane" id="settings7" role="tabpanel">
                                                                             <h4 class="m-2 mt-4 sub-title">Remove Employee Profile</h4>
 
-                                                                            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                                                <i class="bi-exclamation-octagon-fill"></i>
-                                                                                <strong>Error!</strong> <span th:text="${errorMessage}"></span>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                                            </div>
-
-                                                                            <!-- Success Alert -->
-                                                                            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                                                                                <i class="bi-check-circle-fill"></i>
-                                                                                <strong>Success!</strong> <span th:text="${successMessage}"></span>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                                            </div>
-
-                                                                            <form th:action="@{/api/v2/employees/{id}/delete(id=${Id})}" method="POST">
+                                                                            <form th:action="@{/employees/delete-employee/{id}(id=${employeeResponse?.employee?.employeeId})}" method="POST">
 
                                                                                 <div class="m-2 row mb-3">
                                                                                     <div class="col-md-8 col-lg-9">
@@ -754,7 +741,7 @@
                                                                                     <div class="m-3 col-md-6">
                                                                                         <!-- Button with icon and text -->
                                                                                         <div class="form-group">
-                                                                                            <button th:disabled="${Id == null}"
+                                                                                            <button type="submit"
                                                                                                     class="btn btn-danger d-flex align-items-center justify-content-center w-100">
                                                                                                 <i class="bi bi-trash me-2"></i>
                                                                                                 <b>Delete Profile</b>

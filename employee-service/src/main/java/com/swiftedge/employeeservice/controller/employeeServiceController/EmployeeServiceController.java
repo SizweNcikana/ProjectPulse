@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -217,15 +216,15 @@ public class EmployeeServiceController {
                 : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{id}/delete")
-    public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @DeleteMapping("/delete-employee/{id}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
+
         try {
             employeeService.deleteEmployee(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Employee was deleted successfully.");
+            return ResponseEntity.ok("Employee deleted successfully");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete the employee. \nError: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error while deleting employee. " + e.getMessage());
         }
-        return "redirect:/api/v2/employees/edit";
     }
-
 }

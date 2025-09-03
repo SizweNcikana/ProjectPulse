@@ -96,4 +96,14 @@ public class EmployeeClient {
                 .block();
     }
 
+    public String deleteEmployee(String uri, Long employeeId) {
+        return builder.baseUrl(baseUrl)
+                .build()
+                .delete()
+                .uri(uri + "/" + employeeId)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
 }
