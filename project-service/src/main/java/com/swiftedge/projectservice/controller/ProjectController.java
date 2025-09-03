@@ -1,5 +1,6 @@
 package com.swiftedge.projectservice.controller;
 
+import com.swiftedge.dtolibrary.dto.ProjectDTO;
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
 import com.swiftedge.projectservice.dto.ProjectResponseDTO;
 import com.swiftedge.projectservice.dto.ProjectStatusDTO;
@@ -17,7 +18,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -77,15 +80,35 @@ public class ProjectController {
         return "redirect:/api/v2/projects/add";
     }
 
-    @GetMapping("/view-all")
-    public String viewAllEmployees(Model model) {
-        model.addAttribute("activeMenu", "projects");
-        model.addAttribute("activePage", "all-projects");
+//    @GetMapping("/view-all")
+//    public String viewAllEmployees(Model model) {
+//        model.addAttribute("activeMenu", "projects");
+//        model.addAttribute("activePage", "all-projects");
+//
+//        List<ProjectResponseDTO> projects = projectService.getAllProjects();
+//        model.addAttribute("projectsEntityList", projects);
+//
+//        return "projects-view-all";
+//    }
 
-        List<ProjectResponseDTO> projects = projectService.getAllProjects();
-        model.addAttribute("projectsEntityList", projects);
+//    @GetMapping("/all-projects")
+//    public ResponseEntity<List<ProjectDTO>> getAllProjects() {
+//        System.out.println("getAllProjects: " + projectService.getAllProjects());
+//        return ResponseEntity.ok(projectService.getAllProjects());
+//    }
 
-        return "projects-view-all";
+    @GetMapping("/all-projects")
+    public ResponseEntity<Map<String, Object>> getAllProjects() {
+        List<ProjectDTO> projects = projectService.getAllProjects();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("count", projects.size());
+        response.put("projects", projects);
+
+        System.out.println("Project response: \n" + response);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/edit")

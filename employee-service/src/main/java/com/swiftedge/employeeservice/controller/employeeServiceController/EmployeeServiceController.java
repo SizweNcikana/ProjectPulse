@@ -12,11 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,8 +27,6 @@ public class EmployeeServiceController {
     private final StatusService statusService;
     List<ProjectDTO> projectList;
     List<StatusDTO> statuses;
-    boolean isUpdated;
-    Long projectId;
     Long selectedProjectId;
 
     @GetMapping("/add-employee")
@@ -203,7 +199,6 @@ public class EmployeeServiceController {
     public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
 
         try {
-            System.out.println("Id: " + id + " EmployeeDTO: " + employeeDTO.getName());
             EmployeeDTO updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
             return ResponseEntity.ok(updatedEmployee);
         } catch (EntityNotFoundException e) {
@@ -211,35 +206,15 @@ public class EmployeeServiceController {
         }
     }
 
-    @PostMapping("/{id}/assign-project")
-    public String assignEmployeeToNewProject(
-            @PathVariable("id") Long id,
-            @ModelAttribute ProjectDTO projectDTO,
-            EmployeeDTO employeeDTO,
-            RedirectAttributes redirectAttributes
-    )
-    {
-         try {
-             // Fetch the project ID from the dropdown (selected project ID)
-             selectedProjectId = projectDTO.getProjectId();
-             log.info("Selected project id: {}", selectedProjectId);
+    @PutMapping("/assign-project/{employeeId}")
+    public ResponseEntity<EmployeeDTO> assignProjectToEmployee(@PathVariable Long employeeId,
+                                                               @RequestBody EmployeeDTO employeeDTO) {
 
-             if (selectedProjectId != null && !selectedProjectId.equals(projectId)) {
-                 employeeService.updateAssignedEmployeeProject(id);
+        EmployeeDTO updated = employeeService.updateAssignedEmployeeProject(employeeId, employeeDTO.getProjectId());
 
-                 redirectAttributes.addFlashAttribute("successMessage",
-                         "Project updated successfully for the employee.");
-
-             } else {
-                 redirectAttributes.addFlashAttribute("infoMessage",
-                         "No changes were made as the provided data matches the current data.");
-             }
-         } catch (IllegalArgumentException ex) {
-             log.error("Error: {}", ex.getMessage());
-         }
-
-        return "redirect:/api/v2/employees/edit";
-
+        return updated != null
+                ? ResponseEntity.ok(updated)
+                : ResponseEntity.notFound().build();
     }
 
     @PostMapping("/{id}/delete")

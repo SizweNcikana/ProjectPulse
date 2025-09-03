@@ -3,6 +3,8 @@ package com.swiftedge.dtolibrary.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
 @Getter
 @Setter
@@ -18,6 +20,14 @@ public class ProjectDTO {
     private String projectName;
 
     @NotNull
+    private LocalDate startDate;
+
+    @NotNull
+    private int duration;
+
+    @NotNull
     private String description;
+
+    private String statusName;
 
 }
