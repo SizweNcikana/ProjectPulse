@@ -183,20 +183,32 @@ public class EmployeeController {
 
     @PostMapping("/assign-project/{id}")
     public String updateEmployee(@PathVariable("id") Long id,
-                                 @RequestParam("myProject") Long currentProjectId,
+                                 @RequestParam(value = "myProject", required = false) Long currentProjectId,
                                  @RequestParam("projectId") Long selectedProjectId,
                                  RedirectAttributes redirectAttributes) {
 
+        ProjectDTO projectDTO = new ProjectDTO();
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+        EmployeeDTO updatedEmployee;
+
         try {
 
-            if (!selectedProjectId.equals(currentProjectId)) {
-                ProjectDTO projectDTO = new ProjectDTO();
+            if (currentProjectId == null) {
                 projectDTO.setProjectId(selectedProjectId);
 
-                EmployeeDTO employeeDTO = new EmployeeDTO();
                 employeeDTO.setProjectId(selectedProjectId);
 
-                EmployeeDTO updatedEmployee = employeeClient.assignProjectToEmployee("/assign-project", id, employeeDTO);
+                employeeClient.assignProjectToEmployee("/assign-project", id, employeeDTO);
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Employee assigned to new Project successfully.");
+
+            } else if (!selectedProjectId.equals(currentProjectId)) {
+
+                projectDTO.setProjectId(selectedProjectId);
+
+                employeeDTO.setProjectId(selectedProjectId);
+
+                updatedEmployee = employeeClient.assignProjectToEmployee("/assign-project", id, employeeDTO);
 
                 if (updatedEmployee != null) {
                     redirectAttributes.addFlashAttribute("successMessage",
