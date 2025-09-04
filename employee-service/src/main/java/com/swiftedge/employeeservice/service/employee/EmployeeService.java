@@ -1,14 +1,9 @@
 package com.swiftedge.employeeservice.service.employee;
 
-import com.swiftedge.employeeservice.dto.address.AddressRequestDTO;
-import com.swiftedge.employeeservice.dto.employee.EmployeeRequestDTO;
-import com.swiftedge.employeeservice.dto.employee.EmployeeResponseDTO;
-import com.swiftedge.employeeservice.dto.project.ProjectDTO;
-import com.swiftedge.employeeservice.dto.status.StatusDTO;
+import com.swiftedge.dtolibrary.dto.*;
 import com.swiftedge.employeeservice.entity.address.EmployeeAddressEntity;
 import com.swiftedge.employeeservice.entity.employee.EmployeeEntity;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
-import com.swiftedge.employeeservice.exceptions.StatusNotFoundException;
 import com.swiftedge.employeeservice.repository.employee.EmployeeRepository;
 import com.swiftedge.employeeservice.repository.address.EmployeeAddressRepository;
 import com.swiftedge.employeeservice.service.status.StatusService;
@@ -37,70 +32,143 @@ public class EmployeeService {
     private final WebClient.Builder webClientBuilder;
 
     EmployeeEntity existingEmployee;
+    ProjectDTO projectDTO;
 
     @Transactional
-    public void saveEmployee(EmployeeRequestDTO employeeRequestDTO, Long projectId, Long statusId) {
-        EmployeeEntity employeeEntity = new EmployeeEntity();
-        EmployeeAddressEntity addressEntity = new EmployeeAddressEntity();
+    public EmployeeResponseDTO saveEmployee(EmployeeDTO employeeDTO, Long projectId, Long statusId) {
 
-        EmployeeStatus status = statusService.getStatusById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
+        try {
+            //Employee Entity
+            EmployeeEntity employeeEntity = new EmployeeEntity();
 
+            employeeRepository.findByEmail(employeeDTO.getEmail())
+                    .ifPresent(e -> {
+                        throw new IllegalArgumentException("Email '" + employeeDTO.getEmail() + "' already exists");
+                    });
 
-        employeeRepository.findByEmail(employeeRequestDTO.getEmail())
-                .ifPresent(e -> {
-                    throw new IllegalArgumentException("Email " + "'" + employeeRequestDTO.getEmail() + "'" + " already exists");
-                });
+            employeeEntity.setName(employeeDTO.getName());
+            employeeEntity.setSurname(employeeDTO.getSurname());
+            employeeEntity.setEmail(employeeDTO.getEmail());
+            employeeEntity.setNumber(employeeDTO.getNumber());
+            employeeEntity.setIdNumber(employeeDTO.getIdNumber());
+            employeeEntity.setDob(employeeDTO.getDob());
+            employeeEntity.setGender(employeeDTO.getGender());
+            employeeEntity.setEthnicity(employeeDTO.getEthnicity());
+            employeeEntity.setOccupation(employeeDTO.getOccupation());
+            employeeEntity.setExperience(employeeDTO.getExperience());
+            employeeEntity.setSummary(employeeDTO.getSummary());
 
-        employeeEntity.setName(employeeRequestDTO.getName());
-        employeeEntity.setSurname(employeeRequestDTO.getSurname());
-        employeeEntity.setEmail(employeeRequestDTO.getEmail());
-        employeeEntity.setNumber(employeeRequestDTO.getNumber());
-        employeeEntity.setIdNumber(employeeRequestDTO.getIdNumber());
-        employeeEntity.setDob(employeeRequestDTO.getDob());
-        employeeEntity.setGender(employeeRequestDTO.getGender());
-        employeeEntity.setEthnicity(employeeRequestDTO.getEthnicity());
-        employeeEntity.setOccupation(employeeRequestDTO.getOccupation());
-        employeeEntity.setExperience(employeeRequestDTO.getExperience());
-        employeeEntity.setSummary(employeeRequestDTO.getSummary());
-        employeeEntity.setStatus(status);
+            employeeEntity.setProjectId(projectId);
 
-        employeeEntity.setProjectId(projectId);
+            //Address Entity
+            if (employeeDTO.getAddress() != null) {
+                EmployeeAddressEntity employeeAddressEntity = new EmployeeAddressEntity();
 
-        addressEntity.setCity(employeeRequestDTO.getAddress().getCity());
-        addressEntity.setSuburb(employeeRequestDTO.getAddress().getSuburb());
-        addressEntity.setStreetAddress(employeeRequestDTO.getAddress().getStreetAddress());
-        addressEntity.setZipCode(employeeRequestDTO.getAddress().getZipCode());
+                employeeAddressEntity.setStreetAddress(employeeDTO.getAddress().getStreetAddress());
+                employeeAddressEntity.setCity(employeeDTO.getAddress().getCity());
+                employeeAddressEntity.setSuburb(employeeDTO.getAddress().getSuburb());
+                employeeAddressEntity.setZipCode(employeeDTO.getAddress().getZipCode());
+                employeeEntity.setAddress(employeeAddressEntity);
+            }
 
-        employeeEntity.setAddress(addressEntity);
-        addressEntity.setEmployee(employeeEntity);
+            EmployeeStatus status = statusService.getStatusById(statusId)
+                    .orElseThrow(() -> new RuntimeException("Status with ID " + statusId + " not found"));
+            employeeEntity.setStatus(status);
 
-        employeeRepository.save(employeeEntity);
+            EmployeeEntity saved = employeeRepository.save(employeeEntity);
+
+            // Mapping back to DTO for response
+            EmployeeDTO savedEmployeeDTO = new EmployeeDTO(
+                    saved.getEmployeeId(),
+                    saved.getName(),
+                    saved.getSurname(),
+                    saved.getEmail(),
+                    saved.getNumber(),
+                    saved.getIdNumber(),
+                    saved.getDob(),
+                    saved.getGender(),
+                    saved.getEthnicity(),
+                    saved.getOccupation(),
+                    saved.getExperience(),
+                    saved.getSummary(),
+                    employeeDTO.getAddress(),
+                    (saved.getProjectId() != null ? saved.getProjectId() : null),
+                    saved.getStatus() != null ? new StatusDTO(
+                            saved.getStatus().getId(),
+                            saved.getStatus().getStatus(),
+                            0L
+                    ) : null
+
+            );
+
+            StatusDTO statusDTO = new StatusDTO(status.getId(), status.getStatus(), 1L);
+
+            return new EmployeeResponseDTO(
+                    savedEmployeeDTO,
+                    statusDTO,
+                    projectDTO,
+                    "Employee saved successfully",
+                    null,
+                    true
+            );
+
+        } catch (Exception e) {
+            return new EmployeeResponseDTO(
+                    null,
+                    null,
+                    null,
+                    null,
+                    "Failed to save employee: " + e.getMessage(),
+                    false
+            );
+        }
     }
 
     public List<EmployeeResponseDTO> getAllEmployees() {
         List<EmployeeEntity> employees = employeeRepository.findAll();
 
-        // Map each Employee entity to EmployeeResponseDTO
         return employees.stream()
-                .map(this::mapToEmployeeResponseDTO)
-                .collect(Collectors.toList());
-    }
+                .map(e -> {
+                    EmployeeDTO employeeDTO = new EmployeeDTO(
+                            e.getEmployeeId(),
+                            e.getName(),
+                            e.getSurname(),
+                            e.getEmail(),
+                            e.getNumber(),
+                            e.getIdNumber(),
+                            e.getDob(),
+                            e.getGender(),
+                            e.getEthnicity(),
+                            e.getOccupation(),
+                            e.getExperience(),
+                            e.getSummary(),
+                            e.getAddress() != null ? new AddressDTO(
+                                    e.getAddress().getCity(),
+                                    e.getAddress().getSuburb(),
+                                    e.getAddress().getStreetAddress(),
+                                    e.getAddress().getZipCode()
+                            ) : null,
+                            (e.getProjectId() != null ? e.getProjectId() : null),
+                            e.getStatus() != null ? new StatusDTO(
+                                    e.getStatus().getId(),
+                                    e.getStatus().getStatus(),
+                                    0L
+                            ) : null
+                    );
 
-    private EmployeeResponseDTO mapToEmployeeResponseDTO(EmployeeEntity employeeEntity) {
-        EmployeeResponseDTO dto = new EmployeeResponseDTO();
+                    // map Status to StatusDTO
+                    StatusDTO statusDTO = (e.getStatus() != null)
+                            ? new StatusDTO(e.getStatus().getId(), e.getStatus().getStatus(), 1L) : null;
 
-        dto.setName(employeeEntity.getName());
-        dto.setSurname(employeeEntity.getSurname());
-        dto.setEmail(employeeEntity.getEmail());
-        dto.setNumber(employeeEntity.getNumber());
-        dto.setIdNumber(employeeEntity.getIdNumber());
-        dto.setDob(employeeEntity.getDob());
-        dto.setOccupation(employeeEntity.getOccupation());
-        dto.setStatus(employeeEntity.getStatus());
-
-        return dto;
-
+                    return new EmployeeResponseDTO(
+                            employeeDTO,
+                            statusDTO,
+                            projectDTO,
+                            "Employee fetched successfully",
+                            null,
+                            true
+                    );
+                }).collect(Collectors.toList());
     }
 
     public List<EmployeeEntity> searchEmployee(String name, String surname) {
@@ -111,102 +179,101 @@ public class EmployeeService {
         return employeeRepository.findAddressByNameAndSurname(name, surname);
     }
 
-    public boolean updateEmployee(Long id, EmployeeResponseDTO employeeResponseDTO, AddressRequestDTO addressRequestDTO, Long statusId) {
+    @Transactional
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
 
         existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
+                .orElseThrow(() -> new RuntimeException("Employee with ID " + id + " not found"));
 
-        boolean isUpdated = false;
 
-        if (!existingEmployee.getName().equals(employeeResponseDTO.getName())) {
-            validateName(employeeResponseDTO.getName());
-            existingEmployee.setName(employeeResponseDTO.getName());
-            isUpdated = true;
+        if (!existingEmployee.getName().equals(employeeDTO.getName())) {
+            validateName(employeeDTO.getName());
+            existingEmployee.setName(employeeDTO.getName());
         }
 
-        if (!existingEmployee.getSurname().equals(employeeResponseDTO.getSurname())) {
-            validateSurname(employeeResponseDTO.getSurname());
-            existingEmployee.setSurname(employeeResponseDTO.getSurname());
-            isUpdated = true;
+        if (!existingEmployee.getSurname().equals(employeeDTO.getSurname())) {
+            validateSurname(employeeDTO.getSurname());
+            existingEmployee.setSurname(employeeDTO.getSurname());
         }
 
-        if (!existingEmployee.getEmail().equals(employeeResponseDTO.getEmail())) {
-            validateEmail(employeeResponseDTO.getEmail());
-            existingEmployee.setEmail(employeeResponseDTO.getEmail());
-            isUpdated = true;
+        if (!existingEmployee.getEmail().equals(employeeDTO.getEmail())) {
+            validateEmail(employeeDTO.getEmail());
+            existingEmployee.setEmail(employeeDTO.getEmail());
         }
 
-        if (!existingEmployee.getNumber().equals(employeeResponseDTO.getNumber())) {
-            validatePhoneNumber(employeeResponseDTO.getNumber());
-            existingEmployee.setNumber(employeeResponseDTO.getNumber());
-            isUpdated = true;
+        if (!existingEmployee.getNumber().equals(employeeDTO.getNumber())) {
+            validatePhoneNumber(employeeDTO.getNumber());
+            existingEmployee.setNumber(employeeDTO.getNumber());
         }
 
-        if (!existingEmployee.getOccupation().equals(employeeResponseDTO.getOccupation())) {
-            validateOccupation(employeeResponseDTO.getOccupation());
-            existingEmployee.setOccupation(employeeResponseDTO.getOccupation());
-            isUpdated = true;
+        if (!existingEmployee.getOccupation().equals(employeeDTO.getOccupation())) {
+            validateOccupation(employeeDTO.getOccupation());
+            existingEmployee.setOccupation(employeeDTO.getOccupation());
         }
 
-        if (!existingEmployee.getExperience().equals(employeeResponseDTO.getExperience())) {
-            validateExperience(employeeResponseDTO.getExperience());
-            existingEmployee.setExperience(employeeResponseDTO.getExperience());
-            isUpdated = true;
+        if (!existingEmployee.getExperience().equals(employeeDTO.getExperience())) {
+            validateExperience(employeeDTO.getExperience());
+            existingEmployee.setExperience(employeeDTO.getExperience());
         }
 
-        if (!existingEmployee.getSummary().equals(employeeResponseDTO.getSummary())) {
-            validateSummary(employeeResponseDTO.getSummary());
-            existingEmployee.setSummary(employeeResponseDTO.getSummary());
-            isUpdated = true;
+        if (!existingEmployee.getSummary().equals(employeeDTO.getSummary())) {
+            validateSummary(employeeDTO.getSummary());
+            existingEmployee.setSummary(employeeDTO.getSummary());
         }
 
-        EmployeeStatus newStatus = statusService.getStatusById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
-
-        EmployeeStatus currentStatus = existingEmployee.getStatus();
-
-        System.out.println("New status ID: " + newStatus.getId());
-
-
-        if (currentStatus == null) {
-            throw new StatusNotFoundException("Employee status not found");
-        } else if (currentStatus.getId().equals(newStatus.getId())) {
-            System.out.println("Status is the same");
-        } else {
+        if (employeeDTO.getStatus() != null) {
+            EmployeeStatus newStatus = statusService.getStatusById(employeeDTO.getStatus().getStatusId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
             existingEmployee.setStatus(newStatus);
-            isUpdated = true;
         }
 
-        //Save employee Address
-        EmployeeAddressEntity addressEntity = existingEmployee.getAddress();
-        if (addressEntity != null) {
-            if (!addressEntity.getStreetAddress().equals(addressRequestDTO.getStreetAddress())) {
-                addressEntity.setStreetAddress(addressRequestDTO.getStreetAddress());
-                isUpdated = true;
+        if (employeeDTO.getAddress() != null) {
+            EmployeeAddressEntity addressEntity = existingEmployee.getAddress();
+            if (addressEntity == null) {
+                addressEntity = new EmployeeAddressEntity();
             }
-
-            if (!addressEntity.getCity().equals(addressRequestDTO.getCity())) {
-                addressEntity.setCity(addressRequestDTO.getCity());
-                isUpdated = true;
-            }
-
-            if (!addressEntity.getSuburb().equals(addressRequestDTO.getSuburb())) {
-                addressEntity.setSuburb(addressRequestDTO.getSuburb());
-                isUpdated = true;
-            }
-
-            if (!addressEntity.getZipCode().equals(addressRequestDTO.getZipCode())) {
-                addressEntity.setZipCode(addressRequestDTO.getZipCode());
-                isUpdated = true;
-            }
-            existingEmployee.setAddress(addressEntity);
+            addressEntity.setStreetAddress(employeeDTO.getAddress().getStreetAddress());
+            addressEntity.setCity(employeeDTO.getAddress().getCity());
+            addressEntity.setSuburb(employeeDTO.getAddress().getSuburb());
+            addressEntity.setZipCode(employeeDTO.getAddress().getZipCode());
         }
 
-        if (isUpdated) {
-            employeeRepository.save(existingEmployee);
-        }
+        //To add Section for Status and Project Update
 
-        return isUpdated;
+        EmployeeEntity saved = employeeRepository.save(existingEmployee);
+
+        EmployeeDTO response = new EmployeeDTO(
+                saved.getEmployeeId(),
+                saved.getName(),
+                saved.getSurname(),
+                saved.getEmail(),
+                saved.getNumber(),
+                saved.getIdNumber(),
+                saved.getDob(),
+                saved.getGender(),
+                saved.getEthnicity(),
+                saved.getOccupation(),
+                saved.getExperience(),
+                saved.getSummary(),
+                saved.getAddress() != null
+                        ? new AddressDTO(
+                        saved.getAddress().getSuburb(),
+                        saved.getAddress().getCity(),
+                        saved.getAddress().getStreetAddress(),
+                        saved.getAddress().getZipCode()
+                )
+                        : null,
+                saved.getProjectId(),
+                saved.getStatus() != null
+                        ? new StatusDTO(
+                        saved.getStatus().getId(),
+                        saved.getStatus().getStatus(),
+                        0L
+                )
+                        : null
+        );
+
+        return response;
     }
 
     private void validateName(String name) {
@@ -261,12 +328,15 @@ public class EmployeeService {
         }
     }
 
-    public void updateAssignedEmployeeProject(Long id, long projectId) {
-        existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Employee with ID " + id + " does not exist."));
+    public EmployeeDTO updateAssignedEmployeeProject(Long employeeId, Long projectId) {
+
+        existingEmployee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found."));
 
         existingEmployee.setProjectId(projectId);
         employeeRepository.save(existingEmployee);
+
+        return new EmployeeDTO();
     }
 
     /**

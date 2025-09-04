@@ -1,6 +1,6 @@
 package com.swiftedge.employeeservice.service.status;
 
-import com.swiftedge.employeeservice.dto.status.StatusDTO;
+import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.employeeservice.entity.status.EmployeeStatus;
 import com.swiftedge.employeeservice.repository.status.StatusRepository;
 import lombok.AllArgsConstructor;
@@ -22,8 +22,10 @@ public class StatusService {
 
     public List<StatusDTO> getAllStatuses() {
         return statusRepository.findAll().stream()
-                .map(status -> new StatusDTO(status.getId(),
-                        status.getStatus(), 0L))
+                .map(status -> new StatusDTO(
+                        status.getId(),
+                        status.getStatus(),
+                        0L))
                 .collect(Collectors.toList());
     }
 
