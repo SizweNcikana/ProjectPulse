@@ -1,7 +1,6 @@
 package com.swiftedge.frontendservice.service;
 
 import com.swiftedge.dtolibrary.dto.EmployeeSearchResponseDTO;
-import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;
 import com.swiftedge.dtolibrary.dto.EmployeeDTO;
 import com.swiftedge.dtolibrary.dto.EmployeeResponseDTO;
