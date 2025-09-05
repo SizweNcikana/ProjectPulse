@@ -103,20 +103,6 @@ public class EmployeeServiceController {
 
     }
 
-    @GetMapping("/edit")
-    public String editEmployee(Model model) {
-        model.addAttribute("activeMenu", "employees");
-        model.addAttribute("activePage", "edit-employee");
-
-        projectList = employeeService.getAllProjectsFromProjectService();
-        statuses = statusService.getAllStatuses();
-
-        model.addAttribute("projects", projectList);
-        model.addAttribute("statuses", statuses);
-
-        return "edit-employee";
-    }
-
     @GetMapping("/search-employee")
     public ResponseEntity<EmployeeSearchResponseDTO> searchEmployee(
             @RequestParam("name") String name,
