@@ -2,10 +2,8 @@ package com.swiftedge.projectservice.controller;
 
 import com.swiftedge.dtolibrary.dto.ProjectDTO;
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
-import com.swiftedge.projectservice.dto.ProjectResponseDTO;
 import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
-import com.swiftedge.projectservice.entity.ProjectStatus;
 import com.swiftedge.projectservice.service.ProjectService;
 import com.swiftedge.projectservice.service.ProjectStatusService;
 import jakarta.validation.Valid;
@@ -27,21 +25,34 @@ import java.util.Optional;
 @RequestMapping("/api/v2/projects")
 @RequiredArgsConstructor
 @Slf4j
-public class ProjectController {
+public class ProjectServiceController {
 
     private final ProjectService projectService;
     private final ProjectStatusService projectStatusService;
     List<ProjectStatusDTO> projectStatus;
 
-    @GetMapping("/add")
-    public String addProject(Model model) {
-        model.addAttribute("activeMenu", "projects");
-        model.addAttribute("activePage", "projects");
+//    @GetMapping("/add-project")
+//    public String addProject(Model model) {
+//        model.addAttribute("activeMenu", "projects");
+//        model.addAttribute("activePage", "projects");
+//
+//        ProjectRequestDTO project = new ProjectRequestDTO();
+//        model.addAttribute("project", project);
+//
+//        return "add-project";
+//    }
 
-        ProjectRequestDTO project = new ProjectRequestDTO();
-        model.addAttribute("project", project);
+    @GetMapping("/add-project")
+    public ResponseEntity<Map<String, Object>> addProjectForm() {
+        Map<String, Object> response = new HashMap<>();
 
-        return "add-project";
+        response.put("activeMenu", "projects");
+        response.put("activePage", "projects");
+
+        ProjectDTO projectDTO = new ProjectDTO();
+        response.put("project", projectDTO);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/save")

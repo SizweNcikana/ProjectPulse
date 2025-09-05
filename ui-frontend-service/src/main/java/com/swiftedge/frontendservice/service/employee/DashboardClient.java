@@ -1,4 +1,4 @@
-package com.swiftedge.frontendservice.service;
+package com.swiftedge.frontendservice.service.employee;
 
 import com.swiftedge.frontendservice.dto.dashboard.DashboardDataDTO;
 import lombok.AllArgsConstructor;

@@ -1,10 +1,10 @@
-package com.swiftedge.frontendservice.controller;
+package com.swiftedge.frontendservice.controller.employee;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swiftedge.dtolibrary.dto.*;
 import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;
-import com.swiftedge.frontendservice.service.EmployeeClient;
+import com.swiftedge.frontendservice.service.employee.EmployeeClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
