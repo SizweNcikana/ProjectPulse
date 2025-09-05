@@ -1,4 +1,4 @@
-package com.swiftedge.frontendservice.service;
+package com.swiftedge.frontendservice.service.employee;
 
 import com.swiftedge.dtolibrary.dto.EmployeeSearchResponseDTO;
 import com.swiftedge.frontendservice.dto.employee.EmployeeFormDTO;

@@ -1,9 +1,9 @@
-package com.swiftedge.frontendservice.controller;
+package com.swiftedge.frontendservice.controller.employee;
 
 import com.swiftedge.frontendservice.dto.dashboard.DashboardDataDTO;
 import com.swiftedge.frontendservice.dto.employee.EmployeeStatusDTO;
 import com.swiftedge.frontendservice.dto.project.ProjectStatusDTO;
-import com.swiftedge.frontendservice.service.DashboardClient;
+import com.swiftedge.frontendservice.service.employee.DashboardClient;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
