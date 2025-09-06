@@ -2,7 +2,6 @@ package com.swiftedge.projectservice.service;
 
 import com.swiftedge.dtolibrary.dto.ProjectDTO;
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
-import com.swiftedge.projectservice.dto.ProjectResponseDTO;
 import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
 import com.swiftedge.projectservice.entity.ProjectStatus;
@@ -30,27 +29,45 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectStatusService projectStatusService;
 
-    @Transactional
-    public void saveProject(ProjectRequestDTO projectRequestDTO, Long statusId) {
-        Optional<ProjectEntity> existingProjects = projectRepository.findByProjectName(projectRequestDTO.getProjectName());
+    public ProjectDTO saveProject(ProjectRequestDTO projectRequestDTO, Long statusId) {
 
-        Optional<ProjectStatus> status = Optional.ofNullable(projectStatusService.getStatusById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID")));
+        Optional<ProjectEntity> existingProject = projectRepository.findByProjectName(
+                projectRequestDTO.getProjectName()
+        );
 
-        if (!existingProjects.isEmpty()) {
+        if (existingProject.isPresent()) {
             throw new IllegalStateException("Project with name '" + projectRequestDTO.getProjectName() + "' already exists.");
         }
 
+        ProjectStatus status = projectStatusService.getStatusById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid status ID"));
+
+        //Mapping incoming DTO to Entity then save
         ProjectEntity projectEntity = new ProjectEntity();
 
         projectEntity.setProjectName(projectRequestDTO.getProjectName());
         projectEntity.setStartDate(projectRequestDTO.getStartDate());
         projectEntity.setDuration(projectRequestDTO.getDuration());
         projectEntity.setDescription(projectRequestDTO.getDescription());
-        projectEntity.setStatus(status.orElseThrow(() -> new IllegalArgumentException("Invalid status ID")));
+        projectEntity.setStatus(status);
 
-        projectRepository.save(projectEntity);
+        System.out.println("Saving project " + projectEntity.toString());
+
+        ProjectEntity savedProjectEntity = projectRepository.save(projectEntity);
+
+        // Mapping back to DTO
+        ProjectDTO projectDTO = new ProjectDTO();
+
+        projectDTO.setProjectId(savedProjectEntity.getProjectId());
+        projectDTO.setProjectName(savedProjectEntity.getProjectName());
+        projectDTO.setStartDate(savedProjectEntity.getStartDate());
+        projectDTO.setDuration(savedProjectEntity.getDuration());
+        projectDTO.setDescription(savedProjectEntity.getDescription());
+        projectDTO.setStatusName(savedProjectEntity.getStatus().getStatus());
+
+        return projectDTO;
     }
+
 
     public List<ProjectDTO> getAllProjects() {
 

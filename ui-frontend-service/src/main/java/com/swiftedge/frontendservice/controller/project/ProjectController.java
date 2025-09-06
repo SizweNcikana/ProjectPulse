@@ -1,13 +1,18 @@
 package com.swiftedge.frontendservice.controller.project;
 
+import com.swiftedge.dtolibrary.dto.ProjectDTO;
 import com.swiftedge.frontendservice.dto.project.ProjectFormDTO;
 import com.swiftedge.frontendservice.service.project.ProjectClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -25,7 +30,47 @@ public class ProjectController {
 
         model.addAttribute("activeMenu", projectFormDTO.getActiveMenu());
         model.addAttribute("activePage", projectFormDTO.getActivePage());
+        model.addAttribute("project", projectFormDTO);
 
         return "add-project";
     }
+
+    @PostMapping("/save-project")
+    public String saveProject(
+            @ModelAttribute("project") ProjectFormDTO projectFormDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Validation failed. Please correct the errors and try again.");
+            redirectAttributes.addFlashAttribute("project", projectFormDTO); // retain form values
+            return "redirect:/projects/add-project";
+        }
+
+        try {
+
+            ProjectDTO savedProject = projectClient.saveProject("/save-project", projectFormDTO);
+
+            if (savedProject != null) {
+                // Success message
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Project '" + savedProject.getProjectName() + "' saved successfully.");
+
+                // Retain saved project for the form (optional)
+                redirectAttributes.addFlashAttribute("project", savedProject);
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        "Failed to save project. Please try again.");
+            }
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error while saving project: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("project", projectFormDTO); // retain form values
+        }
+
+        return "redirect:/projects/add-project";
+    }
+
 }

@@ -4,11 +4,13 @@ import com.swiftedge.dtolibrary.dto.ProjectDTO;
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
 import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
+import com.swiftedge.projectservice.entity.ProjectStatus;
 import com.swiftedge.projectservice.service.ProjectService;
 import com.swiftedge.projectservice.service.ProjectStatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,41 +57,54 @@ public class ProjectServiceController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/save")
-    public String saveProject(@Valid @ModelAttribute("project") ProjectRequestDTO projectRequestDTO,
-                              BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Validation failed. Please correct the following errors in your request and try again.");
-            return "redirect:/api/v2/projects/add";
-        }
+    @PostMapping("/save-project")
+    public ResponseEntity<ProjectDTO> saveProject(@Valid @RequestBody ProjectRequestDTO projectRequestDTO) {
 
-        try {
+        String statusName = "Not Started";
 
-            projectStatus = projectStatusService.getAllProjectStatus();
-            String statusName = "Not Started";
+        ProjectStatus status = projectStatusService.getStatusByName(statusName)
+                .orElseThrow(() -> new RuntimeException("Project status not found"));
 
-            projectStatus.stream()
-                            .filter(projectStatus -> projectStatus.getStatusName().equals(statusName))
-                                    .findFirst()
-                                            .flatMap(status -> {
-                                                Long statusId = status.getStatusId();
-                                                return projectStatusService.getStatusById(statusId);
-                                            })
-                                                    .ifPresentOrElse(projectStatus -> {
-                                                        log.info("Project status: {}", projectStatus.getId());
-                                                        projectService.saveProject(projectRequestDTO, projectStatus.getId());
-                                                        redirectAttributes.addFlashAttribute("successMessage", "Project saved successfully.");
-                                                    }, () -> {
-                                                        log.info("No matching project status found or status ID is invalid.");
-                                                    });
+        ProjectDTO projectDTO = projectService.saveProject(projectRequestDTO, status.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectDTO);
 
-        }
-        catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error while saving project." + e.getMessage());
-        }
-        return "redirect:/api/v2/projects/add";
     }
+
+//    @PostMapping("/save")
+//    public String saveProject(@Valid @ModelAttribute("project") ProjectRequestDTO projectRequestDTO,
+//                              BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+//        if (bindingResult.hasErrors()) {
+//            redirectAttributes.addFlashAttribute("errorMessage",
+//                    "Validation failed. Please correct the following errors in your request and try again.");
+//            return "redirect:/api/v2/projects/add";
+//        }
+//
+//        try {
+//
+//            projectStatus = projectStatusService.getAllProjectStatus();
+//            String statusName = "Not Started";
+//
+//            projectStatus.stream()
+//                            .filter(projectStatus -> projectStatus.getStatusName().equals(statusName))
+//                                    .findFirst()
+//                                            .flatMap(status -> {
+//                                                Long statusId = status.getStatusId();
+//                                                return projectStatusService.getStatusById(statusId);
+//                                            })
+//                                                    .ifPresentOrElse(projectStatus -> {
+//                                                        log.info("Project status: {}", projectStatus.getId());
+//                                                        projectService.saveProject(projectRequestDTO, projectStatus.getId());
+//                                                        redirectAttributes.addFlashAttribute("successMessage", "Project saved successfully.");
+//                                                    }, () -> {
+//                                                        log.info("No matching project status found or status ID is invalid.");
+//                                                    });
+//
+//        }
+//        catch (IllegalArgumentException e) {
+//            redirectAttributes.addFlashAttribute("errorMessage", "Error while saving project." + e.getMessage());
+//        }
+//        return "redirect:/api/v2/projects/add";
+//    }
 
 //    @GetMapping("/view-all")
 //    public String viewAllEmployees(Model model) {
