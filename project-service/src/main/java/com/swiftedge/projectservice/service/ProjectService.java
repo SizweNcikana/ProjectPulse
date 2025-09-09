@@ -68,7 +68,6 @@ public class ProjectService {
         return projectDTO;
     }
 
-
     public List<ProjectDTO> getAllProjects() {
 
         // Map each Project entity to ProjectResponseDTO

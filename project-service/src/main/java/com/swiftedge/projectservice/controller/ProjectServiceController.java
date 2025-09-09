@@ -70,71 +70,11 @@ public class ProjectServiceController {
 
     }
 
-//    @PostMapping("/save")
-//    public String saveProject(@Valid @ModelAttribute("project") ProjectRequestDTO projectRequestDTO,
-//                              BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-//        if (bindingResult.hasErrors()) {
-//            redirectAttributes.addFlashAttribute("errorMessage",
-//                    "Validation failed. Please correct the following errors in your request and try again.");
-//            return "redirect:/api/v2/projects/add";
-//        }
-//
-//        try {
-//
-//            projectStatus = projectStatusService.getAllProjectStatus();
-//            String statusName = "Not Started";
-//
-//            projectStatus.stream()
-//                            .filter(projectStatus -> projectStatus.getStatusName().equals(statusName))
-//                                    .findFirst()
-//                                            .flatMap(status -> {
-//                                                Long statusId = status.getStatusId();
-//                                                return projectStatusService.getStatusById(statusId);
-//                                            })
-//                                                    .ifPresentOrElse(projectStatus -> {
-//                                                        log.info("Project status: {}", projectStatus.getId());
-//                                                        projectService.saveProject(projectRequestDTO, projectStatus.getId());
-//                                                        redirectAttributes.addFlashAttribute("successMessage", "Project saved successfully.");
-//                                                    }, () -> {
-//                                                        log.info("No matching project status found or status ID is invalid.");
-//                                                    });
-//
-//        }
-//        catch (IllegalArgumentException e) {
-//            redirectAttributes.addFlashAttribute("errorMessage", "Error while saving project." + e.getMessage());
-//        }
-//        return "redirect:/api/v2/projects/add";
-//    }
-
-//    @GetMapping("/view-all")
-//    public String viewAllEmployees(Model model) {
-//        model.addAttribute("activeMenu", "projects");
-//        model.addAttribute("activePage", "all-projects");
-//
-//        List<ProjectResponseDTO> projects = projectService.getAllProjects();
-//        model.addAttribute("projectsEntityList", projects);
-//
-//        return "projects-view-all";
-//    }
-
-//    @GetMapping("/all-projects")
-//    public ResponseEntity<List<ProjectDTO>> getAllProjects() {
-//        System.out.println("getAllProjects: " + projectService.getAllProjects());
-//        return ResponseEntity.ok(projectService.getAllProjects());
-//    }
-
-    @GetMapping("/all-projects")
-    public ResponseEntity<Map<String, Object>> getAllProjects() {
+    @GetMapping("/view-projects")
+    public ResponseEntity<List<ProjectDTO>> getAllProjects() {
         List<ProjectDTO> projects = projectService.getAllProjects();
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("count", projects.size());
-        response.put("projects", projects);
-
-        System.out.println("Project response: \n" + response);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(projects);
     }
 
     @GetMapping("/edit")

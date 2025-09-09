@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -71,6 +73,19 @@ public class ProjectController {
         }
 
         return "redirect:/projects/add-project";
+    }
+
+    @GetMapping("/view-projects")
+    public String allProjects(Model model) {
+        List<ProjectDTO> projects = projectClient.getAllProjects("/view-projects");
+
+        model.addAttribute("activeMenu", "projects");
+        model.addAttribute("activePage", "all-projects");
+
+
+        model.addAttribute("projects", projects);
+
+        return "projects-view-all";
     }
 
 }
