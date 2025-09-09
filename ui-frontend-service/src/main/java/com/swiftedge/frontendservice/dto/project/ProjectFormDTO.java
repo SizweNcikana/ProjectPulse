@@ -15,7 +15,6 @@ public class ProjectFormDTO {
     private String activeMenu;
     private String activePage;
 
-//    private ProjectDTO projectDTO;
     private Long projectId;
     @NotNull
     private String projectName;

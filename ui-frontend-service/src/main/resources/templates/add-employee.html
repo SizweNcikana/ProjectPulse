@@ -289,13 +289,6 @@
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
-                                        <li th:classappend="${activePage == 'accordion'} ? 'active' : ''">
-                                            <a th:href="@{/accordion}" class="waves-effect waves-dark">
-                                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext">Employee Profile</span>
-                                                <span class="pcoded-mcaret"></span>
-                                            </a>
-                                        </li>
                                     </ul>
                                 </li>
                             </ul>
@@ -309,7 +302,7 @@
                                     </a>
                                     <ul class="pcoded-submenu">
                                         <li th:classappend="${activePage == 'all-projects'} ? 'active' : ''">
-                                            <a th:href="@{/projects/view-all}" class="waves-effect waves-dark">
+                                            <a th:href="@{/projects/view-projects}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">All Projects</span>
                                                 <span class="pcoded-mcaret"></span>
@@ -323,7 +316,7 @@
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'edit-project'} ? 'active' : ''">
-                                            <a th:href="@{/projects/edit}" class="waves-effect waves-dark">
+                                            <a th:href="@{/projects/edit-project}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Edit Project</span>
                                                 <span class="pcoded-mcaret"></span>
