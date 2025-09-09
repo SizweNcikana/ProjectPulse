@@ -33,17 +33,6 @@ public class ProjectServiceController {
     private final ProjectStatusService projectStatusService;
     List<ProjectStatusDTO> projectStatus;
 
-//    @GetMapping("/add-project")
-//    public String addProject(Model model) {
-//        model.addAttribute("activeMenu", "projects");
-//        model.addAttribute("activePage", "projects");
-//
-//        ProjectRequestDTO project = new ProjectRequestDTO();
-//        model.addAttribute("project", project);
-//
-//        return "add-project";
-//    }
-
     @GetMapping("/add-project")
     public ResponseEntity<Map<String, Object>> addProjectForm() {
         Map<String, Object> response = new HashMap<>();
@@ -77,12 +66,18 @@ public class ProjectServiceController {
         return ResponseEntity.ok(projects);
     }
 
-    @GetMapping("/edit")
-    public String projectOverview(Model model) {
-        model.addAttribute("activeMenu", "projects");
-        model.addAttribute("activePage", "project-overview");
+    @GetMapping("/view-project")
 
-        return "project-overview";
+    public ResponseEntity<Map<String, Object>> viewProject() {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("activeMenu", "projects");
+        response.put("activePage", "project-overview");
+
+        ProjectDTO projectDTO = new ProjectDTO();
+        response.put("project", projectDTO);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/search")

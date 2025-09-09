@@ -82,10 +82,22 @@ public class ProjectController {
         model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "all-projects");
 
-
         model.addAttribute("projects", projects);
 
         return "projects-view-all";
+    }
+
+    @GetMapping("/view-project")
+    public String viewProject(Model model) {
+
+        projectFormDTO = projectClient.projectForm("/view-project");
+
+        System.out.println("Active page: " + projectFormDTO.getActivePage());
+
+        model.addAttribute("activeMenu", projectFormDTO.getActiveMenu());
+        model.addAttribute("activePage", projectFormDTO.getActivePage());
+
+        return "view-project";
     }
 
 }
