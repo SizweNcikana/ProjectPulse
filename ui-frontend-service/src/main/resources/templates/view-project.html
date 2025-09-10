@@ -368,8 +368,8 @@
                                                                     <div class="card quater-card">
                                                                         <div class="card-block">
                                                                             <h4 class="sub-title">Search Project</h4>
-                                                                            <form th:action="@{/api/v2/projects/search}" method="GET"
-                                                                                  class="form-material" th:object="${projectRequestDTO}">
+                                                                            <form th:action="@{/projects/search-project}" method="GET"
+                                                                                  class="form-material">
                                                                                 <div class="form-group form-primary form-static-label row">
                                                                                     <div class="mt-3 col-sm-12">
                                                                                         <input type="text" class="form-control"
@@ -429,7 +429,7 @@
                                                                         <div class="tab-content card-block">
                                                                             <div class="tab-pane active" id="home7" role="tabpanel">
                                                                                 <h4 class="m-2 mt-3 sub-title"><b>About Project</b></h4>
-                                                                                <p class="m-2" th:name="description" th:text="${description}"></p>
+                                                                                <p class="m-2" th:name="description" th:text="${project.description}"></p>
                                                                                 <h4 class="m-2 mt-4 sub-title"><b>Project Details</b></h4>
                                                                                 <div class="form-group form-primary row">
                                                                                     <div class="m-2 col-lg-5 col-md-4">
@@ -438,7 +438,7 @@
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="m-2 col-lg-5 col-md-4">
-                                                                                        <div class="col-sm-8" th:name="projectName" th:text="${projectName}"></div>
+                                                                                        <div class="col-sm-8" th:name="projectName" th:text="${project.projectName}"></div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="form-group form-primary row">
@@ -448,7 +448,7 @@
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="m-2 col-lg-5 col-md-4">
-                                                                                        <div class="col-sm-8" th:name="startDate" th:text="${startDate}"></div>
+                                                                                        <div class="col-sm-8" th:name="startDate" th:text="${project.startDate}"></div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="form-group form-primary row">
@@ -458,7 +458,7 @@
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="m-2 col-lg-5 col-md-4">
-                                                                                        <div class="col-sm-4" th:name="duration" th:text="${duration}"></div>
+                                                                                        <div class="col-sm-4" th:name="duration" th:text="${project.duration}"></div>
                                                                                     </div>
                                                                                 </div>
 
@@ -469,7 +469,7 @@
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="m-2 col-lg-5 col-md-4">
-                                                                                        <div class="col-sm-4" th:name="projectStatus" th:text="${projectStatus}"></div>
+                                                                                        <div class="col-sm-4" th:name="projectStatus" th:text="${project.statusName}"></div>
                                                                                     </div>
                                                                                 </div>
 

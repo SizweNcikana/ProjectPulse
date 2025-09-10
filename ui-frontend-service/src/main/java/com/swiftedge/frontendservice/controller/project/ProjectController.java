@@ -109,16 +109,16 @@ public class ProjectController {
                 model.addAttribute("activeMenu", "projects");
                 model.addAttribute("activePage", "project-overview");
                 model.addAttribute("project", projectDTO);
-                return "projects-view-all";
+                return "view-project";
             } else {
                 redirectAttributes.addFlashAttribute("infoMessage",
                         "Project with name '" + projectName + "' not found.");
-                return "redirect:/projects/projects-view-all";
+                return "redirect:/projects/view-project";
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",
                     "Error while searching project: " + e.getMessage());
-            return "redirect:/projects/projects-view-all";
+            return "redirect:/projects/view-project";
         }
 
     }
