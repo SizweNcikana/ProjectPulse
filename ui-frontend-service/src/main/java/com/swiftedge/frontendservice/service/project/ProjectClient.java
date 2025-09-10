@@ -51,4 +51,17 @@ public class ProjectClient {
                 .bodyToMono(new ParameterizedTypeReference<List<ProjectDTO>>() {})
                 .block();
     }
+
+    public ProjectDTO searchProject(String uri, String projectName) {
+        return builder.baseUrl(baseUrl)
+                .build()
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(uri)
+                        .queryParam("projectName", projectName)
+                        .build())
+                .retrieve()
+                .bodyToMono(ProjectDTO.class)
+                .block();
+    }
 }

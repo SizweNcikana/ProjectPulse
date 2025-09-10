@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -98,6 +95,32 @@ public class ProjectController {
         model.addAttribute("activePage", projectFormDTO.getActivePage());
 
         return "view-project";
+    }
+
+    @GetMapping("/search-project")
+    public String searchProject(@RequestParam("projectName") String projectName,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println("Search value: " + projectName);
+            ProjectDTO projectDTO = projectClient.searchProject("/search-project", projectName);
+
+            if (projectDTO != null) {
+                model.addAttribute("activeMenu", "projects");
+                model.addAttribute("activePage", "project-overview");
+                model.addAttribute("project", projectDTO);
+                return "projects-view-all";
+            } else {
+                redirectAttributes.addFlashAttribute("infoMessage",
+                        "Project with name '" + projectName + "' not found.");
+                return "redirect:/projects/projects-view-all";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error while searching project: " + e.getMessage());
+            return "redirect:/projects/projects-view-all";
+        }
+
     }
 
 }

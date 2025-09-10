@@ -32,6 +32,8 @@ public class ProjectServiceController {
     private final ProjectService projectService;
     private final ProjectStatusService projectStatusService;
     List<ProjectStatusDTO> projectStatus;
+    ProjectEntity projectEntity;
+    ProjectDTO projectDTO;
 
     @GetMapping("/add-project")
     public ResponseEntity<Map<String, Object>> addProjectForm() {
@@ -40,7 +42,7 @@ public class ProjectServiceController {
         response.put("activeMenu", "projects");
         response.put("activePage", "projects");
 
-        ProjectDTO projectDTO = new ProjectDTO();
+        projectDTO = new ProjectDTO();
         response.put("project", projectDTO);
 
         return ResponseEntity.ok(response);
@@ -54,7 +56,7 @@ public class ProjectServiceController {
         ProjectStatus status = projectStatusService.getStatusByName(statusName)
                 .orElseThrow(() -> new RuntimeException("Project status not found"));
 
-        ProjectDTO projectDTO = projectService.saveProject(projectRequestDTO, status.getId());
+        projectDTO = projectService.saveProject(projectRequestDTO, status.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(projectDTO);
 
     }
@@ -80,42 +82,76 @@ public class ProjectServiceController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/search")
-    public String searchProjects(@ModelAttribute("projectRequestDTO")ProjectRequestDTO projectRequestDTO, Model model) {
+//    @GetMapping("/search")
+//    public String searchProjects(@ModelAttribute("projectRequestDTO")ProjectRequestDTO projectRequestDTO, Model model) {
+//
+//        log.info("Searching projects for project named {}", projectRequestDTO.getProjectName());
+//        Optional<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
+//
+//
+//        projectStatus = projectStatusService.getAllProjectStatus();
+//        log.info("Searching projects with status {}", projectStatus.listIterator().next().getStatusName());
+//        model.addAttribute("statusList", projectStatus);
+//
+//
+//        model.addAttribute("activeMenu", "projects");
+//        model.addAttribute("activePage", "project-overview");
+//
+//        if (projectEntity.isPresent()) {
+//            projectEntity.ifPresent(project -> {
+//                model.addAttribute("projectId", project.getProjectId());
+//                model.addAttribute("projectName", project.getProjectName());
+//                model.addAttribute("startDate", project.getStartDate());
+//                model.addAttribute("duration", project.getDuration());
+//                model.addAttribute("description", project.getDescription());
+//
+//                Long currentStatus = project.getStatus().getId();
+//                String statusName = project.getStatus().getStatus();
+//                log.info("\nStatus Id: {} \nStatus: {}", currentStatus, statusName);
+//
+//                model.addAttribute("selectedStatus", currentStatus);
+//                model.addAttribute("projectStatus", statusName);
+//
+//            });
+//        } else {
+//            model.addAttribute("errorMessage", "Project not found.");
+//        }
+//
+//        return "project-overview";
+//    }
 
-        log.info("Searching projects for project named {}", projectRequestDTO.getProjectName());
-        Optional<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
-
-
-        projectStatus = projectStatusService.getAllProjectStatus();
-        log.info("Searching projects with status {}", projectStatus.listIterator().next().getStatusName());
-        model.addAttribute("statusList", projectStatus);
-
-
-        model.addAttribute("activeMenu", "projects");
-        model.addAttribute("activePage", "project-overview");
-
-        if (projectEntity.isPresent()) {
-            projectEntity.ifPresent(project -> {
-                model.addAttribute("projectId", project.getProjectId());
-                model.addAttribute("projectName", project.getProjectName());
-                model.addAttribute("startDate", project.getStartDate());
-                model.addAttribute("duration", project.getDuration());
-                model.addAttribute("description", project.getDescription());
-
-                Long currentStatus = project.getStatus().getId();
-                String statusName = project.getStatus().getStatus();
-                log.info("\nStatus Id: {} \nStatus: {}", currentStatus, statusName);
-
-                model.addAttribute("selectedStatus", currentStatus);
-                model.addAttribute("projectStatus", statusName);
-
-            });
-        } else {
-            model.addAttribute("errorMessage", "Project not found.");
+    @GetMapping("/search-project")
+    public ResponseEntity<ProjectDTO> searchProject(@RequestParam String projectName) {
+        if (projectName == null || projectName.isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
 
-        return "project-overview";
+        Optional<ProjectEntity> projectEntityOpt = projectService.searchProjectByName(
+                new ProjectDTO(
+                        null,
+                        projectName,
+                        null,
+                        null,
+                        null,
+                        null)
+        );
+
+        if (projectEntityOpt.isPresent()) {
+            projectEntity = projectEntityOpt.get();
+
+            projectDTO = new ProjectDTO();
+
+            projectDTO.setProjectId(projectEntity.getProjectId());
+            projectDTO.setProjectName(projectEntity.getProjectName());
+            projectDTO.setStartDate(projectEntity.getStartDate());
+            projectDTO.setDuration(projectEntity.getDuration());
+            projectDTO.setDescription(projectEntity.getDescription());
+            projectDTO.setStatusName(projectEntity.getStatus().getStatus());
+
+            return ResponseEntity.ok(projectDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/update/{id}")

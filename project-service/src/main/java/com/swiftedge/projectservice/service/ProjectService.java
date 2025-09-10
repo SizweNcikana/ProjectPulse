@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -91,7 +90,7 @@ public class ProjectService {
         return projectDTO;
     }
 
-    public Optional<ProjectEntity> searchProjectByName(ProjectRequestDTO projectRequestDTO) {
+    public Optional<ProjectEntity> searchProjectByName(ProjectDTO projectRequestDTO) {
         if (projectRequestDTO == null || projectRequestDTO.getProjectName().isEmpty()) {
             throw new IllegalArgumentException("Project name cannot be empty");
         }
