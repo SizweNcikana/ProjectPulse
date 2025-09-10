@@ -93,6 +93,7 @@ public class ProjectController {
 
         model.addAttribute("activeMenu", projectFormDTO.getActiveMenu());
         model.addAttribute("activePage", projectFormDTO.getActivePage());
+        model.addAttribute("project", projectFormDTO);
 
         return "view-project";
     }

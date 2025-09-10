@@ -469,7 +469,7 @@
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="m-2 col-lg-5 col-md-4">
-                                                                                        <div class="col-sm-4" th:name="projectStatus" th:text="${project.statusName}"></div>
+                                                                                        <div class="col-sm-4" th:name="statusName" th:text="${project.statusName}"></div>
                                                                                     </div>
                                                                                 </div>
 
@@ -477,18 +477,18 @@
 
                                                                             </div>
 
-                                                                            <div class="tab-pane" id="profile7" role="tabpanel">
+                                                                            <div class="tab-pane" id="profile7" role="tabpanel"  th:if="${project}">
                                                                                 <h4 class="m-2 mt-4 sub-title">Modify Project Details</h4>
 
-                                                                                <form class="form-material" th:action="@{/api/v2/projects/update/{id}(id=${projectId})}" method="POST">
+                                                                                <form class="form-material" th:action="@{/projects/update/{id}(id=${project.getProjectId()})}" method="POST">
                                                                                     <div class="form-group form-primary form-static-label row">
                                                                                         <div class="m-3 mt-2 col-sm-5">
-                                                                                            <input type="text" class="form-control" name="projectName" th:value="${projectName}">
+                                                                                            <input type="text" class="form-control" name="projectName" th:value="${project.projectName}">
                                                                                             <span class="form-bar"></span>
                                                                                             <label class="float-label">&emsp;&ensp;Project Name</label>
                                                                                         </div>
                                                                                         <div class="m-3 mt-2 col-sm-5">
-                                                                                            <input type="date" name="startDate" th:value="${startDate}" class="form-control">
+                                                                                            <input type="date" name="startDate" th:value="${project.startDate}" class="form-control">
                                                                                             <span class="form-bar"></span>
                                                                                             <label class="float-label">&emsp;&ensp;Commencement Date</label>
                                                                                         </div>
@@ -500,12 +500,12 @@
                                                                                                     class="selectpicker form-control"
                                                                                                     data-style="btn-outline-primary"
                                                                                                     data-size="5"
-                                                                                                    name="duration" th:value="${duration}" required>
+                                                                                                    name="duration" th:value="${project.duration}" required>
 
                                                                                                 <option selected disabled>Project Duration in Months</option>
                                                                                                 <option th:each="months : ${#numbers.sequence(0, 12, 3)}"
                                                                                                         th:value="${months}"
-                                                                                                        th:selected="${months == duration}">
+                                                                                                        th:selected="${months == project.duration}">
                                                                                                     <span th:text="${months}"></span>
                                                                                                 </option>
                                                                                             </select>
@@ -530,7 +530,7 @@
                                                                                     </div>
                                                                                     <div class="form-group form-primary form-static-label row">
                                                                                         <div class="m-3 mt-2 col-md-10">
-                                                                                            <textarea class="form-control" name="description" th:text="${description}" rows="4"></textarea>
+                                                                                            <textarea class="form-control" name="description" th:text="${project.description}" rows="4"></textarea>
                                                                                             <span class="form-bar"></span>
                                                                                             <label class="float-label">&emsp;&ensp;Project Description</label>
                                                                                         </div>
