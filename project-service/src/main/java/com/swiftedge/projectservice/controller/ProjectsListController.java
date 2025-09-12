@@ -1,8 +1,8 @@
 package com.swiftedge.projectservice.controller;
 
 import com.swiftedge.dtolibrary.dto.ProjectDTO;
+import com.swiftedge.dtolibrary.dto.ProjectResponseDTO;
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
-import com.swiftedge.projectservice.dto.ProjectResponseDTO;
 import com.swiftedge.projectservice.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class ProjectsListController {
     }
 
     @GetMapping("/{projectId}")
-    public Optional<ProjectDTO> getProjectById(@PathVariable("projectId") Long projectId) {
+    public Optional<ProjectResponseDTO> getProjectById(@PathVariable("projectId") Long projectId) {
         log.info("Project Id: " + projectId);
         return projectService.getProjectById(projectId);
     }

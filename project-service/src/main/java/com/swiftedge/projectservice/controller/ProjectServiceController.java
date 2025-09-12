@@ -22,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/v2/projects")
@@ -63,8 +62,8 @@ public class ProjectServiceController {
     }
 
     @GetMapping("/view-projects")
-    public ResponseEntity<List<ProjectDTO>> getAllProjects() {
-        List<ProjectDTO> projects = projectService.getAllProjects();
+    public ResponseEntity<List<ProjectResponseDTO>> getAllProjects() {
+        List<ProjectResponseDTO> projects = projectService.getAllProjects();
 
         return ResponseEntity.ok(projects);
     }
@@ -90,37 +89,64 @@ public class ProjectServiceController {
         return ResponseEntity.ok(projectResponseDTO);
     }
 
-    @PostMapping("/update/{id}")
-    public String updateProject(
+    @PutMapping("/update-project/{id}")
+    public ResponseEntity<ProjectResponseDTO> updateProject(
             @PathVariable("id") Long id,
-            @RequestParam("projectStatus") Long statusId,
-            @ModelAttribute("projectRequestDTO") ProjectRequestDTO projectRequestDTO,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+            @RequestParam("status") Long statusId,
+            @RequestBody ProjectRequestDTO projectRequestDTO,
+            BindingResult bindingResult) {
 
         System.out.println("Status Id --> " + statusId);
 
-        if (bindingResult.hasErrors() || projectRequestDTO.getProjectName() == null) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Validation errors occurred. Please resolve and try again.");
-            return "redirect:/api/v2/projects/edit";
+        if (bindingResult.hasErrors()) {
+            throw new IllegalArgumentException("Validation error" + bindingResult.toString());
         }
 
         try {
-            boolean isUpdated = projectService.updateProject(id, projectRequestDTO, statusId);
+            ProjectResponseDTO updatedProject = projectService.updateProject(id, projectRequestDTO, statusId);
 
-            if (isUpdated) {
-                redirectAttributes.addFlashAttribute("successMessage",
-                        "Project updated successfully.");
-            } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "Error while updating project.");
-            }
+            return ResponseEntity.ok(updatedProject);
+
         } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", "Error updating project: " + e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return "redirect:/api/v2/projects/edit";
     }
+
+
+//    @PostMapping("/update-project/{id}")
+//    public String updateProject(
+//            @PathVariable("id") Long id,
+//            @RequestParam("projectStatus") Long statusId,
+//            @ModelAttribute("projectRequestDTO") ProjectRequestDTO projectRequestDTO,
+//            BindingResult bindingResult,
+//            RedirectAttributes redirectAttributes,
+//            Model model) {
+//
+//        System.out.println("Status Id --> " + statusId);
+//
+//        if (bindingResult.hasErrors() || projectRequestDTO.getProjectName() == null) {
+//            redirectAttributes.addFlashAttribute("errorMessage",
+//                    "Validation errors occurred. Please resolve and try again.");
+//            return "redirect:/api/v2/projects/edit";
+//        }
+//
+//        try {
+//            boolean isUpdated = projectService.updateProject(id, projectRequestDTO, statusId);
+//
+//            if (isUpdated) {
+//                redirectAttributes.addFlashAttribute("successMessage",
+//                        "Project updated successfully.");
+//            } else {
+//                redirectAttributes.addFlashAttribute("errorMessage", "Error while updating project.");
+//            }
+//        } catch (IllegalArgumentException e) {
+//            model.addAttribute("errorMessage", "Error updating project: " + e.getMessage());
+//        }
+//        return "redirect:/api/v2/projects/edit";
+//    }
 
     @PostMapping("/delete/{id}")
     public String deleteProject(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {

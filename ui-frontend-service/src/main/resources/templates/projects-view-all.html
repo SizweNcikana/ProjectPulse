@@ -351,7 +351,7 @@
                           <tr>
                             <th>Project Name</th>
                             <th>Start Date</th>
-                            <th>Duration</th>
+                            <th>Duration (Months)</th>
                             <th>Description</th>
                             <th>Status</th>
 
@@ -363,7 +363,7 @@
                             <td th:text="${ project.startDate }"></td>
                             <td th:text="${ project.duration }"></td>
                             <td th:text="${ project.description }"></td>
-                            <td th:text="${ project.statusName }"></td>
+                            <td th:text="${ project.currentStatus.statusName }"></td>
                           </tr>
                           </tbody>
                         </table>

@@ -38,13 +38,13 @@ public class ProjectClient {
                 .block();
     }
 
-    public List<ProjectDTO> getAllProjects(String uri) {
+    public List<ProjectResponseDTO> getAllProjects(String uri) {
         return builder.baseUrl(baseUrl)
                 .build()
                 .get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<ProjectDTO>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<ProjectResponseDTO>>() {})
                 .block();
     }
 
@@ -56,6 +56,20 @@ public class ProjectClient {
                         .path(uri)
                         .queryParam("projectName", projectName)
                         .build())
+                .retrieve()
+                .bodyToMono(ProjectResponseDTO.class)
+                .block();
+    }
+
+    public ProjectResponseDTO updateProject(String uri, Long statusId, ProjectDTO projectDTO) {
+        return builder.baseUrl(baseUrl)
+                .build()
+                .put()
+                .uri(uriBuilder -> uriBuilder
+                        .path(uri)
+                        .queryParam("status", statusId)
+                        .build())
+                .bodyValue(projectDTO)
                 .retrieve()
                 .bodyToMono(ProjectResponseDTO.class)
                 .block();
