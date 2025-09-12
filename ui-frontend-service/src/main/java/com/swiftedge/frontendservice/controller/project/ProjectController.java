@@ -1,6 +1,7 @@
 package com.swiftedge.frontendservice.controller.project;
 
 import com.swiftedge.dtolibrary.dto.ProjectDTO;
+import com.swiftedge.dtolibrary.dto.ProjectResponseDTO;
 import com.swiftedge.frontendservice.dto.project.ProjectFormDTO;
 import com.swiftedge.frontendservice.service.project.ProjectClient;
 import lombok.RequiredArgsConstructor;
@@ -19,17 +20,16 @@ import java.util.List;
 @RequestMapping("/projects")
 public class ProjectController {
 
-    ProjectFormDTO projectFormDTO;
     private final ProjectClient projectClient;
 
     @GetMapping("/add-project")
     public String showAddProject(Model model) {
 
-        projectFormDTO = projectClient.projectForm("/add-project");
+        ProjectResponseDTO projectDTO = projectClient.projectForm("/add-project");
 
-        model.addAttribute("activeMenu", projectFormDTO.getActiveMenu());
-        model.addAttribute("activePage", projectFormDTO.getActivePage());
-        model.addAttribute("project", projectFormDTO);
+        model.addAttribute("activeMenu", projectDTO.getActiveMenu());
+        model.addAttribute("activePage", projectDTO.getActivePage());
+        model.addAttribute("project", new ProjectResponseDTO());
 
         return "add-project";
     }
@@ -87,13 +87,13 @@ public class ProjectController {
     @GetMapping("/view-project")
     public String viewProject(Model model) {
 
-        projectFormDTO = projectClient.projectForm("/view-project");
+        ProjectResponseDTO projectDTO = projectClient.projectForm("/view-project");
 
-        System.out.println("Active page: " + projectFormDTO.getActivePage());
+        System.out.println("Active page: " + projectDTO.getActivePage());
 
-        model.addAttribute("activeMenu", projectFormDTO.getActiveMenu());
-        model.addAttribute("activePage", projectFormDTO.getActivePage());
-        model.addAttribute("project", projectFormDTO);
+        model.addAttribute("activeMenu", projectDTO.getActiveMenu());
+        model.addAttribute("activePage", projectDTO.getActivePage());
+        model.addAttribute("project", new ProjectResponseDTO());
 
         return "view-project";
     }
@@ -103,12 +103,24 @@ public class ProjectController {
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
         try {
-            System.out.println("Search value: " + projectName);
-            ProjectDTO projectDTO = projectClient.searchProject("/search-project", projectName);
+            ProjectResponseDTO projectDTO = projectClient.searchProject("/search-project", projectName);
+
+            Long currentStatus = projectDTO.getCurrentStatus().getStatusId();
+
+            if (projectDTO.getStatuses() != null && !projectDTO.getStatuses().isEmpty()) {
+                System.out.println("Available statuses:");
+
+                projectDTO.getStatuses().forEach(status ->
+                        System.out.println(" - " + status.getStatusName())
+                );
+
+                model.addAttribute("availableStatuses", projectDTO.getStatuses());
+            }
 
             if (projectDTO != null) {
                 model.addAttribute("activeMenu", "projects");
                 model.addAttribute("activePage", "project-overview");
+                model.addAttribute("currentStatus", currentStatus);
                 model.addAttribute("project", projectDTO);
                 return "view-project";
             } else {
