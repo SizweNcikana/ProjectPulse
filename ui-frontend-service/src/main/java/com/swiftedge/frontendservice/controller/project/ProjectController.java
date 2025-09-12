@@ -2,6 +2,7 @@ package com.swiftedge.frontendservice.controller.project;
 
 import com.swiftedge.dtolibrary.dto.ProjectDTO;
 import com.swiftedge.dtolibrary.dto.ProjectResponseDTO;
+import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.frontendservice.dto.project.ProjectFormDTO;
 import com.swiftedge.frontendservice.service.project.ProjectClient;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +75,7 @@ public class ProjectController {
 
     @GetMapping("/view-projects")
     public String allProjects(Model model) {
-        List<ProjectDTO> projects = projectClient.getAllProjects("/view-projects");
+        List<ProjectResponseDTO> projects = projectClient.getAllProjects("/view-projects");
 
         model.addAttribute("activeMenu", "projects");
         model.addAttribute("activePage", "all-projects");
@@ -134,6 +135,40 @@ public class ProjectController {
             return "redirect:/projects/view-project";
         }
 
+    }
+
+    @PostMapping("/update-project/{id}")
+    public String updateProject(
+            @PathVariable("id") Long id,
+            @RequestParam("status") Long statusId,
+            @ModelAttribute("project") ProjectDTO projectDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Validation failed. Please correct the errors and try again.");
+
+            return "redirect:/projects/view-project";
+        }
+
+        try {
+            ProjectResponseDTO updateProject = projectClient.updateProject("/update-project/" + id, statusId, projectDTO);
+
+            if (updateProject != null) {
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Project '" + updateProject.getProjectName() + "' updated successfully.");
+                redirectAttributes.addFlashAttribute("project", updateProject);
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        "Failed to update project. Please try again.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error while updating project: " + e.getMessage());
+        }
+
+        return "redirect:/projects/view-project";
     }
 
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -70,7 +71,7 @@ public class ProjectService {
         return projectDTO;
     }
 
-    public List<ProjectDTO> getAllProjects() {
+    public List<ProjectResponseDTO> getAllProjects() {
 
         // Map each Project entity to ProjectResponseDTO
         return projectRepository.findAll().stream()
@@ -78,8 +79,8 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
-    private ProjectDTO mapToResponseDTO(ProjectEntity projectEntity) {
-        ProjectDTO projectDTO = new ProjectDTO();
+    private ProjectResponseDTO mapToResponseDTO(ProjectEntity projectEntity) {
+        ProjectResponseDTO projectDTO = new ProjectResponseDTO();
 
         projectDTO.setProjectId(projectEntity.getProjectId());
         projectDTO.setProjectName(projectEntity.getProjectName());
@@ -88,60 +89,75 @@ public class ProjectService {
         projectDTO.setDescription(projectEntity.getDescription());
 
         if (projectEntity.getStatus() != null) {
-            projectDTO.setStatusName(projectEntity.getStatus().getStatus());
+            StatusDTO currentStatus = new StatusDTO(
+                    projectEntity.getStatus().getId(),
+                    projectEntity.getStatus().getStatus(),
+                    0L
+            );
+            projectDTO.setCurrentStatus(currentStatus);
         }
+
+        List<StatusDTO> statuses = projectStatusService.getAllProjectStatus().stream()
+                .map(status -> new StatusDTO(
+                        status.getStatusId(),
+                        status.getStatusName(),
+                        0L))
+                .toList();
+        projectDTO.setStatuses(statuses);
+
         return projectDTO;
     }
 
-    public boolean updateProject(Long id, ProjectRequestDTO projectRequestDTO, Long statusId) {
+    public ProjectResponseDTO updateProject(Long id, ProjectRequestDTO projectRequestDTO, Long statusId) {
         ProjectEntity existingProject = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
         boolean updated = false;
-        if (!existingProject.getDescription().equals(projectRequestDTO.getDescription())) {
+        if (!Objects.equals(existingProject.getDescription(), projectRequestDTO.getDescription())) {
             validateDescription(projectRequestDTO.getDescription());
             existingProject.setDescription(projectRequestDTO.getDescription());
             updated = true;
         }
 
-        if (!existingProject.getProjectName().equals(projectRequestDTO.getProjectName())) {
+        if (!Objects.equals(existingProject.getProjectName(), projectRequestDTO.getProjectName())) {
             validateProjectName(projectRequestDTO.getProjectName());
             existingProject.setProjectName(projectRequestDTO.getProjectName());
             updated = true;
         }
-        if (!existingProject.getStartDate().equals(projectRequestDTO.getStartDate())) {
+        if (!Objects.equals(existingProject.getStartDate(), projectRequestDTO.getStartDate())) {
             validateStartDate(projectRequestDTO.getStartDate());
             existingProject.setStartDate(projectRequestDTO.getStartDate());
             updated = true;
         }
-        if (!existingProject.getDuration().equals(projectRequestDTO.getDuration())) {
+        if (!Objects.equals(existingProject.getDuration(), projectRequestDTO.getDuration())) {
             validateDuration(projectRequestDTO.getDuration());
             existingProject.setDuration(projectRequestDTO.getDuration());
             updated = true;
         }
 
-        ProjectStatus newStatus = projectStatusService.getStatusById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Status not found"));
+        if (statusId != null) {
+            ProjectStatus newStatus = projectStatusService.getStatusById(statusId)
+                    .orElseThrow(() -> new IllegalArgumentException("Status not found."));
 
-        ProjectStatus currentStatus = existingProject.getStatus();
+            ProjectStatus currentStatus = existingProject.getStatus();
 
-        System.out.println("Current status is " + newStatus.getId());
-
-        if (currentStatus == null) {
-            throw new IllegalArgumentException("Project Status not found");
-        } else if (currentStatus.getId().equals(newStatus.getId())) {
-            log.info("Status is the same. Nothing to update");
-        } else {
-            existingProject.setStatus(newStatus);
-            updated = true;
+            if (currentStatus == null) {
+                throw new IllegalArgumentException("Project status not found.");
+            } else if (!currentStatus.getId().equals(newStatus.getId())) {
+                existingProject.setStatus(newStatus);
+                updated = true;
+            }
         }
 
         if (updated) {
-            projectRepository.save(existingProject);
-            System.out.println("Updating project with id '" + id + "'" + " with project name '" + projectRequestDTO.getProjectName() + "'");
+            existingProject = projectRepository.save(existingProject);
+            System.out.printf("Updating project with id '%d' and name '%s'%n",
+                    id, projectRequestDTO.getProjectName());
+        } else {
+            System.out.printf("No changes detected for project with id '%d'%n", id);
         }
 
-        return updated;
+        return mapToResponseDTO(existingProject);
     }
 
     private void validateDescription(String description) {
@@ -231,7 +247,7 @@ public class ProjectService {
         return projectRepository.countProjectsGroupedByStatus();
     }
 
-    public Optional<ProjectDTO> getProjectById(Long projectId) {
+    public Optional<ProjectResponseDTO> getProjectById(Long projectId) {
 
         Optional<ProjectEntity> existingProject = projectRepository.findById(projectId);
 
