@@ -346,9 +346,9 @@
                                                         <h5>Employee Details</h5>
                                                     </div>
                                                     <!-- Error Alert -->
-                                                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                        <i class="bi-exclamation-octagon-fill"></i>
-                                                        <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                                                    <div th:if="${infoMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
+                                                        <i class="bi-info-circle-fill"></i>
+                                                        <strong>Info!</strong> <span th:text="${infoMessage}"></span>
                                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                     </div>
                                                     <!-- Success Alert -->

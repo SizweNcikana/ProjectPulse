@@ -1,6 +1,7 @@
 package com.swiftedge.projectservice.controller;
 
 import com.swiftedge.dtolibrary.dto.ProjectDTO;
+import com.swiftedge.dtolibrary.dto.ProjectResponseDTO;
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
 import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
@@ -32,6 +33,8 @@ public class ProjectServiceController {
     private final ProjectService projectService;
     private final ProjectStatusService projectStatusService;
     List<ProjectStatusDTO> projectStatus;
+    ProjectEntity projectEntity;
+    ProjectDTO projectDTO;
 
     @GetMapping("/add-project")
     public ResponseEntity<Map<String, Object>> addProjectForm() {
@@ -40,7 +43,7 @@ public class ProjectServiceController {
         response.put("activeMenu", "projects");
         response.put("activePage", "projects");
 
-        ProjectDTO projectDTO = new ProjectDTO();
+        projectDTO = new ProjectDTO();
         response.put("project", projectDTO);
 
         return ResponseEntity.ok(response);
@@ -54,7 +57,7 @@ public class ProjectServiceController {
         ProjectStatus status = projectStatusService.getStatusByName(statusName)
                 .orElseThrow(() -> new RuntimeException("Project status not found"));
 
-        ProjectDTO projectDTO = projectService.saveProject(projectRequestDTO, status.getId());
+        projectDTO = projectService.saveProject(projectRequestDTO, status.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(projectDTO);
 
     }
@@ -80,42 +83,11 @@ public class ProjectServiceController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/search")
-    public String searchProjects(@ModelAttribute("projectRequestDTO")ProjectRequestDTO projectRequestDTO, Model model) {
+    @GetMapping("/search-project")
+    public ResponseEntity<ProjectResponseDTO> searchProject(@RequestParam String projectName) {
+        ProjectResponseDTO projectResponseDTO = projectService.getProjectByName(projectName);
 
-        log.info("Searching projects for project named {}", projectRequestDTO.getProjectName());
-        Optional<ProjectEntity> projectEntity = projectService.searchProjectByName(projectRequestDTO);
-
-
-        projectStatus = projectStatusService.getAllProjectStatus();
-        log.info("Searching projects with status {}", projectStatus.listIterator().next().getStatusName());
-        model.addAttribute("statusList", projectStatus);
-
-
-        model.addAttribute("activeMenu", "projects");
-        model.addAttribute("activePage", "project-overview");
-
-        if (projectEntity.isPresent()) {
-            projectEntity.ifPresent(project -> {
-                model.addAttribute("projectId", project.getProjectId());
-                model.addAttribute("projectName", project.getProjectName());
-                model.addAttribute("startDate", project.getStartDate());
-                model.addAttribute("duration", project.getDuration());
-                model.addAttribute("description", project.getDescription());
-
-                Long currentStatus = project.getStatus().getId();
-                String statusName = project.getStatus().getStatus();
-                log.info("\nStatus Id: {} \nStatus: {}", currentStatus, statusName);
-
-                model.addAttribute("selectedStatus", currentStatus);
-                model.addAttribute("projectStatus", statusName);
-
-            });
-        } else {
-            model.addAttribute("errorMessage", "Project not found.");
-        }
-
-        return "project-overview";
+        return ResponseEntity.ok(projectResponseDTO);
     }
 
     @PostMapping("/update/{id}")

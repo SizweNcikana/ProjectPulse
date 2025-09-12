@@ -24,4 +24,5 @@ public class ProjectFormDTO {
     private LocalDate startDate;
     private Integer duration;
     private String description;
+    private String statusName;
 }

@@ -1,9 +1,9 @@
 package com.swiftedge.dtolibrary.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Getter
@@ -12,19 +12,18 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ProjectDTO {
 
-    @NotNull
+public class ProjectResponseDTO {
+
+    private String activeMenu;
+    private String activePage;
+
     private Long projectId;
-
     private String projectName;
-
     private LocalDate startDate;
-
     private Integer duration;
-
     private String description;
 
-    private String statusName;
-
+    private StatusDTO currentStatus;
+    private List<StatusDTO> statuses;
 }
