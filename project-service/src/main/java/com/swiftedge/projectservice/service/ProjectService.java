@@ -1,6 +1,8 @@
 package com.swiftedge.projectservice.service;
 
 import com.swiftedge.dtolibrary.dto.ProjectDTO;
+import com.swiftedge.dtolibrary.dto.ProjectResponseDTO;
+import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.projectservice.dto.ProjectRequestDTO;
 import com.swiftedge.projectservice.dto.ProjectStatusDTO;
 import com.swiftedge.projectservice.entity.ProjectEntity;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -88,14 +91,6 @@ public class ProjectService {
             projectDTO.setStatusName(projectEntity.getStatus().getStatus());
         }
         return projectDTO;
-    }
-
-    public Optional<ProjectEntity> searchProjectByName(ProjectDTO projectRequestDTO) {
-        if (projectRequestDTO == null || projectRequestDTO.getProjectName().isEmpty()) {
-            throw new IllegalArgumentException("Project name cannot be empty");
-        }
-
-        return projectRepository.findByProjectName(projectRequestDTO.getProjectName());
     }
 
     public boolean updateProject(Long id, ProjectRequestDTO projectRequestDTO, Long statusId) {
@@ -201,8 +196,34 @@ public class ProjectService {
         );
     }
 
-    public Optional<Long> getProjectByName(String projectName) {
-        return projectRepository.findProjectIdByProjectName(projectName);
+    public ProjectResponseDTO getProjectByName(String projectName) {
+        Optional<Long> projectIdOpt = projectRepository.findProjectIdByProjectName(projectName);
+
+        if (projectIdOpt.isEmpty()) {
+            throw new NoSuchElementException("Project with name '" + projectName + "' not found.");
+        }
+
+        ProjectEntity projectEntity = projectRepository.findById(projectIdOpt.get())
+                .orElseThrow(() -> new NoSuchElementException("Project not found for ID '" + projectIdOpt.get() + "'"));
+
+        ProjectResponseDTO projectResponseDTO = new ProjectResponseDTO();
+
+        projectResponseDTO.setProjectId(projectEntity.getProjectId());
+        projectResponseDTO.setProjectName(projectEntity.getProjectName());
+        projectResponseDTO.setDescription(projectEntity.getDescription());
+        projectResponseDTO.setStartDate(projectEntity.getStartDate());
+        projectResponseDTO.setDuration(projectEntity.getDuration());
+
+        if (projectEntity.getStatus() != null) {
+            projectResponseDTO.setCurrentStatus(new StatusDTO(
+                    projectEntity.getStatus().getId(),
+                    projectEntity.getStatus().getStatus(),
+                    0L
+            ));
+        }
+        projectResponseDTO.setStatuses(projectStatusService.getAllProjectStatus());
+
+        return projectResponseDTO;
     }
 
     public List<ProjectStatusDTO> getProjectsStatusCount() {
