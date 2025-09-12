@@ -431,6 +431,18 @@
                                                                                 <h4 class="m-2 mt-3 sub-title"><b>About Project</b></h4>
                                                                                 <p class="m-2" th:name="description" th:text="${project.description}"></p>
                                                                                 <h4 class="m-2 mt-4 sub-title"><b>Project Details</b></h4>
+
+                                                                                <div th:if="${infoMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
+                                                                                    <i class="bi-info-circle-fill"></i>
+                                                                                    <strong>Info!</strong> <span th:text="${infoMessage}"></span>
+                                                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                                </div>
+                                                                                <div th:if="${errorMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
+                                                                                    <i class="bi-info-circle-fill"></i>
+                                                                                    <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                                                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                                </div>
+
                                                                                 <div class="form-group form-primary row">
                                                                                     <div class="m-2 col-lg-5 col-md-4">
                                                                                         <div class="col-sm-8">
@@ -469,7 +481,7 @@
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="m-2 col-lg-5 col-md-4">
-                                                                                        <div class="col-sm-4" th:name="statusName" th:text="${project.statusName}"></div>
+                                                                                        <div class="col-sm-4" th:name="currentStatus" th:text="${project.currentStatus?.statusName}"></div>
                                                                                     </div>
                                                                                 </div>
 
@@ -515,14 +527,14 @@
                                                                                             <select class="selectpicker form-control"
                                                                                                     data-style="btn-outline-primary"
                                                                                                     name="projectStatus"
-                                                                                                    th:value="${selectedStatus}"
+                                                                                                    th:value="${currentStatus}"
                                                                                                     required>
                                                                                                 <option disabled selected>Select Status</option>
 
-                                                                                                <option th:each="status : ${statusList}"
+                                                                                                <option th:each="status : ${availableStatuses}"
                                                                                                         th:value="${status.statusId}"
                                                                                                         th:text="${status.statusName}"
-                                                                                                        th:selected="${status.statusId == selectedStatus}">
+                                                                                                        th:selected="${status.statusId == currentStatus}">
                                                                                                 </option>
                                                                                             </select>
                                                                                         </div>
