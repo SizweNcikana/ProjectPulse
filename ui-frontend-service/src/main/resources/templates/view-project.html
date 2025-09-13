@@ -349,12 +349,6 @@
                                                                         <h5 class="modal-title" id="messageModalLabel">Notification</h5>
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
-                                                                    <div class="modal-body">
-                                                                        <div th:if="${errorMessage}" class="alert alert-danger">
-                                                                            <i class="bi-exclamation-octagon-fill"></i> <strong>Error!</strong>
-                                                                            <span th:text="${errorMessage}"></span>
-                                                                        </div>
-                                                                    </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                     </div>
@@ -432,14 +426,27 @@
                                                                                 <p class="m-2" th:name="description" th:text="${project.description}"></p>
                                                                                 <h4 class="m-2 mt-4 sub-title"><b>Project Details</b></h4>
 
-                                                                                <div th:if="${infoMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
-                                                                                    <i class="bi-info-circle-fill"></i>
-                                                                                    <strong>Info!</strong> <span th:text="${infoMessage}"></span>
+                                                                                <div th:if="${errorMessage}"
+                                                                                     class="alert alert-danger alert-dismissible fade show"
+                                                                                     role="alert">
+                                                                                    <i class="bi bi-exclamation-octagon-fill"></i>
+                                                                                    <strong>Error!</strong> <span th:text="${errorMessage}"></span>
                                                                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                                                 </div>
-                                                                                <div th:if="${errorMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
-                                                                                    <i class="bi-info-circle-fill"></i>
-                                                                                    <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                                                                                <div th:if="${successMessage}"
+                                                                                     class="alert alert-success alert-dismissible fade show"
+                                                                                     role="alert">
+                                                                                    <i class="bi bi-check-circle-fill"></i>
+                                                                                    <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                                                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                                </div>
+
+                                                                                <!-- Info Alert -->
+                                                                                <div th:if="${infoMessage}"
+                                                                                     class="alert alert-info alert-dismissible fade show"
+                                                                                     role="alert">
+                                                                                    <i class="bi bi-info-circle-fill"></i>
+                                                                                    <strong>Info:</strong> <span th:text="${infoMessage}"></span>
                                                                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                                                 </div>
 
@@ -750,41 +757,6 @@
     });
 </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let errorMessage = document.querySelector(".alert-danger");
-        let successMessage = document.querySelector(".alert-success");
-
-        if (errorMessage || successMessage) {
-            let messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
-            messageModal.show();
-        }
-    });
-</script>
-<script>
-    // Function to hide the alert after 3 seconds
-    function showAlert() {
-        const successMessage = document.getElementById('success-message');
-        const errorMessage = document.getElementById('error-message');
-
-        if (successMessage && successMessage.textContent.trim() !== '') {
-            successMessage.classList.remove('is-hidden');
-            setTimeout(() => {
-                successMessage.classList.add('is-hidden');
-            }, 5000);
-        }
-
-        if (errorMessage && errorMessage.textContent.trim() !== '') {
-            errorMessage.classList.remove('is-hidden');
-            setTimeout(() => {
-                errorMessage.classList.add('is-hidden');
-            }, 5000);
-        }
-    }
-
-    // Call showAlert on page load if there's any message
-    window.onload = showAlert;
-</script>
 </body>
 
 </html>
