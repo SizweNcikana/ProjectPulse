@@ -43,6 +43,11 @@ public class EmployeeController {
     @PostMapping("/save-employee")
     public String saveEmployee(@ModelAttribute("employee") EmployeeDTO employeeDTO,
                                RedirectAttributes redirectAttributes) {
+
+        if (employeeDTO.getName() != null) {
+            employeeDTO.setName(employeeDTO.getName().trim());
+        }
+
         EmployeeResponseDTO responseDTO = employeeClient.saveEmployee(employeeDTO, "/save-employee");
 
         redirectAttributes.addFlashAttribute("successMessage", responseDTO.getSuccessMessage());
@@ -79,11 +84,14 @@ public class EmployeeController {
                                  @RequestParam("surname") String surname,
                                  Model model) {
 
+        String trimmedName = (name != null) ? name.trim() : "";
+        String trimmedSurname = (surname != null) ? surname.trim() : "";
+
         // Implementing 'UriComponentsBuilder' as this is a safer way of searching
         // because names can have spacings and special characters
         String path = UriComponentsBuilder.fromPath("/search-employee")
-                .queryParam("name", name)
-                .queryParam("surname", surname)
+                .queryParam("name", trimmedName)
+                .queryParam("surname", trimmedSurname)
                 .toUriString();
 
         EmployeeSearchResponseDTO responseDTO = employeeClient.employeeResponseData(path);
@@ -149,6 +157,11 @@ public class EmployeeController {
         }
 
         try {
+
+            if (employeeDTO.getName() != null && employeeDTO.getSurname() != null) {
+                employeeDTO.setName(employeeDTO.getName().trim());
+                employeeDTO.setSurname(employeeDTO.getSurname().trim());
+            }
 
             StatusDTO statusDTO = new StatusDTO();
             statusDTO.setStatusId(selectedStatusId);
