@@ -216,14 +216,18 @@ public class ProjectService {
         Optional<Long> projectIdOpt = projectRepository.findProjectIdByProjectName(projectName);
 
         if (projectIdOpt.isEmpty()) {
-            throw new NoSuchElementException("Project with name '" + projectName + "' not found.");
+            return null;
         }
 
-        ProjectEntity projectEntity = projectRepository.findById(projectIdOpt.get())
-                .orElseThrow(() -> new NoSuchElementException("Project not found for ID '" + projectIdOpt.get() + "'"));
+        Optional<ProjectEntity> projectEntityOpt = projectRepository.findById(projectIdOpt.get());
+
+        if (projectEntityOpt.isEmpty()) {
+            return null;
+        }
+
+        ProjectEntity projectEntity = projectEntityOpt.get();
 
         ProjectResponseDTO projectResponseDTO = new ProjectResponseDTO();
-
         projectResponseDTO.setProjectId(projectEntity.getProjectId());
         projectResponseDTO.setProjectName(projectEntity.getProjectName());
         projectResponseDTO.setDescription(projectEntity.getDescription());

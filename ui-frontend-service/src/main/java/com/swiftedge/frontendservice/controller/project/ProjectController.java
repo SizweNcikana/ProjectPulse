@@ -2,7 +2,6 @@ package com.swiftedge.frontendservice.controller.project;
 
 import com.swiftedge.dtolibrary.dto.ProjectDTO;
 import com.swiftedge.dtolibrary.dto.ProjectResponseDTO;
-import com.swiftedge.dtolibrary.dto.StatusDTO;
 import com.swiftedge.frontendservice.dto.project.ProjectFormDTO;
 import com.swiftedge.frontendservice.service.project.ProjectClient;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -106,36 +106,39 @@ public class ProjectController {
         try {
             ProjectResponseDTO projectDTO = projectClient.searchProject("/search-project", projectName);
 
-            Long currentStatus = projectDTO.getCurrentStatus().getStatusId();
+            if (projectDTO == null) {
+                redirectAttributes.addFlashAttribute("infoMessage",
+                        "Project with name '" + projectName + "' does not exist.");
+                return "redirect:/projects/view-project";
+            }
+
+            Long currentStatus = projectDTO.getCurrentStatus() != null
+                    ? projectDTO.getCurrentStatus().getStatusId()
+                    : null;
 
             if (projectDTO.getStatuses() != null && !projectDTO.getStatuses().isEmpty()) {
-                System.out.println("Available statuses:");
-
-                projectDTO.getStatuses().forEach(status ->
-                        System.out.println(" - " + status.getStatusName())
-                );
-
                 model.addAttribute("availableStatuses", projectDTO.getStatuses());
             }
 
-            if (projectDTO != null) {
-                model.addAttribute("activeMenu", "projects");
-                model.addAttribute("activePage", "project-overview");
-                model.addAttribute("currentStatus", currentStatus);
-                model.addAttribute("project", projectDTO);
-                return "view-project";
-            } else {
-                redirectAttributes.addFlashAttribute("infoMessage",
-                        "Project with name '" + projectName + "' not found.");
-                return "redirect:/projects/view-project";
-            }
+            model.addAttribute("activeMenu", "projects");
+            model.addAttribute("activePage", "project-overview");
+            model.addAttribute("currentStatus", currentStatus);
+            model.addAttribute("project", projectDTO);
+
+            return "view-project";
+
+        } catch (WebClientResponseException.NotFound e) {
+            redirectAttributes.addFlashAttribute("infoMessage",
+                    "Project with name '" + projectName + "' does not exist.");
+            return "redirect:/projects/view-project";
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "Error while searching project: " + e.getMessage());
+                    "Error while searching project");
             return "redirect:/projects/view-project";
         }
-
     }
+
 
     @PostMapping("/update-project/{id}")
     public String updateProject(
