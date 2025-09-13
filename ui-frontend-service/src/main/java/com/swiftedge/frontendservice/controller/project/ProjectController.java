@@ -49,15 +49,16 @@ public class ProjectController {
         }
 
         try {
+            if (projectFormDTO.getProjectName() != null) {
+                projectFormDTO.setProjectName(projectFormDTO.getProjectName().trim());
+            }
 
             ProjectDTO savedProject = projectClient.saveProject("/save-project", projectFormDTO);
 
             if (savedProject != null) {
-                // Success message
                 redirectAttributes.addFlashAttribute("successMessage",
                         "Project '" + savedProject.getProjectName() + "' saved successfully.");
 
-                // Retain saved project for the form (optional)
                 redirectAttributes.addFlashAttribute("project", savedProject);
             } else {
                 redirectAttributes.addFlashAttribute("errorMessage",
@@ -104,7 +105,9 @@ public class ProjectController {
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
         try {
-            ProjectResponseDTO projectDTO = projectClient.searchProject("/search-project", projectName);
+            String trimmedProjectName = projectName.trim();
+
+            ProjectResponseDTO projectDTO = projectClient.searchProject("/search-project", trimmedProjectName);
 
             if (projectDTO == null) {
                 redirectAttributes.addFlashAttribute("infoMessage",
@@ -156,6 +159,10 @@ public class ProjectController {
         }
 
         try {
+            if (projectDTO.getProjectName() != null) {
+                projectDTO.setProjectName(projectDTO.getProjectName().trim());
+            }
+
             ProjectResponseDTO updateProject = projectClient.updateProject("/update-project/" + id, statusId, projectDTO);
 
             if (updateProject != null) {
