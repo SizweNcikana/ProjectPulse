@@ -74,4 +74,14 @@ public class ProjectClient {
                 .bodyToMono(ProjectResponseDTO.class)
                 .block();
     }
+
+    public String deleteProject(String uri, Long projectId) {
+        return builder.baseUrl(baseUrl)
+                .build()
+                .delete()
+                .uri(uri + "/" + projectId)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 }
