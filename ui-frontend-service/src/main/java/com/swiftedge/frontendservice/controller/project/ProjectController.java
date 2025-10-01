@@ -181,4 +181,22 @@ public class ProjectController {
         return "redirect:/projects/view-project";
     }
 
+    @PostMapping("/delete-project/{id}")
+    public String deleteProject(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+
+        if (id != null) {
+            String deleteProject = projectClient.deleteProject("/delete-project", id);
+            if (deleteProject != null) {
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Project deleted successfully.");
+                return "redirect:/projects/view-project";
+
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        "Failed to delete project. Please try again.");
+            }
+        }
+        return "redirect:/projects/view-project";
+    }
+
 }

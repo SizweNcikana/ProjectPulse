@@ -185,13 +185,11 @@ public class ProjectService {
     }
 
     public void deleteProject(Long id) {
-        Optional<ProjectEntity> existingProject = projectRepository.findById(id);
+        ProjectEntity project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
-        if (existingProject.isPresent()) {
-            projectRepository.deleteById(id);
-        } else {
-            throw new IllegalArgumentException("Project not found");
-        }
+        project.setStatus(null);
+        projectRepository.deleteById(id);
 
     }
 

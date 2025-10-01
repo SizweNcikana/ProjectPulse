@@ -573,7 +573,7 @@
                                                                             </div>
                                                                             <div class="tab-pane" id="settings7" role="tabpanel">
                                                                                 <h4 class="m-2 mt-4 sub-title">Remove Project</h4>
-                                                                                <form th:action="@{/api/v2/projects/delete/{id}(id=${projectId})}" method="POST">
+                                                                                <form th:action="@{/projects/delete-project/{id}(id=${project?.projectId})}" method="POST">
                                                                                     <div class="m-2 row mb-3">
                                                                                         <label class="col-md-4 col-lg-3 col-form-label">Delete Check-list</label>
                                                                                         <div class="col-md-8 col-lg-9">

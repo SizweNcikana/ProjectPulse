@@ -115,48 +115,16 @@ public class ProjectServiceController {
         }
     }
 
+    @DeleteMapping("/delete-project/{id}")
+    public ResponseEntity<String> deleteProject(@PathVariable Long id) {
 
-//    @PostMapping("/update-project/{id}")
-//    public String updateProject(
-//            @PathVariable("id") Long id,
-//            @RequestParam("projectStatus") Long statusId,
-//            @ModelAttribute("projectRequestDTO") ProjectRequestDTO projectRequestDTO,
-//            BindingResult bindingResult,
-//            RedirectAttributes redirectAttributes,
-//            Model model) {
-//
-//        System.out.println("Status Id --> " + statusId);
-//
-//        if (bindingResult.hasErrors() || projectRequestDTO.getProjectName() == null) {
-//            redirectAttributes.addFlashAttribute("errorMessage",
-//                    "Validation errors occurred. Please resolve and try again.");
-//            return "redirect:/api/v2/projects/edit";
-//        }
-//
-//        try {
-//            boolean isUpdated = projectService.updateProject(id, projectRequestDTO, statusId);
-//
-//            if (isUpdated) {
-//                redirectAttributes.addFlashAttribute("successMessage",
-//                        "Project updated successfully.");
-//            } else {
-//                redirectAttributes.addFlashAttribute("errorMessage", "Error while updating project.");
-//            }
-//        } catch (IllegalArgumentException e) {
-//            model.addAttribute("errorMessage", "Error updating project: " + e.getMessage());
-//        }
-//        return "redirect:/api/v2/projects/edit";
-//    }
-
-    @PostMapping("/delete/{id}")
-    public String deleteProject(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             projectService.deleteProject(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Project deleted successfully.");
+            return ResponseEntity.ok("Project deleted successfully");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error while deleting project.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error while deleting project. " + e.getMessage());
         }
-        return "redirect:/api/v2/projects/edit";
     }
 
     @GetMapping("/status/counts")
