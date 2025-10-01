@@ -1,7 +1,6 @@
 package com.swiftedge.projectservice.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,12 +15,17 @@ import java.time.LocalDate;
 public class ProjectRequestDTO {
 
     private Long projectId;
-    @NotNull
+
+    @NotBlank(message = "Project name is required.")
+    @Size(max = 100, message = "Project name must be at most 100 characters.")
     private String projectName;
 
     @NotNull(message = "Start date is required.")
-    @FutureOrPresent(message = "Start date cannot be in the past.")
     private LocalDate startDate;
+
+    @Positive(message = "Duration must be a positive number.")
     private Integer duration;
+
+    @Size(max = 500, message = "Description must be at most 500 characters.")
     private String description;
 }

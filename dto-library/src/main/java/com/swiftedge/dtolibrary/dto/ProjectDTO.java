@@ -11,21 +11,18 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class ProjectDTO {
 
     @NotNull
     private Long projectId;
 
-    @NotNull
     private String projectName;
 
-    @NotNull
     private LocalDate startDate;
 
-    @NotNull
-    private int duration;
+    private Integer duration;
 
-    @NotNull
     private String description;
 
     private String statusName;

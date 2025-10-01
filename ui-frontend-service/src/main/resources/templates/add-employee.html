@@ -289,13 +289,6 @@
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
-                                        <li th:classappend="${activePage == 'accordion'} ? 'active' : ''">
-                                            <a th:href="@{/accordion}" class="waves-effect waves-dark">
-                                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext">Employee Profile</span>
-                                                <span class="pcoded-mcaret"></span>
-                                            </a>
-                                        </li>
                                     </ul>
                                 </li>
                             </ul>
@@ -309,21 +302,21 @@
                                     </a>
                                     <ul class="pcoded-submenu">
                                         <li th:classappend="${activePage == 'all-projects'} ? 'active' : ''">
-                                            <a th:href="@{/projects/view-all}" class="waves-effect waves-dark">
+                                            <a th:href="@{/projects/view-projects}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">All Projects</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'projects'} ? 'active' : ''">
-                                            <a th:href="@{/projects/add}" class="waves-effect waves-dark">
+                                            <a th:href="@{/projects/add-project}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Add Project</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li th:classappend="${activePage == 'edit-project'} ? 'active' : ''">
-                                            <a th:href="@{/projects/edit}" class="waves-effect waves-dark">
+                                            <a th:href="@{/projects/view-project}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Edit Project</span>
                                                 <span class="pcoded-mcaret"></span>
@@ -353,9 +346,9 @@
                                                         <h5>Employee Details</h5>
                                                     </div>
                                                     <!-- Error Alert -->
-                                                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                        <i class="bi-exclamation-octagon-fill"></i>
-                                                        <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                                                    <div th:if="${infoMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
+                                                        <i class="bi-info-circle-fill"></i>
+                                                        <strong>Info!</strong> <span th:text="${infoMessage}"></span>
                                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                     </div>
                                                     <!-- Success Alert -->

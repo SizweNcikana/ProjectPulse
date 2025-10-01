@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
     Optional<EmployeeEntity> findByEmail(String email);
 
-    @Query("SELECT e FROM EmployeeEntity e INNER JOIN e.address WHERE e.name = :name AND e.surname = :surname")
+    @Query("SELECT e FROM EmployeeEntity e INNER JOIN e.address WHERE LOWER(e.name) = LOWER(:name) AND LOWER(e.surname) = LOWER(:surname)")
     List<EmployeeEntity> findByNameAndSurname(@Param("name") String name, @Param("surname") String surname);
 
     @Query("SELECT e.address FROM EmployeeEntity e WHERE e.name = :name AND e.surname = :surname")
