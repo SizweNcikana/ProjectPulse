@@ -33,6 +33,7 @@ public class EmployeeController {
 
         model.addAttribute("activeMenu", formResponseDTO.getActiveMenu());
         model.addAttribute("activePage", formResponseDTO.getActivePage());
+
         model.addAttribute("employee", formResponseDTO.getEmployee());
         model.addAttribute("projects", formResponseDTO.getProjects());
 
