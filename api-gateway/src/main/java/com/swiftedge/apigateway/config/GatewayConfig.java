@@ -1,52 +1,72 @@
 package com.swiftedge.apigateway.config;
 
+import com.swiftedge.apigateway.InMemoryRateLimiter;
+import io.github.resilience4j.ratelimiter.internal.InMemoryRateLimiterRegistry;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Configuration
+@EnableScheduling
 public class GatewayConfig {
+
+    private final Map<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
+    private final int MAX_REQUESTS = 5;
+    private final long WINDOW_MILLIS = 10000;
 
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-
-                // Route for Employee Service API
                 .route("employee-service", r -> r.path("/api/v2/employees/**")
-                        .filters(f -> f.circuitBreaker(
-                                config -> config
+                        .filters(f -> f
+                                .requestRateLimiter
+                                        (c -> c
+                                                .setRateLimiter(inMemoryRateLimiter())
+                                                .setKeyResolver(inMemoryKeyResolver()))
+                                .circuitBreaker(config -> config
                                         .setName("employeeCircuitBreaker")
-                                        .setFallbackUri("forward:/fallback/employee")
-                        ))
+                                        .setFallbackUri("forward:/fallback/employee"))
+                        )
                         .uri("lb://employee-service"))
 
-                // Route for Project Service API
-                .route("project-service", r -> r.path("/api/v2/projects/**")
+                .route("project-service", r -> r
+                        .path("/api/v2/projects/**")
                         .filters(f -> f
+                                .requestRateLimiter(c -> c
+                                        .setRateLimiter(inMemoryRateLimiter())
+                                        .setKeyResolver(inMemoryKeyResolver()))
                                 .circuitBreaker(config -> config
                                         .setName("projectCircuitBreaker")
-                                        .setFallbackUri("forward:/fallback/project")
-                                ))
-                        .uri("lb://project-service"))
+                                        .setFallbackUri("forward:/fallback/project"))
+                        ).uri("lb://project-service"))
 
-                // Route for UI FRONTEND Static files
-                .route("ui-frontend-static", r -> r.path("/static/**", "/js/**", "/css/**", "/images/**")
+                        // Route for UI FRONTEND Static files
+                .route("ui-frontend-static", r -> r
+                        .path("/static/**", "/js/**", "/css/**", "/images/**")
                         .uri("lb://ui-frontend"))
 
                 // Route for UI FRONTEND UI pages
-                .route("ui-frontend", r -> r.path("/home", "/employees", "/**")  // catch-all your UI URLs
+                .route("ui-frontend", r -> r
+                        .path("/home", "/employees", "/**")  // catch-all your UI URLs
                         .uri("lb://ui-frontend"))
 
                 // Route for Discovery Server UI
-                .route("discovery-server", r -> r.path("/eureka/web")
+                .route("discovery-server", r -> r
+                        .path("/eureka/web")
                         .filters(f -> f.setPath("/"))
                         .uri("http://localhost:8761"))
 
                 // Route for Discovery Server Static Files
-                .route("discovery-server-static", r -> r.path("/eureka/**")
+                .route("discovery-server-static", r -> r
+                        .path("/eureka/**")
                         .uri("http://localhost:8761"))
 
                 .build();
@@ -65,5 +85,11 @@ public class GatewayConfig {
                         .getAddress()
                         .getHostAddress()
         );
+    }
+
+    // In memory rate limiter
+    @Bean
+    public InMemoryRateLimiter inMemoryRateLimiter() {
+        return new InMemoryRateLimiter(requestCounts, MAX_REQUESTS, WINDOW_MILLIS);
     }
 }
