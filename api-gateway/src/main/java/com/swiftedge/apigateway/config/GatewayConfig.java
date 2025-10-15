@@ -1,9 +1,11 @@
 package com.swiftedge.apigateway.config;
 
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.core.publisher.Mono;
 
 @Configuration
 public class GatewayConfig {
@@ -14,10 +16,20 @@ public class GatewayConfig {
 
                 // Route for Employee Service API
                 .route("employee-service", r -> r.path("/api/v2/employees/**")
+                        .filters(f -> f.circuitBreaker(
+                                config -> config
+                                        .setName("employeeCircuitBreaker")
+                                        .setFallbackUri("forward:/fallback/employee")
+                        ))
                         .uri("lb://employee-service"))
 
                 // Route for Project Service API
                 .route("project-service", r -> r.path("/api/v2/projects/**")
+                        .filters(f -> f
+                                .circuitBreaker(config -> config
+                                        .setName("projectCircuitBreaker")
+                                        .setFallbackUri("forward:/fallback/project")
+                                ))
                         .uri("lb://project-service"))
 
                 // Route for UI FRONTEND Static files
@@ -38,5 +50,20 @@ public class GatewayConfig {
                         .uri("http://localhost:8761"))
 
                 .build();
+    }
+
+    /**
+     * Key resolver for in-memory rate limiting.
+     * It limits requests per client IP.
+     */
+
+    @Bean
+    public KeyResolver inMemoryKeyResolver() {
+        return exchange -> Mono.just(
+                exchange.getRequest()
+                        .getRemoteAddress()
+                        .getAddress()
+                        .getHostAddress()
+        );
     }
 }
